@@ -1,0 +1,55 @@
+# To build and test a Flutter application whenever changes are
+# pushed to the main branch or when pull requests are made to it.
+name: Multi-Platform Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build apk # Build the APK for Android
+
+  build_ios:
+    runs-on: macos-latest # iOS builds need to run on macOS
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build ios --no-codesign # Build for iOS without code signing
+
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build macos # Build for macOS
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build windows # Build for Windows
+
+  build_web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter build web # Build for Web
+
+  test:
+    needs: [build_android, build_ios, build_macos, build_windows, build_web]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - run: flutter pub get
+      - run: flutter test # Run tests
