@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497177915342",
+    "project_id": "binary-banditss",
+    "storage_bucket": "binary-banditss.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497177915342:android:c9aa9e29e1bf359c28059f",
+        "android_client_info": {
+          "package_name": "com.binarybanditss.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQxf8TYw8Kq5M7IWFPAt8ghpsEK9hWQ-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
