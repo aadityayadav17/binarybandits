@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
-void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Ensures that Firebase is initialized before the app runs
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions
-        .currentPlatform, // Loads platform-specific Firebase configuration
-  );
-
+void main() {
   runApp(const MyApp());
 }
 
