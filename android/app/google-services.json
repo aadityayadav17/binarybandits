@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "75413264619",
+    "project_id": "eat-easy-binban",
+    "storage_bucket": "eat-easy-binban.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75413264619:android:7664a9316b5dd7e05446ae",
+        "android_client_info": {
+          "package_name": "com.eateasy.binarybandits"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2NgzyAwW-m0GWrANJmYG8wlSrChzwZeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
