@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RecipeSelectionScreen(),
+                    builder: (context) => const RecipeSelectionScreen(),
                   ),
                 );
               },

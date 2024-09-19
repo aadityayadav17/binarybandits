@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RecipeSelectionScreen extends StatelessWidget {
+  const RecipeSelectionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,7 +10,7 @@ class RecipeSelectionScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             // Handle back button
             Navigator.pop(context);
@@ -21,7 +23,7 @@ class RecipeSelectionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Discover and Recipe Texts with 4 and Selected on new lines
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
@@ -68,9 +70,9 @@ class RecipeSelectionScreen extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            Spacer(), // Add spacer to push the card down
+            const Spacer(), // Add spacer to push the card down
 
             // Recipe Card
             Card(
@@ -92,7 +94,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                         _buildIconText(Icons.attach_money, 'Price'),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Calories & Protein Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,29 +103,29 @@ class RecipeSelectionScreen extends StatelessWidget {
                         _buildIconText(Icons.fitness_center, 'XX Protein'),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Recipe Name
-                    Text(
+                    const Text(
                       'Recipe Name Recipe Name',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Recipe Name Recipe Name',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
             ),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Done Button and Add/Remove Buttons
             Row(
@@ -139,15 +141,16 @@ class RecipeSelectionScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 12),
                   ),
-                  child: Text('Done'),
+                  child: const Text('Done'),
                 ),
                 _buildActionIcon(Icons.add, Colors.green),
               ],
             ),
 
-            Spacer(), // Add another spacer if needed
+            const Spacer(), // Add another spacer if needed
           ],
         ),
       ),
@@ -184,10 +187,10 @@ class RecipeSelectionScreen extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, size: 30, color: Colors.green),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           text,
-          style: TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 14),
         ),
       ],
     );
