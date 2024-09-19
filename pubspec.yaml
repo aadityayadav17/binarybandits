@@ -63,6 +63,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/examples/screens/recipe_selection_screen/AlmondMilkPorridge.jpeg
     - assets/icons/bottom_navigation/discover-recipe-off.png
     - assets/icons/bottom_navigation/discover-recipe-on.png
     - assets/icons/bottom_navigation/grocery-list-off.png
