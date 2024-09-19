@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/recipe_selection_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -111,6 +112,19 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 20), // Add some spacing
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to RecipeSelectionScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RecipeSelectionScreen(),
+                  ),
+                );
+              },
+              child: const Text('Go to Recipe Selection'),
             ),
           ],
         ),
