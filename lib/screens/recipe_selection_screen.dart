@@ -146,7 +146,13 @@ class RecipeSelectionScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildActionIcon(Icons.close, Colors.red),
+                // Remove button with background
+                _buildActionIconWithBackground(
+                  'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
+                  'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
+                ),
+
+                // Done Button
                 ElevatedButton(
                   onPressed: () {
                     // Handle Done action
@@ -161,7 +167,12 @@ class RecipeSelectionScreen extends StatelessWidget {
                   ),
                   child: const Text('Done'),
                 ),
-                _buildActionIcon(Icons.add, Colors.green),
+
+                // Add button with background
+                _buildActionIconWithBackground(
+                  'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
+                  'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
+                ),
               ],
             ),
 
@@ -214,6 +225,31 @@ class RecipeSelectionScreen extends StatelessWidget {
         Text(
           text,
           style: const TextStyle(fontSize: 14),
+        ),
+      ],
+    );
+  }
+
+  // Helper method to build the icon with a background rectangle and hard alignment
+  Widget _buildActionIconWithBackground(
+      String backgroundPath, String iconPath) {
+    return Stack(
+      children: [
+        // Rectangle background (60x60)
+        Image.asset(
+          backgroundPath,
+          width: 60,
+          height: 60,
+        ),
+        // Foreground icon (24x24) with hard alignment using Positioned
+        Positioned(
+          top: 15, // Adjust the top value to align vertically
+          left: 15, // Adjust the left value to align horizontally
+          child: Image.asset(
+            iconPath,
+            width: 24,
+            height: 24,
+          ),
         ),
       ],
     );

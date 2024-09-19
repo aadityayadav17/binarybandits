@@ -68,6 +68,9 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
     - assets/icons/screens/recipe_selection_screen/price.png
     - assets/icons/screens/recipe_selection_screen/protein.png
+    - assets/icons/screens/recipe_selection_screen/recipe-accepted.png
+    - assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png
+    - assets/icons/screens/recipe_selection_screen/recipe-rejected.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
