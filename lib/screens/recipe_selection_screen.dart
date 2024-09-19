@@ -14,30 +14,65 @@ class RecipeSelectionScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text(
-          "Discover Recipe",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: Center(
-              child: Text(
-                "4 Selected",
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Discover and Recipe Texts with 4 and Selected on new lines
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Discover",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    Text(
+                      "Recipe",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "4",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Selected",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            SizedBox(height: 16),
+
+            Spacer(), // Add spacer to push the card down
+
+            // Recipe Card
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -83,34 +118,36 @@ class RecipeSelectionScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 16),
-                    // Done Button
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle Done action
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green, // Background color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                      ),
-                      child: Text('Done'),
-                    ),
                   ],
                 ),
               ),
             ),
+
             SizedBox(height: 16),
-            // Add/Remove Buttons
+
+            // Done Button and Add/Remove Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionIcon(Icons.close, Colors.red),
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle Done action
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  ),
+                  child: Text('Done'),
+                ),
                 _buildActionIcon(Icons.add, Colors.green),
               ],
             ),
+
+            Spacer(), // Add another spacer if needed
           ],
         ),
       ),
@@ -126,6 +163,11 @@ class RecipeSelectionScreen extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            // Add the missing 4th item here
+            icon: Icon(Icons.settings), // Example icon
             label: '',
           ),
         ],
