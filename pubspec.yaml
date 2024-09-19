@@ -61,6 +61,14 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/icons/screens/recipe_selection_screen/back-key.png
+    - assets/icons/screens/recipe_selection_screen/calories.png
+    - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
+    - assets/icons/screens/recipe_selection_screen/price.png
+    - assets/icons/screens/recipe_selection_screen/protein.png
+    - assets/icons/screens/recipe_selection_screen/time-clock.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

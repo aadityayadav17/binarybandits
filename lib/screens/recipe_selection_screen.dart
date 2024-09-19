@@ -9,10 +9,14 @@ class RecipeSelectionScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        toolbarHeight: 60,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Image.asset(
+            'assets/icons/screens/recipe_selection_screen/back-key.png',
+            width: 24,
+            height: 24,
+          ),
           onPressed: () {
-            // Handle back button
             Navigator.pop(context);
           },
         ),
@@ -34,7 +38,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 28, // Slightly larger
                       ),
                     ),
                     Text(
@@ -42,7 +46,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 28,
                       ),
                     ),
                   ],
@@ -51,7 +55,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "4",
+                      "4", // Or dynamically set this value
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 24,
@@ -72,13 +76,14 @@ class RecipeSelectionScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            const Spacer(), // Add spacer to push the card down
+            const Spacer(flex: 2), // Add spacer to push the card down
 
             // Recipe Card
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(
+                    20), // Adjusted for more rounded corners
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -89,9 +94,15 @@ class RecipeSelectionScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildIconText(Icons.sentiment_satisfied, 'Easy'),
-                        _buildIconText(Icons.timer, '20 min'),
-                        _buildIconText(Icons.attach_money, 'Price'),
+                        _buildIconText(
+                            'assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png',
+                            'Easy'),
+                        _buildIconText(
+                            'assets/icons/screens/recipe_selection_screen/time-clock.png',
+                            '20 min'),
+                        _buildIconText(
+                            'assets/icons/screens/recipe_selection_screen/price.png',
+                            'Price'),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -99,8 +110,12 @@ class RecipeSelectionScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildIconText(Icons.restaurant_menu, 'XX Calories'),
-                        _buildIconText(Icons.fitness_center, 'XX Protein'),
+                        _buildIconText(
+                            'assets/icons/screens/recipe_selection_screen/calories.png',
+                            'XX Calories'),
+                        _buildIconText(
+                            'assets/icons/screens/recipe_selection_screen/protein.png',
+                            'XX Protein'),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -150,7 +165,7 @@ class RecipeSelectionScreen extends StatelessWidget {
               ],
             ),
 
-            const Spacer(), // Add another spacer if needed
+            const Spacer(flex: 1), // Adjust this as needed
           ],
         ),
       ),
@@ -169,8 +184,7 @@ class RecipeSelectionScreen extends StatelessWidget {
             label: '',
           ),
           BottomNavigationBarItem(
-            // Add the missing 4th item here
-            icon: Icon(Icons.settings), // Example icon
+            icon: Icon(Icons.settings), // Add your missing icon here
             label: '',
           ),
         ],
@@ -183,10 +197,19 @@ class RecipeSelectionScreen extends StatelessWidget {
   }
 
   // Helper method to build the icon with text below it
-  Widget _buildIconText(IconData icon, String text) {
+  Widget _buildIconText(String iconPath, String text,
+      [double? width, double? height]) {
+    // Set default width and height to 30 if not provided
+    double iconWidth = width ?? 24;
+    double iconHeight = height ?? 24;
+
     return Column(
       children: [
-        Icon(icon, size: 30, color: Colors.green),
+        Image.asset(
+          iconPath,
+          width: iconWidth,
+          height: iconHeight,
+        ),
         const SizedBox(height: 8),
         Text(
           text,
@@ -196,13 +219,12 @@ class RecipeSelectionScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build add/remove action buttons
+  // Helper method to build the action icon
   Widget _buildActionIcon(IconData icon, Color color) {
     return IconButton(
       icon: Icon(icon, color: color),
-      iconSize: 40,
       onPressed: () {
-        // Handle icon action
+        // Handle icon button press
       },
     );
   }
