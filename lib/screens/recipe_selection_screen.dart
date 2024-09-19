@@ -181,21 +181,39 @@ class RecipeSelectionScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        type: BottomNavigationBarType
+            .fixed, // Ensures equal spacing for all items
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/home-off.png',
+              width: 24,
+              height: 24,
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/grocery-list-on.png',
+              width: 24,
+              height: 24,
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/discover-recipe-off.png',
+              width: 24,
+              height: 24,
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings), // Add your missing icon here
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/weekly-menu-off.png',
+              width: 24,
+              height: 24,
+            ),
             label: '',
           ),
         ],
@@ -252,16 +270,6 @@ class RecipeSelectionScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  // Helper method to build the action icon
-  Widget _buildActionIcon(IconData icon, Color color) {
-    return IconButton(
-      icon: Icon(icon, color: color),
-      onPressed: () {
-        // Handle icon button press
-      },
     );
   }
 }
