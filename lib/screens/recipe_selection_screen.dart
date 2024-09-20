@@ -78,21 +78,26 @@ class RecipeSelectionScreen extends StatelessWidget {
 
               Stack(
                 clipBehavior: Clip.none, // Allows the overlapping effect
+                alignment: Alignment.center, // Centers the stack items
                 children: [
                   // Image Card
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(20), // To match the card
-                      child: Image.asset(
-                        'assets/examples/screens/recipe_selection_screen/AlmondMilkPorridge.jpeg',
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
+                  Container(
+                    width: MediaQuery.of(context).size.width *
+                        0.9, // Set width for alignment
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(20), // To match the card
+                        child: Image.asset(
+                          'assets/examples/screens/recipe_selection_screen/AlmondMilkPorridge.jpeg',
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -100,72 +105,74 @@ class RecipeSelectionScreen extends StatelessWidget {
                   // Recipe Information Card slightly overlapping the image card
                   Positioned(
                     top: 170, // This makes the card overlap the image by 50px
-                    left: 0,
-                    right: 0,
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            20), // Adjusted for more rounded corners
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16), // Add margin to center the card
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Icon Row (Easy, Time, Price)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildIconText(
-                                  'assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png',
-                                  'Easy',
-                                ),
-                                _buildIconText(
-                                  'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                                  '20 min',
-                                ),
-                                _buildIconText(
-                                  'assets/icons/screens/recipe_selection_screen/price.png',
-                                  'Price',
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            // Calories & Protein Row
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildIconText(
-                                  'assets/icons/screens/recipe_selection_screen/calories.png',
-                                  'XX Calories',
-                                ),
-                                _buildIconText(
-                                  'assets/icons/screens/recipe_selection_screen/protein.png',
-                                  'XX Protein',
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            // Recipe Name
-                            const Text(
-                              'Recipe Name Recipe Name',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width *
+                          0.9, // Same width for alignment
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              20), // Adjusted for more rounded corners
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Icon Row (Easy, Time, Price)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildIconText(
+                                    'assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png',
+                                    'Easy',
+                                  ),
+                                  _buildIconText(
+                                    'assets/icons/screens/recipe_selection_screen/time-clock.png',
+                                    '20 min',
+                                  ),
+                                  _buildIconText(
+                                    'assets/icons/screens/recipe_selection_screen/price.png',
+                                    'Price',
+                                  ),
+                                ],
                               ),
-                            ),
-                            const Text(
-                              'Recipe Name Recipe Name',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
+                              const SizedBox(height: 16),
+                              // Calories & Protein Row
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildIconText(
+                                    'assets/icons/screens/recipe_selection_screen/calories.png',
+                                    'XX Calories',
+                                  ),
+                                  _buildIconText(
+                                    'assets/icons/screens/recipe_selection_screen/protein.png',
+                                    'XX Protein',
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                          ],
+                              const SizedBox(height: 16),
+                              // Recipe Name
+                              const Text(
+                                'Recipe Name Recipe Name',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                'Recipe Name Recipe Name',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
                         ),
                       ),
                     ),
