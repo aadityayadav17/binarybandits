@@ -167,36 +167,48 @@ class RecipeSelectionScreen extends StatelessWidget {
                                   children: [
                                     // Icon Row (Easy, Time, Price)
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween, // Use spaceBetween for equal separation
                                       children: [
-                                        _buildIconText(
-                                          'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                                          recipe.difficulty,
+                                        Expanded(
+                                          child: _buildIconText(
+                                            'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
+                                            recipe.difficulty,
+                                          ),
                                         ),
-                                        _buildIconText(
-                                          'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                                          '${recipe.totalTime} min',
+                                        Expanded(
+                                          child: _buildIconText(
+                                            'assets/icons/screens/recipe_selection_screen/time-clock.png',
+                                            '${recipe.totalTime} min',
+                                          ),
                                         ),
-                                        _buildIconText(
-                                          'assets/icons/screens/recipe_selection_screen/price.png',
-                                          '${recipe.energyKcal} kcal',
+                                        Expanded(
+                                          child: _buildIconText(
+                                            'assets/icons/screens/recipe_selection_screen/rating.png',
+                                            '${recipe.rating}',
+                                          ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 16),
                                     // Calories & Protein Row
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceEvenly, // Distribute space evenly between items
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center, // Center items vertically
                                       children: [
-                                        _buildIconTextSideBySide(
-                                          'assets/icons/screens/recipe_selection_screen/calories.png',
-                                          '${recipe.energyKcal} Calories',
+                                        Expanded(
+                                          child: _buildIconTextSideBySide(
+                                            'assets/icons/screens/recipe_selection_screen/calories.png',
+                                            '${recipe.energyKcal} kcal',
+                                          ),
                                         ),
-                                        _buildIconTextSideBySide(
-                                          'assets/icons/screens/recipe_selection_screen/protein.png',
-                                          '${recipe.protein}g Protein',
+                                        Expanded(
+                                          child: _buildIconTextSideBySide(
+                                            'assets/icons/screens/recipe_selection_screen/protein.png',
+                                            '${recipe.protein}g Protein',
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -349,23 +361,20 @@ class RecipeSelectionScreen extends StatelessWidget {
   }
 
   // Helper method to build the icon with text next to it (side-by-side)
-  Widget _buildIconTextSideBySide(String iconPath, String text,
-      [double? iconSize, double? textSize]) {
-    double iconWidth = iconSize ?? 24;
-    double iconHeight = iconSize ?? 24;
-    double fontSize = textSize ?? 14;
-
+  Widget _buildIconTextSideBySide(String iconPath, String text) {
     return Row(
+      mainAxisAlignment:
+          MainAxisAlignment.center, // Center the content inside the Row
       children: [
         Image.asset(
           iconPath,
-          width: iconWidth,
-          height: iconHeight,
+          width: 24,
+          height: 24,
         ),
         const SizedBox(width: 8), // Space between icon and text
         Text(
           text,
-          style: TextStyle(fontSize: fontSize),
+          style: const TextStyle(fontSize: 14),
         ),
       ],
     );
