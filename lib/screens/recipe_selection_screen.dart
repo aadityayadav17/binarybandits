@@ -90,7 +90,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                   alignment: Alignment.center, // Centers the stack items
                   children: [
                     // Image Card
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width *
                           0.9, // Set width for alignment
                       child: Card(
@@ -113,16 +113,24 @@ class RecipeSelectionScreen extends StatelessWidget {
 
                     // Recipe Information Card slightly overlapping the image card
                     Positioned(
-                      top: 230, // This makes the card overlap the image by 50px
-                      child: Container(
+                      top: 220, // This makes the card overlap the image by 50px
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width *
                             0.9, // Same width for alignment
                         child: Card(
                           color: Colors
                               .white, // Set the card background to plain white
                           elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20), // Upper left corner
+                              topRight:
+                                  Radius.circular(20), // Upper right corner
+                              bottomLeft:
+                                  Radius.circular(10), // Lower left corner
+                              bottomRight:
+                                  Radius.circular(10), // Lower right corner
+                            ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -190,8 +198,6 @@ class RecipeSelectionScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-
-                                const SizedBox(height: 16),
                               ],
                             ),
                           ),
@@ -202,7 +208,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(
-                    height: 190), // Add spacing to push the buttons down
+                    height: 180), // Add spacing to push the buttons down
 
                 // Done Button and Add/Remove Buttons
                 Row(
