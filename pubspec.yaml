@@ -84,6 +84,7 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/recipe-accepted.png
     - assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png
     - assets/icons/screens/recipe_selection_screen/recipe-rejected.png
+    - assets/icons/screens/recipe_selection_screen/save.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
     - assets/recipes/D3801 Recipes - Recipes.json
 

@@ -8,6 +8,7 @@ class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RecipeSelectionScreenState createState() => _RecipeSelectionScreenState();
 }
 
@@ -152,6 +153,24 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
+                      ),
+                    ),
+
+                    // Save Button at the top-right corner
+                    Positioned(
+                      top:
+                          20, // Adjust the top position based on how close to the top you want it
+                      right:
+                          20, // Adjust the right position to align with the right edge
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/screens/recipe_selection_screen/save.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        onPressed: () {
+                          // Handle Save action (undecided functionality for now)
+                        },
                       ),
                     ),
 
