@@ -227,15 +227,27 @@ class RecipeSelectionScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    const Align(
+                                    // Display classification and allergens as tags
+                                    Align(
                                       alignment: Alignment
-                                          .centerLeft, // Aligns the text to the left
-                                      child: Text(
-                                        'Recipe Name Recipe Name',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
+                                          .centerLeft, // Ensure tags are left-aligned
+                                      child: Wrap(
+                                        spacing: 8.0, // Space between tags
+                                        runSpacing:
+                                            4.0, // Space between rows if tags wrap
+                                        children: [
+                                          if (recipe.classification != null)
+                                            _buildTag(
+                                              recipe.classification!,
+                                              _getTagColor(
+                                                  recipe.classification!),
+                                            ),
+                                          if (recipe.allergens != null)
+                                            ...recipe.allergens!.map(
+                                                (allergen) => _buildTag(
+                                                    allergen,
+                                                    _getTagColor('Allergens'))),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -403,5 +415,35 @@ class RecipeSelectionScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Helper method to build the classification or allergen tag
+  Widget _buildTag(String text, Color backgroundColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black, // Normal black text
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  Color _getTagColor(String classification) {
+    if (classification == 'Vegetarian') {
+      return Colors.yellow; // Yellow for Vegetarian
+    } else if (classification == 'Vegan') {
+      return Colors.green; // Green for Vegan
+    } else if (classification == 'Allergens') {
+      return Colors.red; // Red for Allergens
+    } else {
+      return Colors.grey; // Default color for unknown classifications
+    }
   }
 }

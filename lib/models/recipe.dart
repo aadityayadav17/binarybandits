@@ -12,6 +12,8 @@ class Recipe {
   final int protein;
   final int energyKcal;
   final String image;
+  final String? classification; // Classification (Vegan/Vegetarian)
+  final List<String>? allergens; // Allergens can be a list or a single string
 
   Recipe({
     required this.id,
@@ -27,6 +29,8 @@ class Recipe {
     required this.protein,
     required this.energyKcal,
     required this.image,
+    this.classification,
+    this.allergens,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -40,11 +44,27 @@ class Recipe {
       cookTime: json['cook_time_min'] as int,
       totalTime: json['total_time_min'] as int,
       difficulty: json['difficulty'] as String,
-      // Safely cast rating to double, even if it's stored as an int in the JSON
       rating: (json['rating'] as num).toDouble(),
       protein: json['protein_g'] as int,
       energyKcal: json['energy_kcal'] as int,
       image: json['image'] as String,
+      classification:
+          json['classification'] as String?, // Handle classification
+      allergens:
+          _parseAllergens(json['allergens']), // Handle allergens dynamically
     );
+  }
+
+  // Helper method to parse allergens that could be either a string or a list
+  static List<String>? _parseAllergens(dynamic allergens) {
+    if (allergens == null) {
+      return null; // No allergens provided
+    } else if (allergens is String) {
+      return [allergens]; // Single string allergen, wrap it in a list
+    } else if (allergens is List) {
+      return List<String>.from(allergens); // List of allergens, return it as is
+    } else {
+      throw Exception("Unexpected allergens format");
+    }
   }
 }
