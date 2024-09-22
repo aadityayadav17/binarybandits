@@ -154,11 +154,11 @@ class RecipeSelectionScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    _buildIconText(
+                                    _buildIconTextSideBySide(
                                       'assets/icons/screens/recipe_selection_screen/calories.png',
                                       'XX Calories',
                                     ),
-                                    _buildIconText(
+                                    _buildIconTextSideBySide(
                                       'assets/icons/screens/recipe_selection_screen/protein.png',
                                       'XX Protein',
                                     ),
@@ -296,6 +296,29 @@ class RecipeSelectionScreen extends StatelessWidget {
         Text(
           text,
           style: const TextStyle(fontSize: 14),
+        ),
+      ],
+    );
+  }
+
+  // Helper method to build the icon with text next to it (side-by-side)
+  Widget _buildIconTextSideBySide(String iconPath, String text,
+      [double? iconSize, double? textSize]) {
+    double iconWidth = iconSize ?? 24;
+    double iconHeight = iconSize ?? 24;
+    double fontSize = textSize ?? 14;
+
+    return Row(
+      children: [
+        Image.asset(
+          iconPath,
+          width: iconWidth,
+          height: iconHeight,
+        ),
+        const SizedBox(width: 8), // Space between icon and text
+        Text(
+          text,
+          style: TextStyle(fontSize: fontSize),
         ),
       ],
     );
