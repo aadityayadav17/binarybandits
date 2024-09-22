@@ -273,10 +273,32 @@ class RecipeSelectionScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // Remove button with background
-                        _buildActionIconWithBackground(
-                          'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
-                          'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
+                        // Rejected Button with icon background
+                        ElevatedButton(
+                          onPressed: () {
+                            // Handle Rejected action (undecided functionality for now)
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero, // Remove extra padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            disabledForegroundColor:
+                                Colors.transparent.withOpacity(0.38),
+                            disabledBackgroundColor:
+                                Colors.transparent.withOpacity(0.12),
+                            backgroundColor: Colors
+                                .transparent, // Keep background transparent
+                            shadowColor:
+                                Colors.transparent, // Remove external shadow
+                            splashFactory:
+                                NoSplash.splashFactory, // Disable ripple effect
+                            elevation: 0, // No visual feedback on press
+                          ),
+                          child: _buildActionIconWithBackground(
+                            'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
+                            'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
+                          ),
                         ),
 
                         // Done Button
@@ -295,10 +317,32 @@ class RecipeSelectionScreen extends StatelessWidget {
                           child: const Text('Done'),
                         ),
 
-                        // Add button with background
-                        _buildActionIconWithBackground(
-                          'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
-                          'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
+                        // Accepted Button with icon background
+                        ElevatedButton(
+                          onPressed: () {
+                            // Handle Accepted action (undecided functionality for now)
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero, // Remove extra padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            disabledForegroundColor:
+                                Colors.transparent.withOpacity(0.38),
+                            disabledBackgroundColor:
+                                Colors.transparent.withOpacity(0.12),
+                            backgroundColor: Colors
+                                .transparent, // Keep background transparent
+                            shadowColor:
+                                Colors.transparent, // Remove external shadow
+                            splashFactory:
+                                NoSplash.splashFactory, // Disable ripple effect
+                            elevation: 0, // No visual feedback on press
+                          ),
+                          child: _buildActionIconWithBackground(
+                            'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
+                            'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
+                          ),
                         ),
                       ],
                     ),
@@ -314,6 +358,26 @@ class RecipeSelectionScreen extends StatelessWidget {
           backgroundColor: Colors.white, // Set background to plain white
           type: BottomNavigationBarType
               .fixed, // Ensures equal spacing for all items
+          currentIndex: 0, // Default selected index (Home)
+          onTap: (index) {
+            // Handle button press by index (actions not decided yet)
+            switch (index) {
+              case 0:
+                // Action for Home button
+                break;
+              case 1:
+                // Action for Grocery List button
+                break;
+              case 2:
+                // Action for Discover Recipe button
+                break;
+              case 3:
+                // Action for Weekly Menu button
+                break;
+              default:
+                break;
+            }
+          },
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Image.asset(
@@ -412,12 +476,12 @@ class RecipeSelectionScreen extends StatelessWidget {
         ),
         // Foreground icon (24x24) with hard alignment using Positioned
         Positioned(
-          top: 15, // Adjust the top value to align vertically
-          left: 15, // Adjust the left value to align horizontally
+          top: 17, // Adjust the top value to align vertically
+          left: 17, // Adjust the left value to align horizontally
           child: Image.asset(
             iconPath,
-            width: 24,
-            height: 24,
+            width: 20,
+            height: 20,
           ),
         ),
       ],
@@ -449,11 +513,11 @@ class RecipeSelectionScreen extends StatelessWidget {
   }
 
   Color _getTagColor(String classification) {
-    if (classification == 'Vegetarian') {
+    if (classification == 'vegetarian') {
       return Colors.yellow; // Yellow for Vegetarian
-    } else if (classification == 'Vegan') {
+    } else if (classification == 'vegan') {
       return Colors.green; // Green for Vegan
-    } else if (classification == 'Allergens') {
+    } else if (classification == 'allergens') {
       return Colors.red; // Red for Allergens
     } else {
       return Colors.grey; // Default color for unknown classifications
