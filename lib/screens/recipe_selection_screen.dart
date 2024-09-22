@@ -13,29 +13,35 @@ class RecipeSelectionScreen extends StatelessWidget {
         ),
       ),
       home: Scaffold(
-        // Set background color for Scaffold body
-        backgroundColor:
-            const Color(0xFFF5F5F5), // Body background color: #B4B4B4
+        backgroundColor: const Color(0xFFF5F5F5), // Body background color
         appBar: AppBar(
-          backgroundColor: const Color(0xFFF5F5F5),
+          backgroundColor:
+              const Color(0xFFF5F5F5), // Match app bar with body background
           elevation: 0,
           toolbarHeight: 60,
-          leading: IconButton(
-            icon: Image.asset(
-              'assets/icons/screens/recipe_selection_screen/back-key.png',
-              width: 24,
-              height: 24,
+          automaticallyImplyLeading: false, // Disable default leading padding
+          leading: Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0), // Adjusted padding to reduce space
+            child: IconButton(
+              icon: Image.asset(
+                'assets/icons/screens/recipe_selection_screen/back-key.png',
+                width: 24,
+                height: 24,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
+                // Reduced spacing between AppBar and main body
+                const SizedBox(height: 1),
                 // Discover and Recipe Texts with 4 and Selected on new lines
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,8 +53,8 @@ class RecipeSelectionScreen extends StatelessWidget {
                           "Discover\nRecipe",
                           style: TextStyle(
                             color: Colors.black,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 36, // Slightly larger
+                            fontWeight: FontWeight.w900,
+                            fontSize: 36,
                             letterSpacing: 0,
                           ),
                         ),
@@ -62,8 +68,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
@@ -71,7 +76,6 @@ class RecipeSelectionScreen extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
-                            letterSpacing: 0,
                           ),
                         ),
                       ],
@@ -79,7 +83,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 16), // Keep some spacing here
 
                 Stack(
                   clipBehavior: Clip.none, // Allows the overlapping effect
@@ -100,7 +104,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                           child: Image.asset(
                             'assets/examples/screens/recipe_selection_screen/AlmondMilkPorridge.jpeg',
                             width: double.infinity,
-                            height: 200,
+                            height: 250,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -109,16 +113,16 @@ class RecipeSelectionScreen extends StatelessWidget {
 
                     // Recipe Information Card slightly overlapping the image card
                     Positioned(
-                      top: 170, // This makes the card overlap the image by 50px
+                      top: 200, // This makes the card overlap the image by 50px
                       child: Container(
                         width: MediaQuery.of(context).size.width *
                             0.9, // Same width for alignment
                         child: Card(
-                          color: Colors.white,
+                          color: Colors
+                              .white, // Set the card background to plain white
                           elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                20), // Adjusted for more rounded corners
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -187,7 +191,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(
-                    height: 220), // Add spacing to push the buttons down
+                    height: 200), // Add spacing to push the buttons down
 
                 // Done Button and Add/Remove Buttons
                 Row(
@@ -226,6 +230,8 @@ class RecipeSelectionScreen extends StatelessWidget {
             ),
           ),
         ),
+
+        // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white, // Set background to plain white
           type: BottomNavigationBarType
@@ -276,7 +282,6 @@ class RecipeSelectionScreen extends StatelessWidget {
   // Helper method to build the icon with text below it
   Widget _buildIconText(String iconPath, String text,
       [double? width, double? height]) {
-    // Set default width and height to 30 if not provided
     double iconWidth = width ?? 24;
     double iconHeight = height ?? 24;
 
