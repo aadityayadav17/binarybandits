@@ -113,7 +113,7 @@ class RecipeSelectionScreen extends StatelessWidget {
 
                     // Recipe Information Card slightly overlapping the image card
                     Positioned(
-                      top: 200, // This makes the card overlap the image by 50px
+                      top: 230, // This makes the card overlap the image by 50px
                       child: Container(
                         width: MediaQuery.of(context).size.width *
                             0.9, // Same width for alignment
@@ -164,22 +164,33 @@ class RecipeSelectionScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 16),
+
                                 // Recipe Name
-                                const Text(
-                                  'Recipe Name Recipe Name',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                const Align(
+                                  alignment: Alignment
+                                      .centerLeft, // Aligns the text to the left
+                                  child: Text(
+                                    'Recipe Name Recipe Name',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                                const Text(
-                                  'Recipe Name Recipe Name',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
+                                const Align(
+                                  alignment: Alignment
+                                      .centerLeft, // Aligns the text to the left
+                                  child: Text(
+                                    'Recipe Name Recipe Name',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
+
                                 const SizedBox(height: 16),
                               ],
                             ),
@@ -191,7 +202,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(
-                    height: 200), // Add spacing to push the buttons down
+                    height: 190), // Add spacing to push the buttons down
 
                 // Done Button and Add/Remove Buttons
                 Row(
