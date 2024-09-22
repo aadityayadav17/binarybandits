@@ -7,17 +7,17 @@ class RecipeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Wrap everything inside MaterialApp for theme and fonts
       theme: ThemeData(
         textTheme: GoogleFonts.robotoFlexTextTheme(
           Theme.of(context).textTheme, // Apply Roboto Flex font globally
         ),
       ),
       home: Scaffold(
-        // Make sure Scaffold is wrapped correctly
+        // Set background color for Scaffold body
+        backgroundColor:
+            const Color(0xFFF5F5F5), // Body background color: #B4B4B4
         appBar: AppBar(
-          backgroundColor:
-              const Color(0xFFB4B4B4), // Body background color: #B4B4B4
+          backgroundColor: const Color(0xFFF5F5F5),
           elevation: 0,
           toolbarHeight: 60,
           leading: IconButton(
@@ -114,6 +114,7 @@ class RecipeSelectionScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width *
                             0.9, // Same width for alignment
                         child: Card(
+                          color: Colors.white,
                           elevation: 4,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
@@ -226,6 +227,7 @@ class RecipeSelectionScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white, // Set background to plain white
           type: BottomNavigationBarType
               .fixed, // Ensures equal spacing for all items
           items: <BottomNavigationBarItem>[
