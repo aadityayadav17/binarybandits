@@ -82,6 +82,7 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png
     - assets/icons/screens/recipe_selection_screen/recipe-rejected.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
+    - assets/recipes/D3801 Recipes - Recipes.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
