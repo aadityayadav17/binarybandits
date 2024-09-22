@@ -173,7 +173,8 @@ class RecipeSelectionScreen extends StatelessWidget {
                                         Expanded(
                                           child: _buildIconText(
                                             'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                                            recipe.difficulty,
+                                            capitalizeFirstLetter(
+                                                recipe.difficulty),
                                           ),
                                         ),
                                         Expanded(
@@ -236,16 +237,22 @@ class RecipeSelectionScreen extends StatelessWidget {
                                         runSpacing:
                                             4.0, // Space between rows if tags wrap
                                         children: [
-                                          if (recipe.classification != null)
+                                          if (recipe.classification != null &&
+                                              recipe.classification!.isNotEmpty)
                                             _buildTag(
-                                              recipe.classification!,
+                                              capitalizeFirstLetter(
+                                                  recipe.classification!),
                                               _getTagColor(
                                                   recipe.classification!),
                                             ),
                                           if (recipe.allergens != null)
-                                            ...recipe.allergens!.map(
-                                                (allergen) => _buildTag(
-                                                    allergen,
+                                            ...recipe.allergens!
+                                                .where((allergen) =>
+                                                    allergen.toLowerCase() !=
+                                                    'none') // Filter out "none"
+                                                .map((allergen) => _buildTag(
+                                                    capitalizeFirstLetter(
+                                                        allergen),
                                                     _getTagColor('Allergens'))),
                                         ],
                                       ),
@@ -433,6 +440,12 @@ class RecipeSelectionScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Helper method to capitalize the first letter of a string
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
   }
 
   Color _getTagColor(String classification) {
