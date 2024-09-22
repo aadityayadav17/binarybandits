@@ -76,6 +76,8 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/back-key.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
+    - assets/icons/screens/recipe_selection_screen/cooking-difficulty-hard.png
+    - assets/icons/screens/recipe_selection_screen/cooking-difficulty-medium.png
     - assets/icons/screens/recipe_selection_screen/price.png
     - assets/icons/screens/recipe_selection_screen/protein.png
     - assets/icons/screens/recipe_selection_screen/rating.png
