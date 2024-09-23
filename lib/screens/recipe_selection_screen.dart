@@ -15,6 +15,7 @@ class RecipeSelectionScreen extends StatefulWidget {
 class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   List<Recipe> _recipes = []; // Store loaded recipes
   int _currentRecipeIndex = 0; // Track the current recipe index
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -35,9 +36,23 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   // Move to the next recipe
   void _nextRecipe() {
     setState(() {
-      _currentRecipeIndex = (_currentRecipeIndex + 1) %
-          _recipes.length; // Loop back to first recipe if at the end
+      _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
     });
+    _scrollToTop();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0, // Scroll to the top
+      duration: const Duration(milliseconds: 300), // Smooth scroll
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -83,6 +98,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
           ),
         ),
         body: SingleChildScrollView(
+          key: ValueKey<int>(_currentRecipeIndex),
+          controller: _scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
