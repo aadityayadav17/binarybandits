@@ -124,6 +124,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                             fontWeight: FontWeight.w900,
                             fontSize: 36,
                             letterSpacing: 0,
+                            height: 0.9,
                           ),
                         ),
                       ],
@@ -170,7 +171,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           child: Image.asset(
                             recipe.image, // Dynamically load the local image
                             width: double.infinity,
-                            height: 250,
+                            height: 280,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -203,7 +204,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                     // Recipe Information Card slightly overlapping the image card
                     Positioned(
                       top:
-                          220, // Overlaps the image by 50px as in the original code
+                          250, // Overlaps the image by 50px as in the original code
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: Card(
