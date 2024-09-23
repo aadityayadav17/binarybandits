@@ -16,6 +16,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   List<Recipe> _recipes = []; // Store loaded recipes
   int _currentRecipeIndex = 0; // Track the current recipe index
   final ScrollController _scrollController = ScrollController();
+  List<bool> _savedRecipes = [];
 
   @override
   void initState() {
@@ -30,6 +31,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
+      _savedRecipes = List.generate(_recipes.length,
+          (_) => false); // Initialize saved state to false for all recipes
     });
   }
 
@@ -181,12 +184,17 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           20, // Adjust the right position to align with the right edge
                       child: IconButton(
                         icon: Image.asset(
-                          'assets/icons/screens/recipe_selection_screen/save.png',
+                          _savedRecipes[_currentRecipeIndex]
+                              ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
+                              : 'assets/icons/screens/recipe_selection_screen/save.png', // Toggle between save and save-on icons
                           width: 20,
                           height: 20,
                         ),
                         onPressed: () {
-                          // Handle Save action (undecided functionality for now)
+                          setState(() {
+                            _savedRecipes[_currentRecipeIndex] = !_savedRecipes[
+                                _currentRecipeIndex]; // Toggle the saved state
+                          });
                         },
                       ),
                     ),
