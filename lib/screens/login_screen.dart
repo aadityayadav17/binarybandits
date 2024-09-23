@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Get the full width of the screen using MediaQuery
@@ -11,15 +12,17 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       // Set the background color of the whole screen to light green
       backgroundColor:
-          Color.fromRGBO(239, 250, 244, 1), // Light green background
+          const Color.fromRGBO(239, 250, 244, 1), // Light green background
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // App Logo
+            // Add height above the logo
+            const SizedBox(height: 120), // You can adjust this height
+
+            // App Logo with reduced padding below the logo
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Row(
                 children: [
                   Image.asset(
@@ -33,18 +36,19 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 10), // Space between logo and content
+            // Remove extra space between logo and rectangle (SizedBox height set to 0)
+            const SizedBox(height: 20),
 
             // Container with rounded white background for the main content
             Container(
               width:
                   screenWidth, // Set the width to the full width of the screen
               padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white, // White background for the content
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+                  topLeft: Radius.circular(48),
+                  topRight: Radius.circular(48),
                 ), // Rounded corners only on top
               ),
               child: Column(
@@ -59,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   // Email Input Field
                   TextField(
@@ -72,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Password Input Field
                   TextField(
@@ -86,7 +90,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   // Keep Me Signed In and Forgot Password Row
                   Row(
@@ -118,7 +122,7 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
 
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   // Row for the button, with the combined rectangle and arrow image aligned right
                   Row(
@@ -142,7 +146,7 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
