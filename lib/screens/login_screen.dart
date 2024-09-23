@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-  // Remove the const keyword from here
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,14 +13,22 @@ class LoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 50), // Padding from top
-              Center(
-                child: Image.asset(
-                  'assets/images/app-logo.png',
-                  width: 150,
-                  height: 50,
-                ),
+
+              // Row for logo on the left
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/app-logo.png',
+                    width: 164,
+                    height: 26,
+                    alignment: Alignment.centerLeft, // Logo aligned to left
+                  ),
+                ],
               ),
+
               SizedBox(height: 50), // Space between logo and form
+
+              // Welcome Back Text
               Text(
                 'Welcome Back',
                 style: GoogleFonts.roboto(
@@ -29,7 +36,10 @@ class LoginScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               SizedBox(height: 30),
+
+              // Email Input Field
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -39,7 +49,10 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               SizedBox(height: 20),
+
+              // Password Input Field
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
@@ -50,7 +63,10 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               SizedBox(height: 10),
+
+              // Keep Me Signed In and Forgot Password Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -79,49 +95,47 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
               SizedBox(height: 30),
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          'assets/icons/screens/log_screen/log-rectangle.png',
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      Center(
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/icons/screens/log_screen/continue-arrow.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                          onPressed: () {
-                            // Sign in action
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    // Sign up action
-                  },
-                  child: Text(
-                    'Sign Up',
-                    style: GoogleFonts.roboto(
-                      decoration: TextDecoration.underline,
-                      fontSize: 16,
+
+              // Row for the button, with the combined rectangle and arrow image aligned right
+              Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.end, // Align the button to the right
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // Sign in action
+                    },
+                    child: Image.asset(
+                      'assets/icons/screens/log_screen/log-rectangle.png',
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.fill,
                     ),
                   ),
-                ),
+                ],
+              ),
+
+              SizedBox(height: 20),
+
+              // Sign Up Text Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // Sign up action
+                    },
+                    child: Text(
+                      'Sign Up',
+                      style: GoogleFonts.roboto(
+                        decoration: TextDecoration.underline,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
