@@ -176,119 +176,111 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
 
                     // Recipe Information Card slightly overlapping the image card
                     Positioned(
-                      top: 220, // This makes the card overlap the image by 50px
+                      top:
+                          220, // Overlaps the image by 50px as in the original code
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: Card(
-                          color: Colors
-                              .white, // Set the card background to plain white
+                          color: Colors.white,
                           elevation: 4,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20), // Upper left corner
-                              topRight:
-                                  Radius.circular(20), // Upper right corner
-                              bottomLeft:
-                                  Radius.circular(10), // Lower left corner
-                              bottomRight:
-                                  Radius.circular(10), // Lower right corner
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
                             ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Icon Row (Easy, Time, Price)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween, // Use spaceBetween for equal separation
+                          child: SizedBox(
+                            height:
+                                200, // Fixed height as per original specification
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: _buildIconText(
-                                        'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                                        capitalizeFirstLetter(
-                                            recipe.difficulty),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                            child: _buildIconText(
+                                                'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
+                                                capitalizeFirstLetter(
+                                                    recipe.difficulty))),
+                                        Expanded(
+                                            child: _buildIconText(
+                                                'assets/icons/screens/recipe_selection_screen/time-clock.png',
+                                                '${recipe.totalTime} min')),
+                                        Expanded(
+                                            child: _buildIconText(
+                                                'assets/icons/screens/recipe_selection_screen/rating.png',
+                                                '${recipe.rating}')),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(
+                                            child: _buildIconTextSideBySide(
+                                                'assets/icons/screens/recipe_selection_screen/calories.png',
+                                                '${recipe.energyKcal} kcal')),
+                                        Expanded(
+                                            child: _buildIconTextSideBySide(
+                                                'assets/icons/screens/recipe_selection_screen/protein.png',
+                                                '${recipe.protein}g Protein')),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      recipe.name,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Expanded(
-                                      child: _buildIconText(
-                                        'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                                        '${recipe.totalTime} min',
-                                      ),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 8.0,
+                                      runSpacing: 4.0,
+                                      children: [
+                                        if (recipe.classification != null &&
+                                            recipe.classification!.isNotEmpty)
+                                          _buildTag(
+                                              capitalizeFirstLetter(
+                                                  recipe.classification!),
+                                              _getTagColor(
+                                                  recipe.classification!)),
+                                        if (recipe.allergens != null)
+                                          ...recipe.allergens!
+                                              .where((allergen) =>
+                                                  allergen.toLowerCase() !=
+                                                  'none')
+                                              .map((allergen) => _buildTag(
+                                                  capitalizeFirstLetter(
+                                                      allergen),
+                                                  _getTagColor('allergens'))),
+                                      ],
                                     ),
-                                    Expanded(
-                                      child: _buildIconText(
-                                        'assets/icons/screens/recipe_selection_screen/rating.png',
-                                        '${recipe.rating}',
-                                      ),
-                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text("Additional Information",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                        "Here you can add more details about the recipe, ingredients, instructions, or any other relevant information. This section should be scrollable from any part of the card."),
+                                    // Add more content here as needed
+                                    const SizedBox(
+                                        height:
+                                            100), // Extra space to ensure scrollability
                                   ],
                                 ),
-                                const SizedBox(height: 16),
-                                // Calories & Protein Row
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly, // Distribute space evenly between items
-                                  crossAxisAlignment: CrossAxisAlignment
-                                      .center, // Center items vertically
-                                  children: [
-                                    Expanded(
-                                      child: _buildIconTextSideBySide(
-                                        'assets/icons/screens/recipe_selection_screen/calories.png',
-                                        '${recipe.energyKcal} kcal',
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: _buildIconTextSideBySide(
-                                        'assets/icons/screens/recipe_selection_screen/protein.png',
-                                        '${recipe.protein}g Protein',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Recipe Name
-                                Align(
-                                  alignment: Alignment
-                                      .centerLeft, // Aligns the text to the left
-                                  child: Text(
-                                    recipe.name,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                // Display classification and allergens as tags
-                                Align(
-                                  alignment: Alignment
-                                      .centerLeft, // Ensure tags are left-aligned
-                                  child: Wrap(
-                                    spacing: 8.0, // Space between tags
-                                    runSpacing:
-                                        4.0, // Space between rows if tags wrap
-                                    children: [
-                                      if (recipe.classification != null &&
-                                          recipe.classification!.isNotEmpty)
-                                        _buildTag(
-                                          capitalizeFirstLetter(
-                                              recipe.classification!),
-                                          _getTagColor(recipe.classification!),
-                                        ),
-                                      if (recipe.allergens != null)
-                                        ...recipe.allergens!
-                                            .where((allergen) =>
-                                                allergen.toLowerCase() !=
-                                                'none') // Filter out "none"
-                                            .map((allergen) => _buildTag(
-                                                capitalizeFirstLetter(allergen),
-                                                _getTagColor('allergens'))),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
