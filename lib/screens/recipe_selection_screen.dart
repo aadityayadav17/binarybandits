@@ -266,18 +266,100 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                                                   _getTagColor('allergens'))),
                                       ],
                                     ),
+                                    // Inside your build method, after displaying other recipe details
                                     const SizedBox(height: 16),
-                                    const Text("Additional Information",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 8),
+
+                                    // Display ingredients in a list format
                                     const Text(
-                                        "Here you can add more details about the recipe, ingredients, instructions, or any other relevant information. This section should be scrollable from any part of the card."),
-                                    // Add more content here as needed
-                                    const SizedBox(
-                                        height:
-                                            100), // Extra space to ensure scrollability
+                                      'Ingredients',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Ingredient list
+                                    ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(), // Disable scrolling for this ListView
+                                      shrinkWrap:
+                                          true, // Ensure it takes the minimum height
+                                      itemCount: _parseIngredients(
+                                              recipe.ingredientsQuantityInGrams)
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        final ingredient = _parseIngredients(
+                                                recipe
+                                                    .ingredientsQuantityInGrams)[
+                                            index];
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  ingredient.name,
+                                                  style: const TextStyle(
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              Text(
+                                                ingredient.quantity,
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 16),
+                                    // Display cooking directions as steps
+                                    const Text(
+                                      'Cooking Directions',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Cooking directions in a list
+                                    ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(), // Disable scrolling for this ListView
+                                      shrinkWrap:
+                                          true, // Ensure it takes the minimum height
+                                      itemCount: recipe.steps.length,
+                                      itemBuilder: (context, index) {
+                                        final step = recipe.steps[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${index + 1}.', // Display the step number
+                                                style: const TextStyle(
+                                                    fontSize: 16),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Expanded(
+                                                child: Text(
+                                                  step,
+                                                  style: const TextStyle(
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -535,4 +617,25 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
       return Colors.grey; // Default color for unknown classifications
     }
   }
+
+  // Helper method to parse ingredients
+  List<Ingredient> _parseIngredients(String ingredientsData) {
+    final List<Ingredient> ingredients = [];
+    final lines = ingredientsData.split('\n');
+    for (var line in lines) {
+      final parts = line.split(' -> ');
+      if (parts.length == 2) {
+        ingredients.add(Ingredient(parts[0], parts[1]));
+      }
+    }
+    return ingredients;
+  }
+}
+
+// Ingredient class to hold the ingredient name and quantity
+class Ingredient {
+  final String name;
+  final String quantity;
+
+  Ingredient(this.name, this.quantity);
 }
