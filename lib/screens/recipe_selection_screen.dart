@@ -17,6 +17,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   int _currentRecipeIndex = 0; // Track the current recipe index
   final ScrollController _scrollController = ScrollController();
   List<bool> _savedRecipes = [];
+  int _selectedCount = 0;
 
   @override
   void initState() {
@@ -110,10 +111,10 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                 // Reduced spacing between AppBar and main body
                 const SizedBox(height: 1),
                 // Discover and Recipe Texts with 4 and Selected on new lines
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -131,14 +132,14 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          "4", // Or dynamically set this value
-                          style: TextStyle(
+                          '$_selectedCount', // Display the current selected count dynamically
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 36,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Text(
+                        const Text(
                           "Selected",
                           style: TextStyle(
                             color: Colors.black,
@@ -405,7 +406,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                     // Rejected Button with icon background
                     ElevatedButton(
                       onPressed: () {
-                        _nextRecipe(); // Move to next recipe on rejection
+                        setState(() {
+                          _nextRecipe(); // Move to the next recipe on rejection
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero, // Remove extra padding
@@ -445,7 +448,10 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                     // Accepted Button with icon background
                     ElevatedButton(
                       onPressed: () {
-                        _nextRecipe(); // Move to next recipe on acceptance
+                        setState(() {
+                          _selectedCount++; // Increment the count when a recipe is accepted
+                          _nextRecipe(); // Move to the next recipe on acceptance
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero, // Remove extra padding
