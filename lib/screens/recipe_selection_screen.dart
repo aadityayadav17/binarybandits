@@ -167,8 +167,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                         child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(20), // To match the card
-                          child: Image.network(
-                            recipe.image, // Dynamically load the image
+                          child: Image.asset(
+                            recipe.image, // Dynamically load the local image
                             width: double.infinity,
                             height: 250,
                             fit: BoxFit.cover,
