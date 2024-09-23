@@ -58,18 +58,24 @@ class LoginScreen extends StatelessWidget {
                   Text(
                     'Welcome Back',
                     style: GoogleFonts.roboto(
-                      fontSize: 32,
+                      fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 16),
 
-                  // Email Input Field
+                  // Email Input Field with label above
+                  Text(
+                    'Email',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: GoogleFonts.roboto(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -78,12 +84,18 @@ class LoginScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // Password Input Field
+                  // Password Input Field with label above
+                  Text(
+                    'Password',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: GoogleFonts.roboto(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -115,7 +127,8 @@ class LoginScreen extends StatelessWidget {
                         child: Text(
                           'Forgot Password?',
                           style: GoogleFonts.roboto(
-                            color: Colors.black54,
+                            decoration: TextDecoration.underline,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -124,11 +137,17 @@ class LoginScreen extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // Row for the button, with the combined rectangle and arrow image aligned right
+                  // Row for the "Sign In" text and arrow button
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.end, // Align the button to the right
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        'Sign In',
+                        style: GoogleFonts.roboto(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       GestureDetector(
                         onTap: () {
                           // Sign in action
@@ -136,9 +155,9 @@ class LoginScreen extends StatelessWidget {
                         child: Image.asset(
                           'assets/icons/screens/log_screen/log-rectangle.png',
                           width:
-                              60, // Adjust the width to match your image size
+                              90, // Adjust the width to match your image size
                           height:
-                              60, // Adjust the height to match your image size
+                              90, // Adjust the height to match your image size
                           fit: BoxFit
                               .fill, // Ensure the image fits within the given size
                         ),
@@ -146,7 +165,7 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 100),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -165,6 +184,8 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 36),
                 ],
               ),
             ),
