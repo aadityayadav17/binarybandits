@@ -73,6 +73,8 @@ flutter:
     - assets/icons/bottom_navigation/home-on.png
     - assets/icons/bottom_navigation/weekly-menu-off.png
     - assets/icons/bottom_navigation/weekly-menu-on.png
+    - assets/icons/screens/log_screen/continue-arrow.png
+    - assets/icons/screens/log_screen/log-rectangle.png
     - assets/icons/screens/recipe_selection_screen/back-key.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
@@ -87,6 +89,7 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/save.png
     - assets/icons/screens/recipe_selection_screen/save-on.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
+    - assets/images/app-logo.png
     - assets/recipes/D3801 Recipes - Recipes.json
     - assets/recipes/images/AlmondMilkPorridge.jpeg
     - assets/recipes/images/ArtichokePastaSalad.jpeg
