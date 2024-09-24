@@ -75,6 +75,8 @@ flutter:
     - assets/icons/bottom_navigation/weekly-menu-on.png
     - assets/icons/screens/log_screen/continue-arrow.png
     - assets/icons/screens/log_screen/log-rectangle.png
+    - assets/icons/screens/log_screen/eye-closed.png
+    - assets/icons/screens/log_screen/eye-open.png
     - assets/icons/screens/recipe_selection_screen/back-key.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png

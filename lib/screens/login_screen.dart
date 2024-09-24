@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // State to track if the checkbox is checked or not
+  bool _keepMeSignedIn = false;
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +37,8 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/app-logo.png',
-                    width: 150,
-                    height: 50,
+                    width: 164,
+                    height: 26,
                     alignment:
                         Alignment.centerLeft, // Align the logo to the left
                   ),
@@ -46,10 +56,7 @@ class LoginScreen extends StatelessWidget {
               padding: const EdgeInsets.all(24.0),
               decoration: const BoxDecoration(
                 color: Colors.white, // White background for the content
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(48),
-                  topRight: Radius.circular(48),
-                ), // Rounded corners only on top
+                borderRadius: BorderRadius.all(Radius.circular(48)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +67,7 @@ class LoginScreen extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
 
@@ -71,13 +79,20 @@ class LoginScreen extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  SizedBox(
+                    height: 40, // Set height of the text box
+                    child: TextField(
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 10), // Adjust padding to fit text
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                     ),
                   ),
@@ -90,14 +105,37 @@ class LoginScreen extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  SizedBox(
+                    height: 40, // Set height of the text box
+                    child: TextField(
+                      obscureText: !_showPassword,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _showPassword = !_showPassword;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              _showPassword
+                                  ? 'assets/icons/screens/log_screen/eye-open.png'
+                                  : 'assets/icons/screens/log_screen/eye-closed.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -107,28 +145,50 @@ class LoginScreen extends StatelessWidget {
                   // Keep Me Signed In and Forgot Password Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Checkbox(
-                            value: false,
-                            onChanged: (bool? value) {},
+                          // Functional Checkbox
+                          SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: Checkbox(
+                              value: _keepMeSignedIn,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _keepMeSignedIn = value ??
+                                      false; // Update the checkbox state
+                                });
+                              },
+                            ),
                           ),
-                          Text(
-                            'Keep me sign in',
-                            style: GoogleFonts.roboto(),
-                          ),
+                          const SizedBox(width: 8),
+                          Text('Keep me signed in',
+                              style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.black)),
                         ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          // Forgot password action
-                        },
-                        child: Text(
-                          'Forgot Password?',
-                          style: GoogleFonts.roboto(
-                            decoration: TextDecoration.underline,
-                            fontSize: 14,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: TextButton(
+                          onPressed: () {
+                            // Forgot password action
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.roboto(
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Colors.black),
                           ),
                         ),
                       ),
@@ -140,6 +200,7 @@ class LoginScreen extends StatelessWidget {
                   // Row for the "Sign In" text and arrow button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         'Sign In',
@@ -155,9 +216,9 @@ class LoginScreen extends StatelessWidget {
                         child: Image.asset(
                           'assets/icons/screens/log_screen/log-rectangle.png',
                           width:
-                              90, // Adjust the width to match your image size
+                              110, // Adjust the width to match your image size
                           height:
-                              90, // Adjust the height to match your image size
+                              110, // Adjust the height to match your image size
                           fit: BoxFit
                               .fill, // Ensure the image fits within the given size
                         ),
@@ -165,27 +226,30 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 140),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          // Sign up action
-                        },
-                        child: Text(
-                          'Sign Up',
-                          style: GoogleFonts.roboto(
-                            decoration: TextDecoration.underline,
-                            fontSize: 16,
-                          ),
-                        ),
+                  // Sign Up button aligned with text boxes
+                  TextButton(
+                    onPressed: () {
+                      // Sign up action
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Sign Up',
+                      style: GoogleFonts.roboto(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 20,
+                        color: Colors.black,
                       ),
-                    ],
+                    ),
                   ),
 
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 74),
                 ],
               ),
             ),
