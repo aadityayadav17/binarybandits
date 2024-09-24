@@ -1,17 +1,18 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'sign_up_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   bool _keepMeSignedIn = false;
+  bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -66,14 +67,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome Back',
+                      'Get Started',
                       style: GoogleFonts.roboto(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
+
                     const SizedBox(height: 16),
+
                     Text(
                       'Email',
                       style: GoogleFonts.roboto(
@@ -96,7 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 20),
+
                     Text(
                       'Password',
                       style: GoogleFonts.roboto(
@@ -124,26 +129,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             child: Container(
-                              width:
-                                  40, // Adjust this value to control the tap area width
-                              height:
-                                  40, // Adjust this value to control the tap area height
+                              width: 40,
+                              height: 40,
                               alignment: Alignment.center,
                               child: Image.asset(
                                 _showPassword
                                     ? 'assets/icons/screens/log_screen/eye-open.png'
                                     : 'assets/icons/screens/log_screen/eye-closed.png',
-                                width:
-                                    20, // Adjust this value to control the icon width
-                                height:
-                                    20, // Adjust this value to control the icon height
+                                width: 20,
+                                height: 20,
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 10),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,13 +161,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onChanged: (bool? value) {
                                   setState(() {
                                     _keepMeSignedIn = value ?? false;
-                                    _clearFocus(); // Clear focus when checkbox is ticked
+                                    _clearFocus();
                                   });
                                 },
                               ),
                             ),
                             const SizedBox(width: 8),
-                            Text('Keep me signed in',
+                            Text('Keep me sign in',
                                 style: GoogleFonts.roboto(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14,
@@ -194,13 +197,59 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 43),
+
+                    const SizedBox(height: 10),
+
+                    // Privacy Policy Checkbox
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: Checkbox(
+                            value: _agreeToPrivacyPolicy,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _agreeToPrivacyPolicy = value ?? false;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                              children: [
+                                const TextSpan(text: 'I have read '),
+                                TextSpan(
+                                  text: 'privacy policy',
+                                  style: const TextStyle(
+                                      decoration: TextDecoration.underline),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      // Navigate to privacy policy
+                                    },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Sign In',
+                          'Sign Up',
                           style: GoogleFonts.roboto(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -208,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Sign in action
+                            // Sign up action
                           },
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
@@ -219,14 +268,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 100),
+
                     TextButton(
                       onPressed: () {
                         // Sign up action
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SignUpScreen(),
+                            builder: (context) => const LoginScreen(),
                           ),
                         );
                       },
@@ -236,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        'Sign Up',
+                        'Sign In',
                         style: GoogleFonts.roboto(
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.w400,
@@ -245,6 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 100),
                   ],
                 ),
