@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login_screen.dart';
+import 'profile.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -257,7 +258,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Sign up action
+                            // Navigate to the ProfileScreen when tapped
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileScreen()), // Make sure ProfileScreen is defined in profile.dart
+                            );
                           },
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
