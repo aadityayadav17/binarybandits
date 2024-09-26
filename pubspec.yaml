@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^3.4.0
+  google_fonts: ^6.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -72,15 +73,126 @@ flutter:
     - assets/icons/bottom_navigation/home-on.png
     - assets/icons/bottom_navigation/weekly-menu-off.png
     - assets/icons/bottom_navigation/weekly-menu-on.png
+    - assets/icons/screens/log_screen/continue-arrow.png
+    - assets/icons/screens/log_screen/log-rectangle.png
+    - assets/icons/screens/log_screen/eye-closed.png
+    - assets/icons/screens/log_screen/eye-open.png
     - assets/icons/screens/recipe_selection_screen/back-key.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
+    - assets/icons/screens/recipe_selection_screen/cooking-difficulty-hard.png
+    - assets/icons/screens/recipe_selection_screen/cooking-difficulty-medium.png
     - assets/icons/screens/recipe_selection_screen/price.png
     - assets/icons/screens/recipe_selection_screen/protein.png
+    - assets/icons/screens/recipe_selection_screen/rating.png
     - assets/icons/screens/recipe_selection_screen/recipe-accepted.png
     - assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png
     - assets/icons/screens/recipe_selection_screen/recipe-rejected.png
+    - assets/icons/screens/recipe_selection_screen/save.png
+    - assets/icons/screens/recipe_selection_screen/save-on.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
+    - assets/images/app-logo.png
+    - assets/recipes/D3801 Recipes - Recipes.json
+    - assets/recipes/images/AlmondMilkPorridge.jpeg
+    - assets/recipes/images/ArtichokePastaSalad.jpeg
+    - assets/recipes/images/AvocadoToast.jpeg
+    - assets/recipes/images/BakedCodwithLemon.jpeg
+    - assets/recipes/images/BakedTilapia.jpeg
+    - assets/recipes/images/BarbecueRibs.jpeg
+    - assets/recipes/images/BBQPorkSandwich.jpeg
+    - assets/recipes/images/BeefandBroccoli.jpeg
+    - assets/recipes/images/BeefChili.jpeg
+    - assets/recipes/images/BeefStirFry.jpeg
+    - assets/recipes/images/BeefStroganoff.jpeg
+    - assets/recipes/images/BraisedBeefShortRibs.jpeg
+    - assets/recipes/images/BroccoliFritters.jpeg
+    - assets/recipes/images/BuffaloChickenSalad.jpeg
+    - assets/recipes/images/ButternutSquashSoup.jpeg
+    - assets/recipes/images/Caponata.jpeg
+    - assets/recipes/images/CapreseSalad.jpeg
+    - assets/recipes/images/CaramelizedOnionTart.jpeg
+    - assets/recipes/images/CauliflowerSteak.jpeg
+    - assets/recipes/images/CheeseandOnionPie.jpeg
+    - assets/recipes/images/CheesyPolenta.jpeg
+    - assets/recipes/images/ChiaPudding.jpeg
+    - assets/recipes/images/ChickenAlfredo.jpeg
+    - assets/recipes/images/ChickenCaesarWrap.jpeg
+    - assets/recipes/images/ChickenPaillard.jpeg
+    - assets/recipes/images/ChickenTikkaMasala.jpeg
+    - assets/recipes/images/ClassicTomatoSoup.jpeg
+    - assets/recipes/images/CoconutRice.jpeg
+    - assets/recipes/images/CrabCakes.jpeg
+    - assets/recipes/images/CreamyMushroomPasta.jpeg
+    - assets/recipes/images/CurriedLentilSoup.jpeg
+    - assets/recipes/images/EggplantParmesan.jpeg
+    - assets/recipes/images/FetaSpinachQuiche.jpeg
+    - assets/recipes/images/FishTacos.jpeg
+    - assets/recipes/images/GarlicButterShrimp.jpeg
+    - assets/recipes/images/GingerTofuStir-Fry.jpeg
+    - assets/recipes/images/GreekSalad.jpeg
+    - assets/recipes/images/GrilledCheeseSandwich.jpeg
+    - assets/recipes/images/GrilledLemonChicken.jpeg
+    - assets/recipes/images/GrilledPorkChops.jpeg
+    - assets/recipes/images/GrilledSteakwithVeggies.jpeg
+    - assets/recipes/images/GrilledTunaSteaks.jpeg
+    - assets/recipes/images/Herb-CrustedRackofLamb.jpeg
+    - assets/recipes/images/HerbCrustedCod.jpeg
+    - assets/recipes/images/HoneyGlazedSalmon.jpeg
+    - assets/recipes/images/KaleandAlmondSalad.jpeg
+    - assets/recipes/images/KoreanBBQBeef.jpeg
+    - assets/recipes/images/LambGyro.jpeg
+    - assets/recipes/images/LambKebabs.jpeg
+    - assets/recipes/images/LambKofta.jpeg
+    - assets/recipes/images/LambTagine.jpeg
+    - assets/recipes/images/MapleGlazedDuck.jpeg
+    - assets/recipes/images/MisoSoupwithTofu.jpeg
+    - assets/recipes/images/MoroccanLambStew.jpeg
+    - assets/recipes/images/MushroomRisotto.jpeg
+    - assets/recipes/images/MushroomStroganoff.jpeg
+    - assets/recipes/images/Pan-SearedDuck.jpeg
+    - assets/recipes/images/PaneerTikka.jpeg
+    - assets/recipes/images/PomegranateCouscous.jpeg
+    - assets/recipes/images/PorkFriedRice.jpeg
+    - assets/recipes/images/PorkLoinRoast.jpeg
+    - assets/recipes/images/PotatoLeekSoup.jpeg
+    - assets/recipes/images/PulledPorkBurger.jpeg
+    - assets/recipes/images/PumpkinRisotto.jpeg
+    - assets/recipes/images/QuinoaSalad.jpeg
+    - assets/recipes/images/Ratatouille.jpeg
+    - assets/recipes/images/RicottaStuffedPeppers.jpeg
+    - assets/recipes/images/RoastDuckwithPlums.jpeg
+    - assets/recipes/images/RoastedEggplant.jpeg
+    - assets/recipes/images/SalmonTeriyaki.jpeg
+    - assets/recipes/images/SausageandPeppers.jpeg
+    - assets/recipes/images/SearedScallopswithPeas.jpeg
+    - assets/recipes/images/ShrimpPasta.jpeg
+    - assets/recipes/images/SmokyVeganChili.jpeg
+    - assets/recipes/images/SpicyBeefTacos.jpeg
+    - assets/recipes/images/SpicyCajunChicken.jpeg
+    - assets/recipes/images/SpicyChickpeaWrap.jpeg
+    - assets/recipes/images/SpicyJerkChicken.jpeg
+    - assets/recipes/images/SpicyPorkRibs.jpeg
+    - assets/recipes/images/SpicySausageRigatoni.jpeg
+    - assets/recipes/images/SpinachRicottaPasta.jpeg
+    - assets/recipes/images/StuffedAcornSquash.jpeg
+    - assets/recipes/images/StuffedBellPeppers.jpeg
+    - assets/recipes/images/Sun-driedTomatoPasta.jpeg
+    - assets/recipes/images/SweetPotatoGnocchi.jpeg
+    - assets/recipes/images/SzechuanShrimp.jpeg
+    - assets/recipes/images/ThaiBasilChicken.jpeg
+    - assets/recipes/images/ThaiCurryShrimp.jpeg
+    - assets/recipes/images/TofuStirFry.jpeg
+    - assets/recipes/images/TomatoBasilPizza.jpeg
+    - assets/recipes/images/TomatoMozzarellaSalad.jpeg
+    - assets/recipes/images/TurkeySalad.jpeg
+    - assets/recipes/images/VeganBerrySmoothie.jpeg
+    - assets/recipes/images/VeganChocolateCake.jpeg
+    - assets/recipes/images/VeganTacos.jpeg
+    - assets/recipes/images/VegetablePaella.jpeg
+    - assets/recipes/images/VegetarianChili.jpeg
+    - assets/recipes/images/VeggieOmelette.jpeg
+    - assets/recipes/images/WalnutSpinachPestoPasta.jpeg
+    - assets/recipes/images/ZucchiniNoodles.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
