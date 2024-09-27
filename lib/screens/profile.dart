@@ -66,38 +66,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 24),
 
               // Preferred Name
-              _buildTextField("Preferred Name", _preferredNameController),
+              _buildField("Preferred Name", _preferredNameController),
               const SizedBox(height: 16),
 
               // Phone Number
-              _buildTextField("Phone Number", _phoneNumberController,
+              _buildField("Phone Number", _phoneNumberController,
                   keyboardType: TextInputType.phone),
               const SizedBox(height: 16),
 
               // Budget
-              _buildNumberField("Budget", _budgetController),
+              _buildField("Budget", _budgetController,
+                  keyboardType: TextInputType.number),
               const SizedBox(height: 16),
 
               // Body Height and Weight
               Row(
                 children: [
                   Expanded(
-                      child: _buildNumberField(
-                          "Body Height (CM)", _heightController)),
+                      child: _buildField("Body Height (CM)", _heightController,
+                          keyboardType: TextInputType.number)),
                   const SizedBox(width: 16),
                   Expanded(
-                      child: _buildNumberField(
-                          "Body Weight (KG)", _weightController)),
+                      child: _buildField("Body Weight (KG)", _weightController,
+                          keyboardType: TextInputType.number)),
                 ],
               ),
               const SizedBox(height: 16),
 
               // Except Weight
-              _buildNumberField("Except Weight (KG)", _exceptWeightController),
+              _buildField("Except Weight (KG)", _exceptWeightController,
+                  keyboardType: TextInputType.number),
               const SizedBox(height: 16),
 
               // Home District with Location Search
-              _buildLocationField("Home District", _locationController),
+              _buildField("Home District", _locationController,
+                  isLocationField: true),
               const SizedBox(height: 16),
 
               // Dietary Preference
@@ -150,82 +153,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildTextField(String labelText, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text}) {
+  // Single method to build the field with label on top
+  Widget _buildField(
+    String labelText,
+    TextEditingController controller, {
+    TextInputType keyboardType = TextInputType.text,
+    bool isLocationField = false,
+  }) {
     return Container(
-      height: 69, // Set the height of the text field container
       decoration: BoxDecoration(
-        color: Colors.white, // White background
-        borderRadius:
-            BorderRadius.circular(10), // Rounded corners with radius of 10
-        border:
-            Border.all(color: Colors.grey.shade300), // Border color (optional)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Center(
-        child: TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          style: GoogleFonts.roboto(),
-          decoration: InputDecoration(
-            labelText: labelText,
-            border: InputBorder.none, // Remove the default border
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildNumberField(String labelText, TextEditingController controller) {
-    return Container(
-      height: 69, // Set the height of the number field container
-      decoration: BoxDecoration(
-        color: Colors.white, // White background
-        borderRadius:
-            BorderRadius.circular(10), // Rounded corners with radius of 10
-        border:
-            Border.all(color: Colors.grey.shade300), // Border color (optional)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Center(
-        child: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          style: GoogleFonts.roboto(),
-          decoration: InputDecoration(
-            labelText: labelText,
-            border: InputBorder.none, // Remove the default border
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLocationField(
-      String labelText, TextEditingController controller) {
-    return Container(
-      height: 69, // Set the height of the location field container
-      decoration: BoxDecoration(
-        color: Colors.white, // White background
-        borderRadius:
-            BorderRadius.circular(10), // Rounded corners with radius of 10
-        border:
-            Border.all(color: Colors.grey.shade300), // Border color (optional)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Center(
-        child: TextField(
-          controller: controller,
-          style: GoogleFonts.roboto(),
-          decoration: InputDecoration(
-            labelText: labelText,
-            suffixIcon: const Icon(Icons.location_on), // Add location icon
-            border: InputBorder.none, // Remove the default border
+          const SizedBox(height: 8),
+          TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            style: GoogleFonts.roboto(fontSize: 16),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon:
+                  isLocationField ? const Icon(Icons.location_on) : null,
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            ),
           ),
-          onTap: () {
-            // Trigger location search here
-          },
-        ),
+        ],
       ),
     );
   }
@@ -233,31 +205,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildDropDown(String labelText, String? currentValue,
       List<String> items, ValueChanged<String?> onChanged) {
     return Container(
-      height: 69, // Set the height of the drop-down container
       decoration: BoxDecoration(
-        color: Colors.white, // White background
-        borderRadius:
-            BorderRadius.circular(10), // Rounded corners with radius of 10
-        border:
-            Border.all(color: Colors.grey.shade300), // Border color (optional)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Center(
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: currentValue,
-            isDense: true,
-            isExpanded: true,
-            onChanged: onChanged,
-            items: items.map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value, style: GoogleFonts.roboto()),
-              );
-            }).toList(),
-            hint: Text(labelText, style: GoogleFonts.roboto()),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
-        ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: currentValue,
+              isExpanded: true,
+              onChanged: onChanged,
+              items: items.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: GoogleFonts.roboto(fontSize: 16)),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }
