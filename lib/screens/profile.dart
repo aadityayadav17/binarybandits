@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +13,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'Classic';
   String? dietaryRestrictions = 'None';
 
+  String _selectedCountryCode = '+61'; // Default country code
   final TextEditingController _preferredNameController =
       TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -72,6 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _buildField("Preferred Name", _preferredNameController)),
               const SizedBox(height: 16),
 
+              // Phone Number with Country Code Picker
               Center(
                   child: _buildPhoneNumberField(
                       "Phone Number", _phoneNumberController)),
@@ -150,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Method to build phone number field with country code
+  // Method to build phone number field with country code picker
   Widget _buildPhoneNumberField(
       String labelText, TextEditingController controller) {
     return Container(
@@ -182,24 +185,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 4), // Adjust spacing between label and inputs
           Row(
             children: [
-              // Country code input container
-              Container(
-                width: 70, // Width for the country code box
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color(
-                        0xFF979797), // Border color for country code
-                  ),
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                ),
-                child: Text(
-                  "+91", // Default country code, can be changed dynamically
-                  style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
-                ),
+              // Country Code Picker
+              CountryCodePicker(
+                onChanged: (countryCode) {
+                  setState(() {
+                    _selectedCountryCode = countryCode.dialCode!;
+                  });
+                },
+                initialSelection: 'AU', // Set default country
+                favorite: const ['+61', 'AU'], // Favorites
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
               ),
               const SizedBox(
-                  width: 16), // Spacing between country code and phone number
+                  width:
+                      16), // Spacing between country code picker and phone number
 
               // Phone number input field
               Expanded(
@@ -336,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-// Method to build the basic field with label and optional location icon
+  // Method to build the basic field with label and optional location icon
   Widget _buildField(
     String labelText,
     TextEditingController controller, {
