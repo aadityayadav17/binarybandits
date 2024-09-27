@@ -182,14 +182,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFF979797), // Custom color for labels
             ),
           ),
-          const SizedBox(height: 8),
           TextField(
             controller: controller,
             keyboardType: keyboardType,
             style: GoogleFonts.roboto(fontSize: 16),
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(vertical: 8),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 2), // Minimal padding
             ),
           ),
         ],
@@ -228,7 +228,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFF979797), // Custom color for labels
             ),
           ),
-          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
@@ -239,7 +238,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: const InputDecoration(
                     hintText: "CM",
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 2), // Minimal padding
                   ),
                 ),
               ),
@@ -252,7 +252,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: const InputDecoration(
                     hintText: "KG",
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 2), // Minimal padding
                   ),
                 ),
               ),
@@ -263,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Method to build the basic field with label and optional location icon
+// Method to build the basic field with label and optional location icon
   Widget _buildField(
     String labelText,
     TextEditingController controller, {
@@ -296,16 +297,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFF979797), // Custom color for labels
             ),
           ),
-          const SizedBox(height: 8),
           TextField(
             controller: controller,
             keyboardType: keyboardType,
             style: GoogleFonts.roboto(fontSize: 16),
             decoration: InputDecoration(
               border: InputBorder.none,
-              suffixIcon:
-                  isLocationField ? const Icon(Icons.location_on) : null,
-              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              suffixIcon: isLocationField
+                  ? const Icon(Icons.location_on, color: Colors.black54)
+                  : null,
+              suffixIconConstraints: const BoxConstraints(
+                minWidth: 24,
+                minHeight: 24,
+              ), // Ensure the icon is properly constrained
+              contentPadding: const EdgeInsets.only(
+                  top: 8, bottom: 8), // Minimal padding to align
             ),
           ),
         ],
