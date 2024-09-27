@@ -153,7 +153,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Method to build phone number field with country code picker
   Widget _buildPhoneNumberField(
       String labelText, TextEditingController controller) {
     return Container(
@@ -185,22 +184,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 4), // Adjust spacing between label and inputs
           Row(
             children: [
-              // Country Code Picker
-              CountryCodePicker(
-                onChanged: (countryCode) {
-                  setState(() {
-                    _selectedCountryCode = countryCode.dialCode!;
-                  });
-                },
-                initialSelection: 'AU', // Set default country
-                favorite: const ['+61', 'AU'], // Favorites
-                showCountryOnly: false,
-                showOnlyCountryWhenClosed: false,
-                alignLeft: false,
+              // Country Code Picker with a Small Rectangle for Country Code
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 0), // Reduced padding
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFF979797), // Border color
+                  ),
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: CountryCodePicker(
+                  onChanged: (countryCode) {
+                    setState(() {
+                      _selectedCountryCode = countryCode.dialCode!;
+                    });
+                  },
+                  initialSelection: 'IN', // Set default country
+                  favorite: ['+91', 'IN'], // Favorites
+                  showCountryOnly: false,
+                  showOnlyCountryWhenClosed: false,
+                  alignLeft: false,
+                  textStyle:
+                      GoogleFonts.roboto(fontSize: 14, color: Colors.black),
+                  padding:
+                      EdgeInsets.zero, // No padding inside country code picker
+                ),
               ),
               const SizedBox(
                   width:
-                      16), // Spacing between country code picker and phone number
+                      12), // Reduced spacing between country code picker and phone number
 
               // Phone number input field
               Expanded(
