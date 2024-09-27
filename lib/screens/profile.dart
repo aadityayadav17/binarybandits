@@ -14,7 +14,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'Classic';
   String? dietaryRestrictions = 'None';
 
-  String _selectedCountryCode = '+61'; // Default country code
   final TextEditingController _preferredNameController =
       TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -188,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Country Code Picker with a Small Rectangle for Country Code
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 4), // Reduced padding
+                    horizontal: 0), // Reduced padding
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF979797), // Border color
@@ -197,9 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 child: CountryCodePicker(
                   onChanged: (countryCode) {
-                    setState(() {
-                      _selectedCountryCode = countryCode.dialCode!;
-                    });
+                    setState(() {});
                   },
                   initialSelection: 'AU', // Set default country
                   favorite: ['+61', 'AU'], // Favorites
@@ -216,13 +213,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width:
                       12), // Reduced spacing between country code picker and phone number
 
-              // Phone number input field with formatting
+              // Phone number input field with formatting and 15-digit limit
               Expanded(
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                    LengthLimitingTextInputFormatter(
+                        15), // Limit input to 15 digits
                     _PhoneNumberFormatter(), // Custom formatter to add spaces/dashes
                   ],
                   style: GoogleFonts.roboto(fontSize: 16),
@@ -456,7 +455,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// Custom PhoneNumberFormatter to format as 'XXX XXX XXXX'
+// Custom PhoneNumberFormatter to format as 'XXXX XXX XXX XXXXX'
 class _PhoneNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -466,12 +465,15 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     // Remove all non-digit characters for processing
     String cleanText = text.replaceAll(RegExp(r'\D'), '');
 
-    // Format the cleaned text into groups of 3, 3, and 4 digits
-    if (cleanText.length > 3 && cleanText.length <= 6) {
-      cleanText = '${cleanText.substring(0, 3)} ${cleanText.substring(3)}';
-    } else if (cleanText.length > 6) {
+    // Format the cleaned text into groups of 4, 3, 3, and 5 digits
+    if (cleanText.length > 4 && cleanText.length <= 7) {
+      cleanText = '${cleanText.substring(0, 4)} ${cleanText.substring(4)}';
+    } else if (cleanText.length > 7 && cleanText.length <= 10) {
       cleanText =
-          '${cleanText.substring(0, 3)} ${cleanText.substring(3, 6)} ${cleanText.substring(6)}';
+          '${cleanText.substring(0, 4)} ${cleanText.substring(4, 7)} ${cleanText.substring(7)}';
+    } else if (cleanText.length > 10 && cleanText.length <= 15) {
+      cleanText =
+          '${cleanText.substring(0, 4)} ${cleanText.substring(4, 7)} ${cleanText.substring(7, 10)} ${cleanText.substring(10)}';
     }
 
     return TextEditingValue(
