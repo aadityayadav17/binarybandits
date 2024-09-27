@@ -282,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Input field for budget enclosed in a smaller rounded rectangle
               Container(
                 width: 60, // Adjusted width to fit 5 digits comfortably
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF979797), // Border color
