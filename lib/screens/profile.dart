@@ -30,9 +30,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       home: Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5), // Match the background color
+        backgroundColor:
+            const Color.fromRGBO(239, 250, 244, 1), // Updated background color
         appBar: AppBar(
-          backgroundColor: const Color(0xFFF5F5F5),
+          backgroundColor: const Color.fromRGBO(
+              239, 250, 244, 1), // Match the background color
           elevation: 0,
           toolbarHeight: 60,
           automaticallyImplyLeading: false,
@@ -150,28 +152,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildTextField(String labelText, TextEditingController controller,
       {TextInputType keyboardType = TextInputType.text}) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      style: GoogleFonts.roboto(),
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+    return Container(
+      height: 69, // Set the height of the text field container
+      decoration: BoxDecoration(
+        color: Colors.white, // White background
+        borderRadius:
+            BorderRadius.circular(10), // Rounded corners with radius of 10
+        border:
+            Border.all(color: Colors.grey.shade300), // Border color (optional)
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: GoogleFonts.roboto(),
+          decoration: InputDecoration(
+            labelText: labelText,
+            border: InputBorder.none, // Remove the default border
+          ),
         ),
       ),
     );
   }
 
   Widget _buildNumberField(String labelText, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      style: GoogleFonts.roboto(),
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+    return Container(
+      height: 69, // Set the height of the number field container
+      decoration: BoxDecoration(
+        color: Colors.white, // White background
+        borderRadius:
+            BorderRadius.circular(10), // Rounded corners with radius of 10
+        border:
+            Border.all(color: Colors.grey.shade300), // Border color (optional)
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          style: GoogleFonts.roboto(),
+          decoration: InputDecoration(
+            labelText: labelText,
+            border: InputBorder.none, // Remove the default border
+          ),
         ),
       ),
     );
@@ -179,43 +203,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildLocationField(
       String labelText, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      style: GoogleFonts.roboto(),
-      decoration: InputDecoration(
-        labelText: labelText,
-        suffixIcon: const Icon(Icons.location_on),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+    return Container(
+      height: 69, // Set the height of the location field container
+      decoration: BoxDecoration(
+        color: Colors.white, // White background
+        borderRadius:
+            BorderRadius.circular(10), // Rounded corners with radius of 10
+        border:
+            Border.all(color: Colors.grey.shade300), // Border color (optional)
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          style: GoogleFonts.roboto(),
+          decoration: InputDecoration(
+            labelText: labelText,
+            suffixIcon: const Icon(Icons.location_on), // Add location icon
+            border: InputBorder.none, // Remove the default border
+          ),
+          onTap: () {
+            // Trigger location search here
+          },
         ),
       ),
-      onTap: () {
-        // Trigger location search here
-      },
     );
   }
 
   Widget _buildDropDown(String labelText, String? currentValue,
       List<String> items, ValueChanged<String?> onChanged) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+    return Container(
+      height: 69, // Set the height of the drop-down container
+      decoration: BoxDecoration(
+        color: Colors.white, // White background
+        borderRadius:
+            BorderRadius.circular(10), // Rounded corners with radius of 10
+        border:
+            Border.all(color: Colors.grey.shade300), // Border color (optional)
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: currentValue,
-          isDense: true,
-          isExpanded: true,
-          onChanged: onChanged,
-          items: items.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value, style: GoogleFonts.roboto()),
-            );
-          }).toList(),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: currentValue,
+            isDense: true,
+            isExpanded: true,
+            onChanged: onChanged,
+            items: items.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value, style: GoogleFonts.roboto()),
+              );
+            }).toList(),
+            hint: Text(labelText, style: GoogleFonts.roboto()),
+          ),
         ),
       ),
     );
