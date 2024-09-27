@@ -80,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       "Phone Number", _phoneNumberController)),
               const SizedBox(height: 16),
 
-              Center(child: _buildLabeledField("Budget", _budgetController)),
+              Center(child: _buildBudgetField("Budget", _budgetController)),
               const SizedBox(height: 16),
 
               Center(
@@ -187,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Country Code Picker with a Small Rectangle for Country Code
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 0), // Reduced padding
+                    horizontal: 0, vertical: 0), // Reduced padding
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF979797), // Border color
@@ -224,7 +224,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         15), // Limit input to 15 digits
                     _PhoneNumberFormatter(), // Custom formatter to add spaces/dashes
                   ],
-                  style: GoogleFonts.roboto(fontSize: 16),
+                  style: GoogleFonts.roboto(fontSize: 14),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 8), // Adjust internal padding
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+// Custom Budget Field with $ prefix (not inside the rectangle)
+  Widget _buildBudgetField(String labelText, TextEditingController controller) {
+    return Container(
+      width: 300, // Adjust width of the outer container
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF979797), // Custom color for labels
+            ),
+          ),
+          const SizedBox(height: 4), // Adjust spacing between label and input
+          Row(
+            children: [
+              // $ Symbol not in a rectangle, just plain text
+              Text(
+                '\$', // Dollar sign
+                style: GoogleFonts.roboto(
+                    fontSize: 14, color: const Color(0xFF979797)),
+              ),
+              const SizedBox(
+                  width: 8), // Small spacing between $ and input field
+
+              // Input field for budget enclosed in a smaller rounded rectangle
+              Container(
+                width: 60, // Adjusted width to fit 5 digits comfortably
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFF979797), // Border color
+                  ),
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                    LengthLimitingTextInputFormatter(
+                        5), // Limit input to 5 digits
+                  ],
+                  style: GoogleFonts.roboto(fontSize: 14),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
