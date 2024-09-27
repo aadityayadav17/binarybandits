@@ -73,8 +73,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 16),
 
               Center(
-                  child: _buildField("Phone Number", _phoneNumberController,
-                      keyboardType: TextInputType.phone)),
+                  child: _buildPhoneNumberField(
+                      "Phone Number", _phoneNumberController)),
               const SizedBox(height: 16),
 
               Center(child: _buildLabeledField("Budget", _budgetController)),
@@ -146,6 +146,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Method to build phone number field with country code
+  Widget _buildPhoneNumberField(
+      String labelText, TextEditingController controller) {
+    return Container(
+      width: 300, // Adjust width of the container
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF979797), // Custom color for labels
+            ),
+          ),
+          const SizedBox(height: 4), // Adjust spacing between label and inputs
+          Row(
+            children: [
+              // Country code input container
+              Container(
+                width: 70, // Width for the country code box
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(
+                        0xFF979797), // Border color for country code
+                  ),
+                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                ),
+                child: Text(
+                  "+91", // Default country code, can be changed dynamically
+                  style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+                ),
+              ),
+              const SizedBox(
+                  width: 16), // Spacing between country code and phone number
+
+              // Phone number input field
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.phone,
+                  style: GoogleFonts.roboto(fontSize: 16),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 8), // Adjust internal padding
+                    hintText: 'Phone Number',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
