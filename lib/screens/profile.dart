@@ -315,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Separate height field
+// Separate height field with "CM" label on the right side
   Widget _buildHeightField(String labelText, TextEditingController controller) {
     return Container(
       width: 300, // Adjust width of the container
@@ -343,29 +343,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFF979797), // Custom color for labels
             ),
           ),
-          const SizedBox(height: 4),
-          TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, // Allow only digits
-              LengthLimitingTextInputFormatter(
-                  3), // Limit input to 3 digits (for height)
+          const SizedBox(height: 4), // Adjust spacing between label and input
+          Row(
+            children: [
+              // Input field for height inside a rounded rectangle
+              Expanded(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFF979797), // Border color
+                    ),
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter
+                          .digitsOnly, // Allow only digits
+                      LengthLimitingTextInputFormatter(
+                          3), // Limit input to 3 digits
+                    ],
+                    style: GoogleFonts.roboto(fontSize: 14),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 8), // Adjust internal padding
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8), // Space between input field and label
+              // "CM" Label outside the input box on the right
+              Text(
+                'CM',
+                style: GoogleFonts.roboto(
+                    fontSize: 14, color: const Color(0xFF979797)),
+              ),
             ],
-            style: GoogleFonts.roboto(fontSize: 16),
-            decoration: const InputDecoration(
-              hintText: "CM",
-              border: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 8), // Adjust padding
-            ),
           ),
         ],
       ),
     );
   }
 
-  // Separate weight field
+// Separate weight field with "KG" label on the right side
   Widget _buildWeightField(String labelText, TextEditingController controller) {
     return Container(
       width: 300, // Adjust width of the container
@@ -393,22 +417,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xFF979797), // Custom color for labels
             ),
           ),
-          const SizedBox(height: 4),
-          TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly, // Allow only digits
-              LengthLimitingTextInputFormatter(
-                  3), // Limit input to 3 digits (for weight)
+          const SizedBox(height: 4), // Adjust spacing between label and input
+          Row(
+            children: [
+              // Input field for weight inside a rounded rectangle
+              Expanded(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFF979797), // Border color
+                    ),
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter
+                          .digitsOnly, // Allow only digits
+                      LengthLimitingTextInputFormatter(
+                          3), // Limit input to 3 digits
+                    ],
+                    style: GoogleFonts.roboto(fontSize: 14),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 8), // Adjust internal padding
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8), // Space between input field and label
+              // "KG" Label outside the input box on the right
+              Text(
+                'KG',
+                style: GoogleFonts.roboto(
+                    fontSize: 14, color: const Color(0xFF979797)),
+              ),
             ],
-            style: GoogleFonts.roboto(fontSize: 16),
-            decoration: const InputDecoration(
-              hintText: "KG",
-              border: InputBorder.none,
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 8), // Adjust padding
-            ),
           ),
         ],
       ),
