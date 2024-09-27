@@ -83,18 +83,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Center(child: _buildBudgetField("Budget", _budgetController)),
               const SizedBox(height: 16),
 
-              Center(
-                  child: _buildHeightField("Height (CM)", _heightController)),
+              Center(child: _buildHeightField("Height", _heightController)),
+              const SizedBox(height: 16),
+
+              Center(child: _buildWeightField("Weight", _weightController)),
               const SizedBox(height: 16),
 
               Center(
-                  child: _buildWeightField("Weight (KG)", _weightController)),
-              const SizedBox(height: 16),
-
-              Center(
-                  child: _buildLabeledField(
-                      "Except Weight (KG)", _exceptWeightController,
-                      keyboardType: TextInputType.number)),
+                  child: _buildWeightField(
+                      "Excepted Weight", _exceptWeightController)),
               const SizedBox(height: 16),
 
               Center(
