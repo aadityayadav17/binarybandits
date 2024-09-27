@@ -84,8 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 16),
 
               Center(
-                  child: _buildCompositionField("Body Composition",
-                      _heightController, _weightController)),
+                  child: _buildHeightField("Height (CM)", _heightController)),
+              const SizedBox(height: 16),
+
+              Center(
+                  child: _buildWeightField("Weight (KG)", _weightController)),
               const SizedBox(height: 16),
 
               Center(
@@ -306,6 +309,106 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Separate height field
+  Widget _buildHeightField(String labelText, TextEditingController controller) {
+    return Container(
+      width: 300, // Adjust width of the container
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF979797), // Custom color for labels
+            ),
+          ),
+          const SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly, // Allow only digits
+              LengthLimitingTextInputFormatter(
+                  3), // Limit input to 3 digits (for height)
+            ],
+            style: GoogleFonts.roboto(fontSize: 16),
+            decoration: const InputDecoration(
+              hintText: "CM",
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 8), // Adjust padding
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Separate weight field
+  Widget _buildWeightField(String labelText, TextEditingController controller) {
+    return Container(
+      width: 300, // Adjust width of the container
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelText,
+            style: GoogleFonts.roboto(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF979797), // Custom color for labels
+            ),
+          ),
+          const SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly, // Allow only digits
+              LengthLimitingTextInputFormatter(
+                  3), // Limit input to 3 digits (for weight)
+            ],
+            style: GoogleFonts.roboto(fontSize: 16),
+            decoration: const InputDecoration(
+              hintText: "KG",
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 8), // Adjust padding
+            ),
           ),
         ],
       ),
