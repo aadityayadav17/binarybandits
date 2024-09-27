@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/services.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -187,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Country Code Picker with a Small Rectangle for Country Code
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 0), // Reduced padding
+                    horizontal: 4), // Reduced padding
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF979797), // Border color
@@ -200,8 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _selectedCountryCode = countryCode.dialCode!;
                     });
                   },
-                  initialSelection: 'IN', // Set default country
-                  favorite: ['+91', 'IN'], // Favorites
+                  initialSelection: 'AU', // Set default country
+                  favorite: ['+61', 'AU'], // Favorites
                   showCountryOnly: false,
                   showOnlyCountryWhenClosed: false,
                   alignLeft: false,
@@ -215,17 +216,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width:
                       12), // Reduced spacing between country code picker and phone number
 
-              // Phone number input field
+              // Phone number input field with formatting
               Expanded(
                 child: TextField(
                   controller: controller,
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                    _PhoneNumberFormatter(), // Custom formatter to add spaces/dashes
+                  ],
                   style: GoogleFonts.roboto(fontSize: 16),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 8), // Adjust internal padding
-                    hintText: 'Phone Number',
                   ),
                 ),
               ),
@@ -448,6 +452,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// Custom PhoneNumberFormatter to format as 'XXX XXX XXXX'
+class _PhoneNumberFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final text = newValue.text;
+
+    // Remove all non-digit characters for processing
+    String cleanText = text.replaceAll(RegExp(r'\D'), '');
+
+    // Format the cleaned text into groups of 3, 3, and 4 digits
+    if (cleanText.length > 3 && cleanText.length <= 6) {
+      cleanText = '${cleanText.substring(0, 3)} ${cleanText.substring(3)}';
+    } else if (cleanText.length > 6) {
+      cleanText =
+          '${cleanText.substring(0, 3)} ${cleanText.substring(3, 6)} ${cleanText.substring(6)}';
+    }
+
+    return TextEditingValue(
+      text: cleanText,
+      selection: TextSelection.collapsed(offset: cleanText.length),
     );
   }
 }
