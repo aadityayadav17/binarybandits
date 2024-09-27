@@ -315,10 +315,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-// Separate height field with "CM" label on the right side
+// Separate height field with "CM" label on the right side, narrower input
   Widget _buildHeightField(String labelText, TextEditingController controller) {
     return Container(
-      width: 300, // Adjust width of the container
+      width: 300, // Adjust width of the outer container
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -347,31 +347,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             children: [
               // Input field for height inside a rounded rectangle
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFF979797), // Border color
-                    ),
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
+              Container(
+                width: 45, // Narrower width suitable for 3 digits
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFF979797), // Border color
                   ),
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter
-                          .digitsOnly, // Allow only digits
-                      LengthLimitingTextInputFormatter(
-                          3), // Limit input to 3 digits
-                    ],
-                    style: GoogleFonts.roboto(fontSize: 14),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 8), // Adjust internal padding
-                    ),
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                    LengthLimitingTextInputFormatter(
+                        3), // Limit input to 3 digits
+                  ],
+                  style: GoogleFonts.roboto(fontSize: 14),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 8), // Adjust internal padding
                   ),
                 ),
               ),
@@ -389,10 +386,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-// Separate weight field with "KG" label on the right side
+// Separate weight field with "KG" label on the right side, narrower input
   Widget _buildWeightField(String labelText, TextEditingController controller) {
     return Container(
-      width: 300, // Adjust width of the container
+      width: 300, // Adjust width of the outer container
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -421,31 +418,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             children: [
               // Input field for weight inside a rounded rectangle
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFF979797), // Border color
-                    ),
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
+              Container(
+                width: 45, // Narrower width suitable for 3 digits
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(0xFF979797), // Border color
                   ),
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter
-                          .digitsOnly, // Allow only digits
-                      LengthLimitingTextInputFormatter(
-                          3), // Limit input to 3 digits
-                    ],
-                    style: GoogleFonts.roboto(fontSize: 14),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 8), // Adjust internal padding
-                    ),
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+                child: TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                    LengthLimitingTextInputFormatter(
+                        3), // Limit input to 3 digits
+                  ],
+                  style: GoogleFonts.roboto(fontSize: 14),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 8), // Adjust internal padding
                   ),
                 ),
               ),
