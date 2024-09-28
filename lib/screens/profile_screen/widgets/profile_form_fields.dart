@@ -53,15 +53,7 @@ class ProfileFormFields extends StatelessWidget {
         Center(
           child: MultiSelectDropdownField(
             labelText: "Dietary Restrictions",
-            items: const [
-              'None',
-              'Dairy',
-              'Eggs',
-              'Fish',
-              'Nuts',
-              'Shellfish',
-              'Soy'
-            ],
+            items: const ['Dairy', 'Eggs', 'Fish', 'Nuts', 'Shellfish', 'Soy'],
             selectedItems: dietaryRestrictions,
             onChanged: onDietaryRestrictionsChanged,
           ),

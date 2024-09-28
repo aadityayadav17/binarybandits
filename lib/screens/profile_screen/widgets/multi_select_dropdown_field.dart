@@ -117,20 +117,11 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                   _isDropdownOpen = isOpen;
                 });
               },
-              buttonStyleData: ButtonStyleData(
-                height: 50,
-                width: double.infinity,
-                padding: const EdgeInsets.only(left: 0, right: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-              ),
               iconStyleData: IconStyleData(
                 icon: Image.asset(
                   _isDropdownOpen
-                      ? 'assets/icons/screens/profile/dropdown-on-display.png'
-                      : 'assets/icons/screens/profile/dropdown-off-display.png',
+                      ? 'assets/icons/screens/profile/dropdown-off-display.png'
+                      : 'assets/icons/screens/profile/dropdown-on-display.png',
                   width: 24,
                   height: 24,
                 ),
