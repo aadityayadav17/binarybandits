@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-class DropdownField extends StatelessWidget {
+class DropdownField extends StatefulWidget {
   final String labelText;
   final String? currentValue;
   final List<String> items;
@@ -15,6 +15,13 @@ class DropdownField extends StatelessWidget {
     required this.items,
     required this.onChanged,
   }) : super(key: key);
+
+  @override
+  _DropdownFieldState createState() => _DropdownFieldState();
+}
+
+class _DropdownFieldState extends State<DropdownField> {
+  bool _isDropdownOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +44,7 @@ class DropdownField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            labelText,
+            widget.labelText,
             style: GoogleFonts.roboto(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -49,35 +56,44 @@ class DropdownField extends StatelessWidget {
               isExpanded: true,
               hint: Text(
                 'Select Option',
-                style: GoogleFonts.roboto(fontSize: 14, color: Colors.black),
+                style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
               ),
-              value: currentValue,
-              onChanged: onChanged,
-              items: items.map((String item) {
+              value: widget.currentValue,
+              onChanged: widget.onChanged,
+              onMenuStateChange: (isOpen) {
+                setState(() {
+                  _isDropdownOpen = isOpen;
+                });
+              },
+              items: widget.items.map((String item) {
                 return DropdownMenuItem<String>(
                   value: item,
                   child: Text(item),
                 );
               }).toList(),
               selectedItemBuilder: (BuildContext context) {
-                return items.map((String item) {
+                return widget.items.map((String item) {
                   return Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       item,
                       style: GoogleFonts.roboto(
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.black,
                       ),
                     ),
                   );
                 }).toList();
               },
-              iconStyleData: const IconStyleData(
-                icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+              iconStyleData: IconStyleData(
+                icon: Image.asset(
+                  _isDropdownOpen
+                      ? 'assets/icons/screens/profile/dropdown-off-display.png'
+                      : 'assets/icons/screens/profile/dropdown-on-display.png',
+                  width: 24,
+                  height: 24,
+                ),
                 iconSize: 24,
-                iconEnabledColor: Colors.black,
-                iconDisabledColor: Colors.grey,
               ),
               dropdownStyleData: DropdownStyleData(
                 maxHeight: 200,

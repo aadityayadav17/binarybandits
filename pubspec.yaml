@@ -75,11 +75,13 @@ flutter:
     - assets/icons/bottom_navigation/home-on.png
     - assets/icons/bottom_navigation/weekly-menu-off.png
     - assets/icons/bottom_navigation/weekly-menu-on.png
+    - assets/icons/screens/common/back-key.png
     - assets/icons/screens/log_screen/continue-arrow.png
     - assets/icons/screens/log_screen/log-rectangle.png
     - assets/icons/screens/log_screen/eye-closed.png
     - assets/icons/screens/log_screen/eye-open.png
-    - assets/icons/screens/common/back-key.png
+    - assets/icons/screens/profile/dropdown-off-display.png
+    - assets/icons/screens/profile/dropdown-on-display.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-hard.png

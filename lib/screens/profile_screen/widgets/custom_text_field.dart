@@ -44,7 +44,8 @@ class CustomTextField extends StatelessWidget {
             decoration: InputDecoration(
               border: InputBorder.none,
               suffixIcon: isLocationField
-                  ? const Icon(Icons.location_on, color: Colors.black54)
+                  ? const Icon(Icons.location_on,
+                      color: Color.fromRGBO(2, 2, 2, 1))
                   : null,
               suffixIconConstraints: const BoxConstraints(
                 minWidth: 24,
