@@ -49,7 +49,7 @@ class DropdownField extends StatelessWidget {
               isExpanded: true,
               hint: Text(
                 'Select Option',
-                style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+                style: GoogleFonts.roboto(fontSize: 14, color: Colors.black),
               ),
               value: currentValue,
               onChanged: onChanged,
@@ -66,7 +66,7 @@ class DropdownField extends StatelessWidget {
                     child: Text(
                       item,
                       style: GoogleFonts.roboto(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: Colors.black,
                       ),
                     ),

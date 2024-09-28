@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           TextField(
-            style: GoogleFonts.roboto(fontSize: 16),
+            style: GoogleFonts.roboto(fontSize: 14),
             decoration: InputDecoration(
               border: InputBorder.none,
               suffixIcon: isLocationField
