@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               Center(
                   child: _buildDropDown("Dietary Preference", dietaryPreference,
-                      ['Classic', 'Vegan', 'Keto'], (String? value) {
+                      ['Classic', 'Vegan', 'Vegetarian'], (String? value) {
                 setState(() {
                   dietaryPreference = value;
                 });
@@ -110,9 +110,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               Center(
                   child: _buildDropDown(
-                      "Dietary Restrictions",
-                      dietaryRestrictions,
-                      ['None', 'Gluten-Free', 'Dairy-Free'], (String? value) {
+                      "Dietary Restrictions", dietaryRestrictions, [
+                'None',
+                'Dairy',
+                'Eggs',
+                'Fish',
+                'Nuts',
+                'Shellfish',
+                'Soy'
+              ], (String? value) {
                 setState(() {
                   dietaryRestrictions = value;
                 });
