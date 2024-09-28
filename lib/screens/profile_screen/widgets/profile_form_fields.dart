@@ -4,19 +4,20 @@ import 'phone_number_field.dart';
 import 'budget_field.dart';
 import 'height_weight_field.dart';
 import 'dropdown_field.dart';
+import 'multi_select_dropdown_field.dart';
 
 class ProfileFormFields extends StatelessWidget {
   final Function(String?) onDietaryPreferenceChanged;
-  final Function(String?) onDietaryRestrictionsChanged;
+  final Function(List<String>) onDietaryRestrictionsChanged;
   final String? dietaryPreference;
-  final String? dietaryRestrictions;
+  final List<String> dietaryRestrictions;
 
   const ProfileFormFields({
     Key? key,
     required this.onDietaryPreferenceChanged,
     required this.onDietaryRestrictionsChanged,
     this.dietaryPreference,
-    this.dietaryRestrictions,
+    required this.dietaryRestrictions,
   }) : super(key: key);
 
   @override
@@ -50,9 +51,8 @@ class ProfileFormFields extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Center(
-          child: DropdownField(
+          child: MultiSelectDropdownField(
             labelText: "Dietary Restrictions",
-            currentValue: dietaryRestrictions,
             items: const [
               'None',
               'Dairy',
@@ -62,6 +62,7 @@ class ProfileFormFields extends StatelessWidget {
               'Shellfish',
               'Soy'
             ],
+            selectedItems: dietaryRestrictions,
             onChanged: onDietaryRestrictionsChanged,
           ),
         ),

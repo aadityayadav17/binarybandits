@@ -12,7 +12,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'Classic';
-  String? dietaryRestrictions = 'None';
+  List<String> dietaryRestrictions = ['None'];
 
   @override
   Widget build(BuildContext context) {
