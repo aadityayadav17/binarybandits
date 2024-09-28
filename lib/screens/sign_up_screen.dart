@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login_screen.dart';
-import 'profile.dart';
+import 'profile_screen/profile.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
