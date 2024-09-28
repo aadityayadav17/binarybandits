@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Go to Login Screen'),
             ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(

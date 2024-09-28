@@ -18,14 +18,27 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
           elevation: 0,
           toolbarHeight: 60,
+          leading: Padding(
+            padding: const EdgeInsets.only(
+                left: 16.0), // Adjust left padding for the app icon
+            child: Image.asset(
+              'assets/images/app-logo.png', // App logo image path
+              width: 48,
+              height: 48,
+            ),
+          ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(
+                  right: 16.0), // Adjust right padding for the profile icon
               child: IconButton(
                 icon: Image.asset(
-                    'assets/icons/screens/home_screen/profile-icon.png'),
+                  'assets/icons/screens/home_screen/profile-icon.png', // Profile icon image path
+                  width: 48,
+                  height: 48,
+                ),
                 onPressed: () {
-                  // Handle profile button
+                  // Handle profile button action
                 },
               ),
             ),
@@ -59,12 +72,12 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 4,
-                        offset: const Offset(0, 2),
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
@@ -141,32 +154,67 @@ class HomeScreen extends StatelessWidget {
         ),
         // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: 0,
+          backgroundColor: Colors.white, // Set background to plain white
+          type: BottomNavigationBarType
+              .fixed, // Ensures equal spacing for all items
+          currentIndex: 0, // Default selected index (Home)
           onTap: (index) {
-            // Handle button press by index
+            // Handle button press by index (actions not decided yet)
+            switch (index) {
+              case 0:
+                // Action for Home button
+                break;
+              case 1:
+                // Action for Grocery List button
+                break;
+              case 2:
+                // Action for Discover Recipe button
+                break;
+              case 3:
+                // Action for Weekly Menu button
+                break;
+              default:
+                break;
+            }
           },
-          items: const [
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+              icon: Image.asset(
+                'assets/icons/bottom_navigation/home-off.png',
+                width: 24,
+                height: 24,
+              ),
+              label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: 'Grocery List',
+              icon: Image.asset(
+                'assets/icons/bottom_navigation/grocery-list-on.png',
+                width: 24,
+                height: 24,
+              ),
+              label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Discover',
+              icon: Image.asset(
+                'assets/icons/bottom_navigation/discover-recipe-off.png',
+                width: 24,
+                height: 24,
+              ),
+              label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              label: 'Weekly Menu',
+              icon: Image.asset(
+                'assets/icons/bottom_navigation/weekly-menu-off.png',
+                width: 24,
+                height: 24,
+              ),
+              label: '',
             ),
           ],
           selectedItemColor: Colors.green,
           unselectedItemColor: Colors.grey,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
         ),
       ),
     );
