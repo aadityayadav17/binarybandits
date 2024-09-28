@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'custom_text_field.dart';
 import 'phone_number_field.dart';
 import 'budget_field.dart';

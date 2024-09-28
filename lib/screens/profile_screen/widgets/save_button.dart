@@ -7,26 +7,23 @@ class SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: 300,
-        child: ElevatedButton(
-          onPressed: () {
-            // Save profile logic here
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF6200EA),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
+      child: ElevatedButton(
+        onPressed: () {
+          // Save profile logic here
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green, // Changed to green
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // Changed to 10
           ),
-          child: Text(
-            'Save',
-            style: GoogleFonts.robotoFlex(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 12),
+        ),
+        child: Text(
+          'Save', // Changed from 'Save' to 'Done'
+          style: GoogleFonts.robotoFlex(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
       ),
