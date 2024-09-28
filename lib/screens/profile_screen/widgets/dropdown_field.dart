@@ -45,7 +45,7 @@ class DropdownField extends StatelessWidget {
             ),
           ),
           DropdownButtonHideUnderline(
-            child: DropdownButton2(
+            child: DropdownButton2<String>(
               isExpanded: true,
               hint: Text(
                 'Select Option',
@@ -56,37 +56,51 @@ class DropdownField extends StatelessWidget {
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
                   value: item,
-                  child: Text(
-                    item,
-                    style: GoogleFonts.roboto(fontSize: 16),
-                  ),
+                  child: Text(item),
                 );
               }).toList(),
-              buttonStyleData: ButtonStyleData(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 50,
-                width: 160,
+              selectedItemBuilder: (BuildContext context) {
+                return items.map((String item) {
+                  return Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      item,
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }).toList();
+              },
+              iconStyleData: const IconStyleData(
+                icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+                iconSize: 24,
+                iconEnabledColor: Colors.black,
+                iconDisabledColor: Colors.grey,
               ),
               dropdownStyleData: DropdownStyleData(
+                maxHeight: 200,
+                width: 268,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                ),
+                scrollbarTheme: ScrollbarThemeData(
+                  radius: const Radius.circular(40),
+                  thickness: MaterialStateProperty.all(6),
+                  thumbVisibility: MaterialStateProperty.all(true),
                 ),
               ),
-              iconStyleData: const IconStyleData(
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  color: Colors.black,
-                ),
-                iconSize: 24,
+              menuItemStyleData: MenuItemStyleData(
+                height: 40,
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                selectedMenuItemBuilder: (context, child) {
+                  return Container(
+                    color: Colors.grey.shade200,
+                    child: child,
+                  );
+                },
               ),
             ),
           ),
