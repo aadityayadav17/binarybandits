@@ -41,11 +41,11 @@ class BudgetField extends StatelessWidget {
               Text(
                 '\$',
                 style: GoogleFonts.roboto(
-                    fontSize: 14, color: const Color(0xFF979797)),
+                    fontSize: 16, color: const Color(0xFF979797)),
               ),
               const SizedBox(width: 8),
               Container(
-                width: 60,
+                width: 68,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFF979797)),
@@ -57,7 +57,7 @@ class BudgetField extends StatelessWidget {
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(5),
                   ],
-                  style: GoogleFonts.roboto(fontSize: 14),
+                  style: GoogleFonts.roboto(fontSize: 16),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 8),

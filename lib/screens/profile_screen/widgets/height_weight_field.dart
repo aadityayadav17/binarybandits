@@ -44,7 +44,7 @@ class HeightWeightField extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 45,
+                width: 50,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFF979797)),
@@ -56,7 +56,7 @@ class HeightWeightField extends StatelessWidget {
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(3),
                   ],
-                  style: GoogleFonts.roboto(fontSize: 14),
+                  style: GoogleFonts.roboto(fontSize: 16),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 8),
@@ -67,7 +67,7 @@ class HeightWeightField extends StatelessWidget {
               Text(
                 unit,
                 style: GoogleFonts.roboto(
-                    fontSize: 14, color: const Color(0xFF979797)),
+                    fontSize: 16, color: const Color(0xFF979797)),
               ),
             ],
           ),

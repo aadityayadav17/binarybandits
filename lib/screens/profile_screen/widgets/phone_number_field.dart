@@ -53,7 +53,7 @@ class PhoneNumberField extends StatelessWidget {
                   showOnlyCountryWhenClosed: false,
                   alignLeft: false,
                   textStyle:
-                      GoogleFonts.roboto(fontSize: 14, color: Colors.black),
+                      GoogleFonts.roboto(fontSize: 16, color: Colors.black),
                   padding: EdgeInsets.zero,
                 ),
               ),
@@ -66,7 +66,7 @@ class PhoneNumberField extends StatelessWidget {
                     LengthLimitingTextInputFormatter(15),
                     _PhoneNumberFormatter(),
                   ],
-                  style: GoogleFonts.roboto(fontSize: 14),
+                  style: GoogleFonts.roboto(fontSize: 16),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 8),

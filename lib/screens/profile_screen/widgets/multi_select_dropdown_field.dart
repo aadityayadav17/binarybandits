@@ -66,7 +66,8 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                 _selectedItems.isEmpty
                     ? 'Select Options'
                     : _selectedItems.join(', '),
-                style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+                style: GoogleFonts.roboto(
+                    fontSize: 16, color: const Color(0xFF000000)),
                 overflow: TextOverflow.ellipsis,
               ),
               items: widget.items
