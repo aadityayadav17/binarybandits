@@ -1,6 +1,7 @@
 import 'package:binarybandits/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:binarybandits/screens/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -84,6 +85,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text('Go to Login Screen'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
+              },
+              child: const Text('Go to Home Screen'),
             ),
           ],
         ),
