@@ -40,38 +40,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
-              const Text(
-                "Profile",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 36,
-                  letterSpacing: 0,
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 24),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Profile",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 36,
+                      letterSpacing: 0,
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              ProfileFormFields(
-                onDietaryPreferenceChanged: (value) {
-                  setState(() {
-                    dietaryPreference = value;
-                  });
-                },
-                onDietaryRestrictionsChanged: (value) {
-                  setState(() {
-                    dietaryRestrictions = value;
-                  });
-                },
-                dietaryPreference: dietaryPreference,
-                dietaryRestrictions: dietaryRestrictions,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ProfileFormFields(
+                      onDietaryPreferenceChanged: (value) {
+                        setState(() {
+                          dietaryPreference = value;
+                        });
+                      },
+                      onDietaryRestrictionsChanged: (value) {
+                        setState(() {
+                          dietaryRestrictions = value;
+                        });
+                      },
+                      dietaryPreference: dietaryPreference,
+                      dietaryRestrictions: dietaryRestrictions,
+                    ),
+                    const SizedBox(height: 24),
+                    const SaveButton(),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
-              const SaveButton(),
-              const SizedBox(height: 40),
             ],
           ),
         ),
