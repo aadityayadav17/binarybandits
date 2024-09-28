@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -658,16 +659,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: currentValue,
+            child: DropdownButton2(
               isExpanded: true,
+              hint: Text(
+                'Select Option',
+                style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+              ),
+              value: currentValue,
               onChanged: onChanged,
-              items: items.map((String value) {
+              items: items.map((String item) {
                 return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value, style: GoogleFonts.roboto(fontSize: 16)),
+                  value: item,
+                  child: Text(
+                    item,
+                    style: GoogleFonts.roboto(fontSize: 16),
+                  ),
                 );
               }).toList(),
+              buttonStyleData: ButtonStyleData(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                height: 50,
+                width: 160,
+              ),
+              dropdownStyleData: DropdownStyleData(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+              ),
+              iconStyleData: const IconStyleData(
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.black,
+                ),
+                iconSize: 24,
+              ),
             ),
           ),
         ],
