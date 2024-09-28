@@ -4,11 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool isLocationField;
+  final Function(String) onChanged;
 
   const CustomTextField({
     Key? key,
     required this.labelText,
     this.isLocationField = false,
+    required this.onChanged,
   }) : super(key: key);
 
   @override
@@ -41,6 +43,7 @@ class CustomTextField extends StatelessWidget {
           ),
           TextField(
             style: GoogleFonts.roboto(fontSize: 16),
+            onChanged: onChanged,
             decoration: InputDecoration(
               border: InputBorder.none,
               suffixIcon: isLocationField

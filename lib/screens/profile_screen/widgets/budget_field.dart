@@ -4,8 +4,13 @@ import 'package:flutter/services.dart';
 
 class BudgetField extends StatelessWidget {
   final String labelText;
+  final Function(String) onChanged; // Add onChanged callback
 
-  const BudgetField({Key? key, required this.labelText}) : super(key: key);
+  const BudgetField({
+    Key? key,
+    required this.labelText,
+    required this.onChanged, // Make this parameter required
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +49,10 @@ class BudgetField extends StatelessWidget {
                     fontSize: 16, color: const Color(0xFF979797)),
               ),
               const SizedBox(width: 8),
-              Container(
-                width: 68,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF979797)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              Expanded(
                 child: TextField(
+                  onChanged:
+                      onChanged, // Connect the TextField onChanged to the widget's callback
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
