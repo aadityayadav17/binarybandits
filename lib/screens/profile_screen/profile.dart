@@ -13,6 +13,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'Classic';
   List<String> dietaryRestrictions = [];
+  bool _isSaved = false; // Added state to manage save status
+
+  void _updateSaveStatus(bool saved) {
+    setState(() {
+      _isSaved = saved;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,20 +71,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     ProfileFormFields(
                       onDietaryPreferenceChanged: (value) {
-                        setState(() {
-                          dietaryPreference = value;
-                        });
+                        _updateSaveStatus(false);
+                        dietaryPreference = value;
                       },
                       onDietaryRestrictionsChanged: (value) {
-                        setState(() {
-                          dietaryRestrictions = value;
-                        });
+                        _updateSaveStatus(false);
+                        dietaryRestrictions = value;
                       },
                       dietaryPreference: dietaryPreference,
                       dietaryRestrictions: dietaryRestrictions,
+                      onAnyFieldChanged: () {
+                        _updateSaveStatus(false);
+                      },
                     ),
                     const SizedBox(height: 24),
-                    const SaveButton(),
+                    SaveButton(
+                      isSaved: _isSaved,
+                      onPressed: () {
+                        _updateSaveStatus(true); // Logic to save profile data
+                      },
+                    ),
                     const SizedBox(height: 40),
                   ],
                 ),

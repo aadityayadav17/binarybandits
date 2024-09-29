@@ -9,6 +9,7 @@ import 'multi_select_dropdown_field.dart';
 class ProfileFormFields extends StatelessWidget {
   final Function(String?) onDietaryPreferenceChanged;
   final Function(List<String>) onDietaryRestrictionsChanged;
+  final VoidCallback onAnyFieldChanged; // Add a general callback
   final String? dietaryPreference;
   final List<String> dietaryRestrictions;
 
@@ -16,6 +17,7 @@ class ProfileFormFields extends StatelessWidget {
     Key? key,
     required this.onDietaryPreferenceChanged,
     required this.onDietaryRestrictionsChanged,
+    required this.onAnyFieldChanged, // Make sure this is passed in constructor
     this.dietaryPreference,
     required this.dietaryRestrictions,
   }) : super(key: key);
@@ -24,29 +26,53 @@ class ProfileFormFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Center(child: CustomTextField(labelText: "Preferred Name")),
-        const SizedBox(height: 16),
-        const Center(child: PhoneNumberField(labelText: "Phone Number")),
-        const SizedBox(height: 16),
-        const Center(child: BudgetField(labelText: "Budget")),
-        const SizedBox(height: 16),
-        const Center(child: HeightWeightField(labelText: "Height", unit: "CM")),
-        const SizedBox(height: 16),
-        const Center(child: HeightWeightField(labelText: "Weight", unit: "KG")),
-        const SizedBox(height: 16),
-        const Center(
-            child: HeightWeightField(labelText: "Excepted Weight", unit: "KG")),
-        const SizedBox(height: 16),
-        const Center(
+        Center(
             child: CustomTextField(
-                labelText: "Home District", isLocationField: true)),
+                labelText: "Preferred Name",
+                onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: PhoneNumberField(
+                labelText: "Phone Number",
+                onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: BudgetField(
+                labelText: "Budget", onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: HeightWeightField(
+                labelText: "Height",
+                unit: "CM",
+                onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: HeightWeightField(
+                labelText: "Weight",
+                unit: "KG",
+                onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: HeightWeightField(
+                labelText: "Excepted Weight",
+                unit: "KG",
+                onChanged: (_) => onAnyFieldChanged())),
+        const SizedBox(height: 16),
+        Center(
+            child: CustomTextField(
+                labelText: "Home District",
+                isLocationField: true,
+                onChanged: (_) => onAnyFieldChanged())),
         const SizedBox(height: 16),
         Center(
           child: DropdownField(
             labelText: "Dietary Preference",
             currentValue: dietaryPreference,
             items: const ['Classic', 'Vegan', 'Vegetarian'],
-            onChanged: onDietaryPreferenceChanged,
+            onChanged: (value) {
+              onDietaryPreferenceChanged(value);
+              onAnyFieldChanged();
+            },
           ),
         ),
         const SizedBox(height: 16),
@@ -55,7 +81,10 @@ class ProfileFormFields extends StatelessWidget {
             labelText: "Dietary Restrictions",
             items: const ['Dairy', 'Eggs', 'Fish', 'Nuts', 'Shellfish', 'Soy'],
             selectedItems: dietaryRestrictions,
-            onChanged: onDietaryRestrictionsChanged,
+            onChanged: (value) {
+              onDietaryRestrictionsChanged(value);
+              onAnyFieldChanged();
+            },
           ),
         ),
       ],

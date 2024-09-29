@@ -5,8 +5,11 @@ import 'package:flutter/services.dart';
 
 class PhoneNumberField extends StatelessWidget {
   final String labelText;
+  final Function(String) onChanged;
 
-  const PhoneNumberField({Key? key, required this.labelText}) : super(key: key);
+  const PhoneNumberField(
+      {Key? key, required this.labelText, required this.onChanged})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,32 +42,28 @@ class PhoneNumberField extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF979797)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: CountryCodePicker(
-                  onChanged: (countryCode) {},
-                  initialSelection: 'AU',
-                  favorite: ['+61', 'AU'],
-                  showCountryOnly: false,
-                  showOnlyCountryWhenClosed: false,
-                  alignLeft: false,
-                  textStyle:
-                      GoogleFonts.roboto(fontSize: 16, color: Colors.black),
-                  padding: EdgeInsets.zero,
-                ),
+              CountryCodePicker(
+                onChanged: (countryCode) {
+                  // Optional: Add logic if needed to handle country code changes
+                },
+                initialSelection: 'AU',
+                favorite: ['+61', 'AU'],
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
+                textStyle:
+                    GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+                padding: EdgeInsets.zero,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: TextField(
+                  onChanged: onChanged,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(15),
-                    _PhoneNumberFormatter(),
+                    PhoneNumberFormatter(),
                   ],
                   style: GoogleFonts.roboto(fontSize: 16),
                   decoration: const InputDecoration(
@@ -81,7 +80,7 @@ class PhoneNumberField extends StatelessWidget {
   }
 }
 
-class _PhoneNumberFormatter extends TextInputFormatter {
+class PhoneNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {

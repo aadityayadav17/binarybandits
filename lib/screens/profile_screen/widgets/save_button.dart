@@ -2,24 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SaveButton extends StatelessWidget {
-  const SaveButton({Key? key}) : super(key: key);
+  final bool isSaved;
+  final VoidCallback onPressed;
+
+  const SaveButton({
+    Key? key,
+    required this.isSaved,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: () {
-          // Save profile logic here
-        },
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green, // Changed to green
+          backgroundColor:
+              isSaved ? Colors.grey : Colors.green, // Color based on state
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // Changed to 10
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 12),
+          fixedSize: Size(315, 48), // Fixed size for the button
         ),
         child: Text(
-          'Save', // Changed from 'Save' to 'Done'
+          isSaved ? 'Saved' : 'Save', // Text based on state
           style: GoogleFonts.robotoFlex(
             fontSize: 18,
             fontWeight: FontWeight.bold,

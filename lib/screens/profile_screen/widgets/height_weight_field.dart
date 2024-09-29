@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 class HeightWeightField extends StatelessWidget {
   final String labelText;
   final String unit;
+  final Function(String) onChanged; // Add onChanged callback
 
   const HeightWeightField({
     Key? key,
     required this.labelText,
     required this.unit,
+    required this.onChanged, // Make this parameter required
   }) : super(key: key);
 
   @override
@@ -51,6 +53,8 @@ class HeightWeightField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
+                  onChanged:
+                      onChanged, // Connect the TextField onChanged to the widget's callback
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,

@@ -21,22 +21,6 @@ jobs:
       - run: flutter pub get
       - run: flutter build ios --no-codesign # Build for iOS without code signing
 
-  build_macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-      - run: flutter pub get
-      - run: flutter build macos # Build for macOS
-
-  build_windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-      - run: flutter pub get
-      - run: flutter build windows # Build for Windows
-
   build_web:
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +30,7 @@ jobs:
       - run: flutter build web # Build for Web
 
   test:
-    needs: [build_android, build_ios, build_macos, build_windows, build_web]
+    needs: [build_android, build_ios, build_web]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

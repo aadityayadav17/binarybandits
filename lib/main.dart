@@ -1,11 +1,13 @@
-// main.dart
-
 import 'package:binarybandits/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:binarybandits/screens/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -83,6 +85,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text('Go to Login Screen'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
+              },
+              child: const Text('Go to Home Screen'),
             ),
           ],
         ),
