@@ -79,10 +79,11 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
         ),
       ),
       home: Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5), // Body background color
+        backgroundColor:
+            const Color.fromRGBO(245, 245, 245, 1), // Body background color
         appBar: AppBar(
-          backgroundColor:
-              const Color(0xFFF5F5F5), // Match app bar with body background
+          backgroundColor: const Color.fromRGBO(
+              245, 245, 245, 1), // Match app bar with body background
           elevation: 0,
           toolbarHeight: 60,
           automaticallyImplyLeading: false, // Disable default leading padding

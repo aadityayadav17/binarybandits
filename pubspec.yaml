@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   firebase_core: ^3.4.0
   google_fonts: ^6.2.1
+  country_code_picker: ^3.0.0
+  dropdown_button2: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -73,11 +75,13 @@ flutter:
     - assets/icons/bottom_navigation/home-on.png
     - assets/icons/bottom_navigation/weekly-menu-off.png
     - assets/icons/bottom_navigation/weekly-menu-on.png
+    - assets/icons/screens/common/back-key.png
     - assets/icons/screens/log_screen/continue-arrow.png
     - assets/icons/screens/log_screen/log-rectangle.png
     - assets/icons/screens/log_screen/eye-closed.png
     - assets/icons/screens/log_screen/eye-open.png
-    - assets/icons/screens/recipe_selection_screen/back-key.png
+    - assets/icons/screens/profile/dropdown-off-display.png
+    - assets/icons/screens/profile/dropdown-on-display.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-hard.png
