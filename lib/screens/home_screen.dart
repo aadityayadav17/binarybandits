@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         jsonResult.map((json) => Recipe.fromJson(json)).toList();
     setState(() {
       _allRecipes = recipes;
-      _filteredRecipes = recipes;
+      _filteredRecipes = [];
     });
   }
 
@@ -124,135 +124,194 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  'Hello, USER!',
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.black,
-                  ),
+        body: Stack(
+          children: [
+            // Main content (elements below search bar)
+            SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hello, USER!',
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 0),
+                    Text(
+                      'What do you want to eat?',
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: const Color.fromRGBO(73, 160, 120, 1),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Search Bar
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      child: Row(
+                        children: [
+                          // Custom Search Icon from Assets
+                          Image.asset(
+                            'assets/icons/screens/home_screen/search-button.png',
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Search for recipe',
+                                hintStyle: TextStyle(color: Colors.grey[600]),
+                              ),
+                              onChanged: _filterRecipes,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Other UI elements like Discover Recipe Button etc.
+                    _buildFeatureButton(
+                      context,
+                      'assets/images/home_screen/discover-recipe.png',
+                      'DISCOVER\nRECIPE',
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const RecipeSelectionScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildFeatureButton(
+                            context,
+                            'assets/images/home_screen/recipe-collection.png',
+                            'RECIPE\nCOLLECTION',
+                            () {},
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildFeatureButton(
+                            context,
+                            'assets/images/home_screen/grocery-list.png',
+                            'GROCERY\nLIST',
+                            () {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildFeatureButton(
+                            context,
+                            'assets/images/home_screen/weekly-menu.png',
+                            'WEEKLY\nMENU',
+                            () {},
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildFeatureButton(
+                            context,
+                            'assets/images/home_screen/recipe-history.png',
+                            'HISTORY\nRECIPE',
+                            () {},
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 0),
-                Text(
-                  'What do you want to eat?',
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    color: const Color.fromRGBO(73, 160, 120, 1),
+              ),
+            ),
+
+            // Floating Search Results Box
+            if (_filteredRecipes.isNotEmpty)
+              Positioned(
+                top:
+                    170, // Adjust this value to position the results correctly below the search bar
+                left: 30,
+                right: 30,
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight:
+                        300, // Limit height to show max 5 items (~60px per ListTile)
                   ),
-                ),
-                const SizedBox(height: 16),
-                // Search Bar
-                Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const [
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Row(
-                    children: [
-                      // Custom Search Icon from Assets
-                      Image.asset(
-                        'assets/icons/screens/home_screen/search-button.png',
-                        width: 24,
-                        height: 24,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search for recipe',
-                            hintStyle: TextStyle(color: Colors.grey[600]),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _filteredRecipes.length > 5
+                        ? 5
+                        : _filteredRecipes.length,
+                    itemBuilder: (context, index) {
+                      final recipe = _filteredRecipes[index];
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(
+                              recipe.name,
+                              style: GoogleFonts.roboto(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            subtitle: Text('Rating: ${recipe.rating}'),
+                            onTap: () {
+                              // Handle recipe selection
+                            },
                           ),
-                          onChanged:
-                              _filterRecipes, // Call the _filterRecipes function when the user types
-                        ),
-                      ),
-                    ],
+                          if (index != _filteredRecipes.length - 1) Divider(),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                const SizedBox(height: 16),
-                // Display filtered recipes
-                _buildRecipeList(),
-                // Discover Recipe Button with Image Background
-                _buildFeatureButton(
-                  context,
-                  'assets/images/home_screen/discover-recipe.png',
-                  'DISCOVER\nRECIPE',
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RecipeSelectionScreen(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildFeatureButton(
-                        context,
-                        'assets/images/home_screen/recipe-collection.png',
-                        'RECIPE\nCOLLECTION',
-                        () {},
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildFeatureButton(
-                        context,
-                        'assets/images/home_screen/grocery-list.png',
-                        'GROCERY\nLIST',
-                        () {},
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildFeatureButton(
-                        context,
-                        'assets/images/home_screen/weekly-menu.png',
-                        'WEEKLY\nMENU',
-                        () {},
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildFeatureButton(
-                        context,
-                        'assets/images/home_screen/recipe-history.png',
-                        'HISTORY\nRECIPE',
-                        () {},
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+              ),
+          ],
         ),
+
+        // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.white,
           type: BottomNavigationBarType.fixed,
@@ -268,9 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context) => const RecipeSelectionScreen(),
                   ),
                 );
-                break;
-              case 2:
-                // Additional navigation actions can go here
                 break;
             }
           },
@@ -315,53 +371,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildRecipeList() {
-    if (_filteredRecipes.isEmpty) {
-      return const Text('No recipes found. Please search for a recipe.');
-    } else {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.symmetric(
-            vertical: 8, horizontal: 12), // Padding inside the box
-        child: Column(
-          children: _filteredRecipes.map((recipe) {
-            return Column(
-              children: [
-                ListTile(
-                  title: Text(
-                    recipe.name,
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  subtitle: Text('Rating: ${recipe.rating}'),
-                  onTap: () {
-                    // Handle recipe selection
-                  },
-                ),
-                if (recipe != _filteredRecipes.last)
-                  Divider(), // Add a divider between items
-              ],
-            );
-          }).toList(),
-        ),
-      );
-    }
   }
 
   // Helper method to build buttons with background image and text overlay
