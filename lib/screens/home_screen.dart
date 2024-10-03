@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.only(left: 30.0, right: 30.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -91,17 +91,18 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   'Hello, USER!',
                   style: GoogleFonts.robotoFlex(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 0),
                 Text(
                   'What do you want to eat?',
                   style: GoogleFonts.robotoFlex(
                     fontSize: 20,
-                    color: Colors.black,
+                    fontWeight: FontWeight.w900,
+                    color: const Color.fromRGBO(73, 160, 120, 1),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -109,7 +110,8 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(
+                        30), // Adjusted borderRadius to make it flatter
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
@@ -118,12 +120,20 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 4), // Reduced vertical padding
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey[600]),
-                      const SizedBox(width: 8),
+                      // Custom Search Icon from Assets
+                      Image.asset(
+                        'assets/icons/screens/home_screen/search-button.png',
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(
+                          width:
+                              8), // Space between the icon and the text field
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
@@ -136,7 +146,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 // Discover Recipe Button with Image Background
                 _buildFeatureButton(
                   context,
