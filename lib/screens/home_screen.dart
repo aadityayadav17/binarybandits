@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Recipe> _allRecipes = [];
   List<Recipe> _filteredRecipes = [];
-  FocusNode _searchFocusNode = FocusNode(); // Create a FocusNode
+  final FocusNode _searchFocusNode = FocusNode(); // Create a FocusNode
 
   @override
   void initState() {
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // App Logo
-                    Container(
+                    SizedBox(
                       width: 140,
                       height: 40,
                       child: Image.asset(
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          Container(
+                          SizedBox(
                             width: 96,
                             height: 96,
                             child: Image.asset(
@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Positioned(
                             top: 28,
                             left: 28,
-                            child: Container(
+                            child: SizedBox(
                               width: 32,
                               height: 32,
                               child: Image.asset(
@@ -461,7 +461,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     radius:
                         1, // Smaller radius to stop the tint from reaching the edges
                     center: Alignment.center, // Focus on the center of the card
-                    stops: [
+                    stops: const [
                       0.0,
                       1.0
                     ], // Gradient starts at the center and fades before edges
