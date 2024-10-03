@@ -19,29 +19,39 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
           elevation: 0,
           toolbarHeight: 60,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Image.asset(
-              'assets/images/app-logo.png', // App logo image path
-              width: 48,
-              height: 48,
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: IconButton(
-                icon: Image.asset(
-                  'assets/icons/screens/home_screen/profile-icon.png', // Profile icon image path
-                  width: 48,
-                  height: 48,
-                ),
-                onPressed: () {
-                  // Handle profile button action
-                },
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // App Logo
+                  Container(
+                    width: 140, // Adjust width here
+                    height: 40, // Adjust height here
+                    child: Image.asset(
+                      'assets/images/app-logo.png', // App logo image path
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  // Profile Icon
+                  Container(
+                    width: 48, // Adjust width here
+                    height: 48, // Adjust height here
+                    child: IconButton(
+                      icon: Image.asset(
+                        'assets/icons/screens/home_screen/profile-icon.png', // Profile icon image path
+                        fit: BoxFit.contain,
+                      ),
+                      onPressed: () {
+                        // Handle profile button action
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
