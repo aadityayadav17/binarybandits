@@ -5,6 +5,8 @@ void main() {
 }
 
 class CalorieCalculatorApp extends StatelessWidget {
+  const CalorieCalculatorApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,8 +20,11 @@ class CalorieCalculatorApp extends StatelessWidget {
 }
 
 class CalorieCalculatorScreen extends StatefulWidget {
+  const CalorieCalculatorScreen({super.key});
+
   @override
-  _CalorieCalculatorScreenState createState() => _CalorieCalculatorScreenState();
+  _CalorieCalculatorScreenState createState() =>
+      _CalorieCalculatorScreenState();
 }
 
 class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
@@ -172,8 +177,10 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Calorie Requirement: ${calories.toStringAsFixed(0)} kcal'),
-                  Text('Protein Requirement: ${protein.toStringAsFixed(1)} grams'),
+                  Text(
+                      'Calorie Requirement: ${calories.toStringAsFixed(0)} kcal'),
+                  Text(
+                      'Protein Requirement: ${protein.toStringAsFixed(1)} grams'),
                 ],
               ),
           ],

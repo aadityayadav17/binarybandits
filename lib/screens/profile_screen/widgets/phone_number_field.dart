@@ -47,7 +47,7 @@ class PhoneNumberField extends StatelessWidget {
                   // Optional: Add logic if needed to handle country code changes
                 },
                 initialSelection: 'AU',
-                favorite: ['+61', 'AU'],
+                favorite: const ['+61', 'AU'],
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
                 alignLeft: false,
