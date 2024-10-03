@@ -321,39 +321,45 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_filteredRecipes.isEmpty) {
       return const Text('No recipes found. Please search for a recipe.');
     } else {
-      return Column(
-        children: _filteredRecipes.map((recipe) {
-          return Container(
-            margin: const EdgeInsets.symmetric(
-                vertical: 8), // Spacing between items
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(
+            vertical: 8, horizontal: 12), // Padding inside the box
+        child: Column(
+          children: _filteredRecipes.map((recipe) {
+            return Column(
+              children: [
+                ListTile(
+                  title: Text(
+                    recipe.name,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  subtitle: Text('Rating: ${recipe.rating}'),
+                  onTap: () {
+                    // Handle recipe selection
+                  },
                 ),
+                if (recipe != _filteredRecipes.last)
+                  Divider(), // Add a divider between items
               ],
-            ),
-            child: ListTile(
-              title: Text(
-                recipe.name,
-                style: GoogleFonts.roboto(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              subtitle: Text('Rating: ${recipe.rating}'),
-              onTap: () {
-                // Handle recipe selection
-              },
-            ),
-          );
-        }).toList(),
+            );
+          }).toList(),
+        ),
       );
     }
   }
