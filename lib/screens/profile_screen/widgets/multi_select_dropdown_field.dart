@@ -93,10 +93,24 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                                     horizontal: 16.0),
                                 child: Row(
                                   children: [
-                                    if (isSelected)
-                                      const Icon(Icons.check_box_outlined)
-                                    else
-                                      const Icon(Icons.check_box_outline_blank),
+                                    // Replacing the icon-based checkboxes with actual checkboxes
+                                    SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: Checkbox(
+                                        value: isSelected,
+                                        onChanged: (bool? value) {
+                                          if (value == true) {
+                                            _selectedItems.add(item);
+                                          } else {
+                                            _selectedItems.remove(item);
+                                          }
+                                          setState(() {});
+                                          menuSetState(() {});
+                                          widget.onChanged(_selectedItems);
+                                        },
+                                      ),
+                                    ),
                                     const SizedBox(width: 16),
                                     Text(
                                       item,
