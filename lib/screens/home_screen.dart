@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:binarybandits/screens/recipe_selection_screen.dart'; // Import RecipeSelectionScreen
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -19,8 +20,7 @@ class HomeScreen extends StatelessWidget {
           elevation: 0,
           toolbarHeight: 60,
           leading: Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0), // Adjust left padding for the app icon
+            padding: const EdgeInsets.only(left: 16.0),
             child: Image.asset(
               'assets/images/app-logo.png', // App logo image path
               width: 48,
@@ -29,8 +29,7 @@ class HomeScreen extends StatelessWidget {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(
-                  right: 16.0), // Adjust right padding for the profile icon
+              padding: const EdgeInsets.only(right: 16.0),
               child: IconButton(
                 icon: Image.asset(
                   'assets/icons/screens/home_screen/profile-icon.png', // Profile icon image path
@@ -105,6 +104,15 @@ class HomeScreen extends StatelessWidget {
                   context,
                   'assets/images/home_screen/discover-recipe.png',
                   'DISCOVER\nRECIPE',
+                  () {
+                    // Navigate to RecipeSelectionScreen when Discover Recipe is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RecipeSelectionScreen(),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 // Recipe Collection and Grocery List buttons
@@ -115,6 +123,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         'assets/images/home_screen/recipe-collection.png',
                         'RECIPE\nCOLLECTION',
+                        () {},
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -123,6 +132,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         'assets/images/home_screen/grocery-list.png',
                         'GROCERY\nLIST',
+                        () {},
                       ),
                     ),
                   ],
@@ -136,6 +146,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         'assets/images/home_screen/weekly-menu.png',
                         'WEEKLY\nMENU',
+                        () {},
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -144,6 +155,7 @@ class HomeScreen extends StatelessWidget {
                         context,
                         'assets/images/home_screen/recipe-history.png',
                         'HISTORY\nRECIPE',
+                        () {},
                       ),
                     ),
                   ],
@@ -222,40 +234,47 @@ class HomeScreen extends StatelessWidget {
 
   // Helper method to build buttons with background image and text overlay
   Widget _buildFeatureButton(
-      BuildContext context, String imagePath, String text) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // Background Image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
+    BuildContext context,
+    String imagePath,
+    String text,
+    VoidCallback onTap, // Add onTap callback
+  ) {
+    return GestureDetector(
+      onTap: onTap, // Trigger the onTap callback when button is clicked
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Background Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 150,
+            ),
+          ),
+          // White blur overlay for text
+          Container(
             width: double.infinity,
             height: 150,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
-        ),
-        // White blur overlay for text
-        Container(
-          width: double.infinity,
-          height: 150,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(20),
+          // Text over the blur
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.robotoFlex(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
-        ),
-        // Text over the blur
-        Text(
-          text,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.robotoFlex(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/profile_form_fields.dart';
 import 'widgets/save_button.dart';
+import '../home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -89,6 +90,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       isSaved: _isSaved,
                       onPressed: () {
                         _updateSaveStatus(true); // Logic to save profile data
+                        // Navigate to HomeScreen after saving
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(height: 40),
