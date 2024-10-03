@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/profile_screen/profile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           toolbarHeight: 96,
           flexibleSpace: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(left: 30.0, right: 0.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -35,33 +36,45 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   // Profile Icon with Background Rectangle
-                  Stack(
-                    alignment: Alignment
-                        .center, // Centers the profile on the rectangle
-                    children: [
-                      // Rectangle background
-                      Container(
-                        width: 96, // Rectangle width
-                        height: 96, // Rectangle height
-                        child: Image.asset(
-                          'assets/icons/screens/home_screen/background-rectangle.png', // Background rectangle image path
-                          fit: BoxFit.contain,
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to Profile Screen when profile icon is clicked
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const ProfileScreen(), // Replace with your ProfileScreen widget
                         ),
-                      ),
-                      // Profile icon
-                      Positioned(
-                        top: 28,
-                        left: 28,
-                        child: Container(
-                          width: 32, // Profile image width
-                          height: 32, // Profile image height
+                      );
+                    },
+                    child: Stack(
+                      alignment: Alignment
+                          .center, // Centers the profile on the rectangle
+                      children: [
+                        // Rectangle background
+                        Container(
+                          width: 96, // Rectangle width
+                          height: 96, // Rectangle height
                           child: Image.asset(
-                            'assets/icons/screens/home_screen/profile.png', // Profile image path
+                            'assets/icons/screens/home_screen/background-rectangle.png', // Background rectangle image path
                             fit: BoxFit.contain,
                           ),
                         ),
-                      ),
-                    ],
+                        // Profile icon
+                        Positioned(
+                          top: 28,
+                          left: 28,
+                          child: Container(
+                            width: 32, // Profile image width
+                            height: 32, // Profile image height
+                            child: Image.asset(
+                              'assets/icons/screens/home_screen/profile.png', // Profile image path
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
