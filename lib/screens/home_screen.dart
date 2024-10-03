@@ -261,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: _buildFeatureButton(
                               context,
                               'assets/images/home_screen/recipe-history.png',
-                              'HISTORY\nRECIPE',
+                              'RECIPE\nHISTORY',
                               () {},
                             ),
                           ),
@@ -306,15 +306,43 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Column(
                           children: [
                             ListTile(
-                              title: Text(
-                                recipe.name,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween, // Align name and rating
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      recipe.name,
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/icons/screens/recipe_selection_screen/rating.png', // Rating image
+                                        width: 14, // Adjust width
+                                        height: 14, // Adjust height
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                              4), // Space between the image and the rating text
+                                      Text(
+                                        recipe.rating.toStringAsFixed(
+                                            1), // Display the rating
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 14,
+                                          color: const Color.fromRGBO(
+                                              73, 160, 120, 1),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              subtitle: Text('Rating: ${recipe.rating}'),
                               onTap: () {
                                 // Handle recipe selection
                               },
