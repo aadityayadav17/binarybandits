@@ -428,8 +428,8 @@ class _HomeScreenState extends State<HomeScreen> {
     VoidCallback onTap,
   ) {
     double height = (text == 'DISCOVER\nRECIPE')
-        ? 150
-        : 100; // Different heights for discover vs other cards
+        ? 160
+        : 110; // Different heights for discover vs other cards
 
     return GestureDetector(
       onTap: onTap,
@@ -445,41 +445,21 @@ class _HomeScreenState extends State<HomeScreen> {
               height: height, // Adjusted height
             ),
           ),
-          // Radial gradient background behind text (focused on center)
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.center,
-              child: Container(
-                height: height, // Ensure gradient covers the card height
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.white.withOpacity(0.8), // Tint in the center
-                      Colors.white
-                          .withOpacity(0.0), // Fully transparent before edges
-                    ],
-                    radius:
-                        1, // Smaller radius to stop the tint from reaching the edges
-                    center: Alignment.center, // Focus on the center of the card
-                    stops: const [
-                      0.0,
-                      1.0
-                    ], // Gradient starts at the center and fades before edges
-                  ),
-                ),
-              ),
+          Container(
+            width: double.infinity,
+            height: height, // Adjusted height
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
-          // Text over the gradient
-          Positioned(
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.robotoFlex(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.robotoFlex(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
         ],
