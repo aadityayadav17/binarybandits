@@ -76,7 +76,9 @@ flutter:
     - assets/icons/bottom_navigation/weekly-menu-off.png
     - assets/icons/bottom_navigation/weekly-menu-on.png
     - assets/icons/screens/common/back-key.png
+    - assets/icons/screens/home_screen/background-rectangle.png
     - assets/icons/screens/home_screen/profile-icon.png
+    - assets/icons/screens/home_screen/profile.png
     - assets/icons/screens/home_screen/search-button.png
     - assets/icons/screens/log_screen/continue-arrow.png
     - assets/icons/screens/log_screen/log-rectangle.png

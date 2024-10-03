@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
           elevation: 0,
-          toolbarHeight: 60,
+          toolbarHeight: 96,
           flexibleSpace: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -34,19 +34,34 @@ class HomeScreen extends StatelessWidget {
                       fit: BoxFit.contain,
                     ),
                   ),
-                  // Profile Icon
-                  Container(
-                    width: 48, // Adjust width here
-                    height: 48, // Adjust height here
-                    child: IconButton(
-                      icon: Image.asset(
-                        'assets/icons/screens/home_screen/profile-icon.png', // Profile icon image path
-                        fit: BoxFit.contain,
+                  // Profile Icon with Background Rectangle
+                  Stack(
+                    alignment: Alignment
+                        .center, // Centers the profile on the rectangle
+                    children: [
+                      // Rectangle background
+                      Container(
+                        width: 96, // Rectangle width
+                        height: 96, // Rectangle height
+                        child: Image.asset(
+                          'assets/icons/screens/home_screen/background-rectangle.png', // Background rectangle image path
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                      onPressed: () {
-                        // Handle profile button action
-                      },
-                    ),
+                      // Profile icon
+                      Positioned(
+                        top: 28,
+                        left: 28,
+                        child: Container(
+                          width: 32, // Profile image width
+                          height: 32, // Profile image height
+                          child: Image.asset(
+                            'assets/icons/screens/home_screen/profile.png', // Profile image path
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
