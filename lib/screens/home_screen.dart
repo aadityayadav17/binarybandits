@@ -1,10 +1,53 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
+import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Recipe> _allRecipes = [];
+  List<Recipe> _filteredRecipes = [];
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Load recipes when the screen initializes
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    String data = await rootBundle
+        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+    List<dynamic> jsonResult = json.decode(data);
+    List<Recipe> recipes =
+        jsonResult.map((json) => Recipe.fromJson(json)).toList();
+    setState(() {
+      _allRecipes = recipes;
+      _filteredRecipes = recipes;
+    });
+  }
+
+  void _filterRecipes(String query) {
+    List<Recipe> filtered = _allRecipes
+        .where((recipe) =>
+            recipe.name.toLowerCase().contains(query.toLowerCase()) ||
+            recipe.ingredients.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    setState(() {
+      _searchQuery = query;
+      _filteredRecipes = filtered;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,47 +71,42 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   // App Logo
                   Container(
-                    width: 140, // Adjust width here
-                    height: 40, // Adjust height here
+                    width: 140,
+                    height: 40,
                     child: Image.asset(
-                      'assets/images/app-logo.png', // App logo image path
+                      'assets/images/app-logo.png',
                       fit: BoxFit.contain,
                     ),
                   ),
                   // Profile Icon with Background Rectangle
                   GestureDetector(
                     onTap: () {
-                      // Navigate to Profile Screen when profile icon is clicked
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const ProfileScreen(), // Replace with your ProfileScreen widget
+                          builder: (context) => const ProfileScreen(),
                         ),
                       );
                     },
                     child: Stack(
-                      alignment: Alignment
-                          .center, // Centers the profile on the rectangle
+                      alignment: Alignment.center,
                       children: [
-                        // Rectangle background
                         Container(
-                          width: 96, // Rectangle width
-                          height: 96, // Rectangle height
+                          width: 96,
+                          height: 96,
                           child: Image.asset(
-                            'assets/icons/screens/home_screen/background-rectangle.png', // Background rectangle image path
+                            'assets/icons/screens/home_screen/background-rectangle.png',
                             fit: BoxFit.contain,
                           ),
                         ),
-                        // Profile icon
                         Positioned(
                           top: 28,
                           left: 28,
                           child: Container(
-                            width: 32, // Profile image width
-                            height: 32, // Profile image height
+                            width: 32,
+                            height: 32,
                             child: Image.asset(
-                              'assets/icons/screens/home_screen/profile.png', // Profile image path
+                              'assets/icons/screens/home_screen/profile.png',
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -110,8 +148,7 @@ class HomeScreen extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                        30), // Adjusted borderRadius to make it flatter
+                    borderRadius: BorderRadius.circular(30),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
@@ -120,8 +157,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 4), // Reduced vertical padding
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Row(
                     children: [
                       // Custom Search Icon from Assets
@@ -131,9 +168,7 @@ class HomeScreen extends StatelessWidget {
                         height: 24,
                         fit: BoxFit.contain,
                       ),
-                      const SizedBox(
-                          width:
-                              8), // Space between the icon and the text field
+                      const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
@@ -141,19 +176,21 @@ class HomeScreen extends StatelessWidget {
                             hintText: 'Search for recipe',
                             hintStyle: TextStyle(color: Colors.grey[600]),
                           ),
+                          onChanged: _filterRecipes,
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
+                // Display filtered recipes
+                _buildRecipeList(),
                 // Discover Recipe Button with Image Background
                 _buildFeatureButton(
                   context,
                   'assets/images/home_screen/discover-recipe.png',
                   'DISCOVER\nRECIPE',
                   () {
-                    // Navigate to RecipeSelectionScreen when Discover Recipe is clicked
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -163,7 +200,6 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 16),
-                // Recipe Collection and Grocery List buttons
                 Row(
                   children: [
                     Expanded(
@@ -186,7 +222,6 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Weekly Menu and History Recipe buttons
                 Row(
                   children: [
                     Expanded(
@@ -212,19 +247,15 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white, // Set background to plain white
-          type: BottomNavigationBarType
-              .fixed, // Ensures equal spacing for all items
-          currentIndex: 0, // Default selected index (Home)
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 0,
           onTap: (index) {
             switch (index) {
               case 0:
-                // Action for Home button
                 break;
               case 1:
-                // Navigate to RecipeSelectionScreen when Grocery List button is clicked
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -233,12 +264,7 @@ class HomeScreen extends StatelessWidget {
                 );
                 break;
               case 2:
-                // Action for Discover Recipe button
-                break;
-              case 3:
-                // Action for Weekly Menu button
-                break;
-              default:
+                // Additional navigation actions can go here
                 break;
             }
           },
@@ -285,19 +311,34 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildRecipeList() {
+    return _filteredRecipes.isNotEmpty
+        ? Column(
+            children: _filteredRecipes.map((recipe) {
+              return ListTile(
+                title: Text(recipe.name),
+                subtitle: Text('Rating: ${recipe.rating}'),
+                onTap: () {
+                  // Handle recipe selection
+                },
+              );
+            }).toList(),
+          )
+        : const Text('No recipes found');
+  }
+
   // Helper method to build buttons with background image and text overlay
   Widget _buildFeatureButton(
     BuildContext context,
     String imagePath,
     String text,
-    VoidCallback onTap, // Add onTap callback
+    VoidCallback onTap,
   ) {
     return GestureDetector(
-      onTap: onTap, // Trigger the onTap callback when button is clicked
+      onTap: onTap,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background Image
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
@@ -307,7 +348,6 @@ class HomeScreen extends StatelessWidget {
               height: 150,
             ),
           ),
-          // White blur overlay for text
           Container(
             width: double.infinity,
             height: 150,
@@ -316,7 +356,6 @@ class HomeScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-          // Text over the blur
           Text(
             text,
             textAlign: TextAlign.center,
