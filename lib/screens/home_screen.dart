@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:binarybandits/screens/recipe_selection_screen.dart'; // Import RecipeSelectionScreen
+import 'package:binarybandits/screens/recipe_selection_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -171,13 +171,18 @@ class HomeScreen extends StatelessWidget {
               .fixed, // Ensures equal spacing for all items
           currentIndex: 0, // Default selected index (Home)
           onTap: (index) {
-            // Handle button press by index (actions not decided yet)
             switch (index) {
               case 0:
                 // Action for Home button
                 break;
               case 1:
-                // Action for Grocery List button
+                // Navigate to RecipeSelectionScreen when Grocery List button is clicked
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RecipeSelectionScreen(),
+                  ),
+                );
                 break;
               case 2:
                 // Action for Discover Recipe button
@@ -192,7 +197,7 @@ class HomeScreen extends StatelessWidget {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/bottom_navigation/home-off.png',
+                'assets/icons/bottom_navigation/home-on.png',
                 width: 24,
                 height: 24,
               ),
@@ -200,7 +205,7 @@ class HomeScreen extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/bottom_navigation/grocery-list-on.png',
+                'assets/icons/bottom_navigation/grocery-list-off.png',
                 width: 24,
                 height: 24,
               ),

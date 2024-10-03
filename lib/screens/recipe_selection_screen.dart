@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import google_fonts package
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:binarybandits/models/recipe.dart';
+import 'package:binarybandits/screens/home_screen.dart';
 
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
@@ -490,7 +491,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
             // Handle button press by index (actions not decided yet)
             switch (index) {
               case 0:
-                // Action for Home button
+                // Navigate to HomeScreen when Home button is clicked
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
                 break;
               case 1:
                 // Action for Grocery List button
