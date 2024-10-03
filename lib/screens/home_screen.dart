@@ -38,15 +38,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _filterRecipes(String query) {
-    List<Recipe> filtered = _allRecipes
-        .where((recipe) => recipe.name
-            .toLowerCase()
-            .contains(query.toLowerCase())) // Only filter by recipe name
-        .toList();
-    setState(() {
-      _searchQuery = query;
-      _filteredRecipes = filtered;
-    });
+    if (query.isEmpty) {
+      setState(() {
+        _filteredRecipes = []; // Empty the list when search is cleared
+      });
+    } else {
+      List<Recipe> filtered = _allRecipes
+          .where((recipe) => recipe.name
+              .toLowerCase()
+              .contains(query.toLowerCase())) // Only filter by recipe name
+          .toList();
+      setState(() {
+        _filteredRecipes = filtered;
+      });
+    }
   }
 
   @override
@@ -313,19 +318,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecipeList() {
-    return _filteredRecipes.isNotEmpty
-        ? Column(
-            children: _filteredRecipes.map((recipe) {
-              return ListTile(
-                title: Text(recipe.name),
-                subtitle: Text('Rating: ${recipe.rating}'),
-                onTap: () {
-                  // Handle recipe selection
-                },
-              );
-            }).toList(),
-          )
-        : const Text('No recipes found');
+    if (_filteredRecipes.isEmpty) {
+      return const Text('No recipes found. Please search for a recipe.');
+    } else {
+      return Column(
+        children: _filteredRecipes.map((recipe) {
+          return ListTile(
+            title: Text(recipe.name),
+            subtitle: Text('Rating: ${recipe.rating}'),
+            onTap: () {
+              // Handle recipe selection
+            },
+          );
+        }).toList(),
+      );
+    }
   }
 
   // Helper method to build buttons with background image and text overlay
