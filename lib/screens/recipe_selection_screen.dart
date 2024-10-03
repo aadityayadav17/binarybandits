@@ -92,7 +92,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                 left: 8.0), // Adjusted padding to reduce space
             child: IconButton(
               icon: Image.asset(
-                'assets/icons/screens/recipe_selection_screen/back-key.png',
+                'assets/icons/screens/common/back-key.png',
                 width: 24,
                 height: 24,
               ),
