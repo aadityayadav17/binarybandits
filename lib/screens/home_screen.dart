@@ -421,12 +421,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Helper method to build buttons with background image and text overlay
+  // Helper method to build buttons with background image and text overlay
   Widget _buildFeatureButton(
     BuildContext context,
     String imagePath,
     String text,
     VoidCallback onTap,
   ) {
+    double height = (text == 'DISCOVER\nRECIPE')
+        ? 160
+        : 110; // Different heights for discover vs other cards
+
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -438,12 +443,12 @@ class _HomeScreenState extends State<HomeScreen> {
               imagePath,
               fit: BoxFit.cover,
               width: double.infinity,
-              height: 150,
+              height: height, // Adjusted height
             ),
           ),
           Container(
             width: double.infinity,
-            height: 150,
+            height: height, // Adjusted height
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.6),
               borderRadius: BorderRadius.circular(20),
