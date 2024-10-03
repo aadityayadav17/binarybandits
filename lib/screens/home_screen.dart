@@ -39,9 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _filterRecipes(String query) {
     List<Recipe> filtered = _allRecipes
-        .where((recipe) =>
-            recipe.name.toLowerCase().contains(query.toLowerCase()) ||
-            recipe.ingredients.toLowerCase().contains(query.toLowerCase()))
+        .where((recipe) => recipe.name
+            .toLowerCase()
+            .contains(query.toLowerCase())) // Only filter by recipe name
         .toList();
     setState(() {
       _searchQuery = query;
@@ -176,7 +176,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             hintText: 'Search for recipe',
                             hintStyle: TextStyle(color: Colors.grey[600]),
                           ),
-                          onChanged: _filterRecipes,
+                          onChanged:
+                              _filterRecipes, // Call the _filterRecipes function when the user types
                         ),
                       ),
                     ],
