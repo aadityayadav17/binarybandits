@@ -323,12 +323,35 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       return Column(
         children: _filteredRecipes.map((recipe) {
-          return ListTile(
-            title: Text(recipe.name),
-            subtitle: Text('Rating: ${recipe.rating}'),
-            onTap: () {
-              // Handle recipe selection
-            },
+          return Container(
+            margin: const EdgeInsets.symmetric(
+                vertical: 8), // Spacing between items
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ListTile(
+              title: Text(
+                recipe.name,
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              subtitle: Text('Rating: ${recipe.rating}'),
+              onTap: () {
+                // Handle recipe selection
+              },
+            ),
           );
         }).toList(),
       );
