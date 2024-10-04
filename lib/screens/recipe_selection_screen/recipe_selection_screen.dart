@@ -205,7 +205,11 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                     ),
 
                     // Use the new RecipeInformationCard widget
-                    RecipeInformationCard(recipe: recipe),
+                    RecipeInformationCard(
+                      recipe: recipe,
+                      topPosition: 250, // Example position
+                      cardHeight: 200, // Example height
+                    )
                   ],
                 ),
                 const SizedBox(

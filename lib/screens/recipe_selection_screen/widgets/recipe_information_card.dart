@@ -3,107 +3,121 @@ import 'package:binarybandits/models/recipe.dart';
 
 class RecipeInformationCard extends StatelessWidget {
   final Recipe recipe;
+  final double topPosition;
+  final double cardHeight;
 
-  const RecipeInformationCard({Key? key, required this.recipe})
-      : super(key: key);
+  const RecipeInformationCard({
+    Key? key,
+    required this.recipe,
+    required this.topPosition,
+    required this.cardHeight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 250, // Overlaps the image by 50px
+      top: topPosition, // Dynamic top position passed as argument
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
-        child: Card(
-          color: Colors.white,
-          elevation: 4,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
+        child: SingleChildScrollView(
+          // Make the card scrollable
+          child: Card(
+            color: Colors.white,
+            elevation: 4,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
             ),
-          ),
-          child: SizedBox(
-            height: 200, // Fixed height
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildIconText(
+            child: SizedBox(
+              height: cardHeight, // Dynamic card height passed as argument
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                              capitalizeFirstLetter(recipe.difficulty)),
-                        ),
-                        Expanded(
-                          child: _buildIconText(
+                              capitalizeFirstLetter(recipe.difficulty),
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                              '${recipe.totalTime} min'),
-                        ),
-                        Expanded(
-                          child: _buildIconText(
+                              '${recipe.totalTime} min',
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/rating.png',
-                              '${recipe.rating}'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: _buildIconTextSideBySide(
+                              '${recipe.rating}',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: _buildIconTextSideBySide(
                               'assets/icons/screens/recipe_selection_screen/calories.png',
-                              '${recipe.energyKcal} kcal'),
-                        ),
-                        Expanded(
-                          child: _buildIconTextSideBySide(
+                              '${recipe.energyKcal} kcal',
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildIconTextSideBySide(
                               'assets/icons/screens/recipe_selection_screen/protein.png',
-                              '${recipe.protein}g Protein'),
+                              '${recipe.protein}g Protein',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        recipe.name,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      recipe.name,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 4.0,
-                      children: _buildTags(recipe),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Ingredients',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: _buildTags(recipe),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    _buildIngredientsList(recipe),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Cooking Directions',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Ingredients',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    _buildStepsList(recipe),
-                  ],
+                      const SizedBox(height: 8),
+                      _buildIngredientsList(recipe),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Cooking Directions',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildStepsList(recipe),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -162,10 +176,8 @@ class RecipeInformationCard extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.black, fontSize: 14),
-      ),
+      child:
+          Text(text, style: const TextStyle(color: Colors.black, fontSize: 14)),
     );
   }
 
