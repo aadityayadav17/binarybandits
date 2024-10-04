@@ -411,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: '',
               ),
             ],
-            selectedItemColor: Colors.green,
+            selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
             unselectedItemColor: Colors.grey,
             showSelectedLabels: false,
             showUnselectedLabels: false,

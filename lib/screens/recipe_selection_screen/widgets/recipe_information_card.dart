@@ -134,7 +134,7 @@ class RecipeInformationCard extends StatelessWidget {
     if (recipe.classification != null && recipe.classification!.isNotEmpty) {
       tags.add(_buildTag(
         capitalizeFirstLetter(recipe.classification!),
-        Colors.green, // Example: Vegetarian/Vegan
+        const Color.fromRGBO(73, 160, 120, 1), // Example: Vegetarian/Vegan
       ));
     }
     if (recipe.allergens != null) {

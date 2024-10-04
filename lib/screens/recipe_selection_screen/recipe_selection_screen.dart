@@ -335,7 +335,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
               label: '',
             ),
           ],
-          selectedItemColor: Colors.green,
+          selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
           unselectedItemColor: Colors.grey,
           showSelectedLabels: false,
           showUnselectedLabels: false,
