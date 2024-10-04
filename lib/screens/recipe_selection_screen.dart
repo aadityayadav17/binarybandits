@@ -268,7 +268,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left:
-                                              16.0), // You can adjust the padding value as needed
+                                              0.0), // You can adjust the padding value as needed
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
