@@ -49,7 +49,8 @@ class BudgetField extends StatelessWidget {
                     fontSize: 16, color: const Color(0xFF979797)),
               ),
               const SizedBox(width: 8),
-              Expanded(
+              Container(
+                width: 50, // Set a fixed width for the underline
                 child: TextField(
                   onChanged:
                       onChanged, // Connect the TextField onChanged to the widget's callback
@@ -59,9 +60,23 @@ class BudgetField extends StatelessWidget {
                     LengthLimitingTextInputFormatter(5),
                   ],
                   style: GoogleFonts.roboto(fontSize: 16),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical:
+                            4), // Reduced padding for closer text to underline
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color.fromRGBO(
+                            73, 160, 120, 1), // Underline color
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color.fromRGBO(
+                            73, 160, 120, 1), // Underline color when focused
+                      ),
+                    ),
                   ),
                 ),
               ),
