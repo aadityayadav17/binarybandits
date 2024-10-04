@@ -17,8 +17,9 @@ class SaveButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              isSaved ? Colors.grey : Colors.green, // Color based on state
+          backgroundColor: isSaved
+              ? Colors.grey
+              : const Color.fromRGBO(73, 160, 120, 1), // Color based on state
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
