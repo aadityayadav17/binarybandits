@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen.dart';
+import 'package:binarybandits/screens/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 
 class RecipeSelectionScreen extends StatefulWidget {
@@ -240,7 +241,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                       const SizedBox(width: 16),
                       ElevatedButton(
                         onPressed: () {
-                          // Handle Done action
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const RecipeOverviewScreen(),
+                          ));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
