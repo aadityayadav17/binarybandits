@@ -5,12 +5,14 @@ class RecipeInformationCard extends StatelessWidget {
   final Recipe recipe;
   final double topPosition;
   final double cardHeight;
+  final ScrollController scrollController; // Add ScrollController
 
   const RecipeInformationCard({
     Key? key,
     required this.recipe,
     required this.topPosition,
     required this.cardHeight,
+    required this.scrollController, // Add ScrollController to constructor
   }) : super(key: key);
 
   @override
@@ -35,6 +37,7 @@ class RecipeInformationCard extends StatelessWidget {
             ),
           ),
           child: SingleChildScrollView(
+            controller: scrollController, // Add the ScrollController
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(16.0),

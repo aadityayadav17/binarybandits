@@ -18,6 +18,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
   int _selectedCount = 0;
+  final ScrollController _scrollController =
+      ScrollController(); // ScrollController
 
   @override
   void initState() {
@@ -38,7 +40,15 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   void _nextRecipe() {
     setState(() {
       _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
+      _scrollController
+          .jumpTo(0); // Reset scroll position when switching recipes
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Dispose the ScrollController
+    super.dispose();
   }
 
   @override
@@ -162,8 +172,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           ),
                           Positioned(
                             top: 20,
-                            right: screenWidth * 0.05 +
-                                20, // Adjust based on card width
+                            right: screenWidth * 0.05,
                             child: IconButton(
                               icon: Image.asset(
                                 _savedRecipes[_currentRecipeIndex]
@@ -189,6 +198,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                   recipe: recipe,
                   topPosition: cardTopPosition + 30,
                   cardHeight: cardHeight,
+                  scrollController:
+                      _scrollController, // Pass the ScrollController
                 ),
                 Positioned(
                   top: cardTopPosition + 260,
