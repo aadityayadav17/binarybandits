@@ -99,6 +99,7 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/save.png
     - assets/icons/screens/recipe_selection_screen/save-on.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
+    - assets/icons/screens/recipe_selection_screen/undo.png
     - assets/images/home_screen/discover-recipe.png
     - assets/images/home_screen/grocery-list.png
     - assets/images/home_screen/recipe-collection.png

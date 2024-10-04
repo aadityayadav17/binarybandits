@@ -18,8 +18,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
   int _selectedCount = 0;
-  final ScrollController _scrollController =
-      ScrollController(); // ScrollController
+  final ScrollController _scrollController = ScrollController();
+  List<int> _recipeHistory = [];
 
   @override
   void initState() {
@@ -39,15 +39,24 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
 
   void _nextRecipe() {
     setState(() {
+      _recipeHistory.add(_currentRecipeIndex);
       _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
-      _scrollController
-          .jumpTo(0); // Reset scroll position when switching recipes
+      _scrollController.jumpTo(0);
     });
+  }
+
+  void _undoRecipe() {
+    if (_recipeHistory.isNotEmpty) {
+      setState(() {
+        _currentRecipeIndex = _recipeHistory.removeLast();
+        _scrollController.jumpTo(0);
+      });
+    }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Dispose the ScrollController
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -92,7 +101,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
         ),
         body: SingleChildScrollView(
           child: SizedBox(
-            height: screenHeight - 60, // Subtract AppBar height
+            height: screenHeight - 60,
             child: Stack(
               children: [
                 Column(
@@ -172,6 +181,18 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           ),
                           Positioned(
                             top: 20,
+                            left: screenWidth * 0.05,
+                            child: IconButton(
+                              icon: Image.asset(
+                                'assets/icons/screens/recipe_selection_screen/undo.png',
+                                width: 20,
+                                height: 20,
+                              ),
+                              onPressed: _undoRecipe,
+                            ),
+                          ),
+                          Positioned(
+                            top: 20,
                             right: screenWidth * 0.05,
                             child: IconButton(
                               icon: Image.asset(
@@ -198,8 +219,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                   recipe: recipe,
                   topPosition: cardTopPosition + 30,
                   cardHeight: cardHeight,
-                  scrollController:
-                      _scrollController, // Pass the ScrollController
+                  scrollController: _scrollController,
                 ),
                 Positioned(
                   top: cardTopPosition + 260,
@@ -255,15 +275,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white, // Set background to plain white
-          type: BottomNavigationBarType
-              .fixed, // Ensures equal spacing for all items
-          currentIndex: 0, // Default selected index (Home)
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 0,
           onTap: (index) {
-            // Handle button press by index (actions not decided yet)
             switch (index) {
               case 0:
-                // Navigate to HomeScreen when Home button is clicked
                 Navigator.push(
                   context,
                   MaterialPageRoute(
