@@ -16,109 +16,87 @@ class RecipeInformationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: topPosition, // Dynamic top position passed as argument
+      top: topPosition,
+      left: 0,
+      right: 0,
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: SingleChildScrollView(
-          // Make the card scrollable
-          child: Card(
-            color: Colors.white,
-            elevation: 4,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
+        height: cardHeight,
+        child: Card(
+          margin: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05),
+          color: Colors.white,
+          elevation: 4,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
             ),
-            child: SizedBox(
-              height: cardHeight, // Dynamic card height passed as argument
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: _buildIconText(
+                      Expanded(
+                          child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                              capitalizeFirstLetter(recipe.difficulty),
-                            ),
-                          ),
-                          Expanded(
-                            child: _buildIconText(
+                              capitalizeFirstLetter(recipe.difficulty))),
+                      Expanded(
+                          child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                              '${recipe.totalTime} min',
-                            ),
-                          ),
-                          Expanded(
-                            child: _buildIconText(
+                              '${recipe.totalTime} min')),
+                      Expanded(
+                          child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/rating.png',
-                              '${recipe.rating}',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: _buildIconTextSideBySide(
-                              'assets/icons/screens/recipe_selection_screen/calories.png',
-                              '${recipe.energyKcal} kcal',
-                            ),
-                          ),
-                          Expanded(
-                            child: _buildIconTextSideBySide(
-                              'assets/icons/screens/recipe_selection_screen/protein.png',
-                              '${recipe.protein}g Protein',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        recipe.name,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8.0,
-                        runSpacing: 4.0,
-                        children: _buildTags(recipe),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Ingredients',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildIngredientsList(recipe),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Cooking Directions',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildStepsList(recipe),
+                              '${recipe.rating}')),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          child: _buildIconTextSideBySide(
+                              'assets/icons/screens/recipe_selection_screen/calories.png',
+                              '${recipe.energyKcal} kcal')),
+                      Expanded(
+                          child: _buildIconTextSideBySide(
+                              'assets/icons/screens/recipe_selection_screen/protein.png',
+                              '${recipe.protein}g Protein')),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    recipe.name,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: _buildTags(recipe),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Ingredients',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  _buildIngredientsList(recipe),
+                  const SizedBox(height: 16),
+                  const Text('Cooking Directions',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  _buildStepsList(recipe),
+                ],
               ),
             ),
           ),
