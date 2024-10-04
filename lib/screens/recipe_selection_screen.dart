@@ -124,7 +124,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w900,
-                            fontSize: 36,
+                            fontSize: 32,
                             letterSpacing: 0,
                             height: 0.9,
                           ),
@@ -138,7 +138,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           '$_selectedCount', // Display the current selected count dynamically
                           style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 36,
+                            fontSize: 32,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -146,7 +146,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                           "Selected",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 20,
+                            fontSize: 16,
                           ),
                         ),
                       ],
@@ -264,36 +264,55 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                                                 '${recipe.protein}g Protein')),
                                       ],
                                     ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      recipe.name,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Wrap(
-                                      spacing: 8.0,
-                                      runSpacing: 4.0,
-                                      children: [
-                                        if (recipe.classification != null &&
-                                            recipe.classification!.isNotEmpty)
-                                          _buildTag(
-                                              capitalizeFirstLetter(
-                                                  recipe.classification!),
-                                              _getTagColor(
-                                                  recipe.classification!)),
-                                        if (recipe.allergens != null)
-                                          ...recipe.allergens!
-                                              .where((allergen) =>
-                                                  allergen.toLowerCase() !=
-                                                  'none')
-                                              .map((allergen) => _buildTag(
+                                    const SizedBox(height: 0),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left:
+                                              16.0), // You can adjust the padding value as needed
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            recipe.name,
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Wrap(
+                                            spacing: 8.0,
+                                            runSpacing: 4.0,
+                                            children: [
+                                              if (recipe.classification !=
+                                                      null &&
+                                                  recipe.classification!
+                                                      .isNotEmpty)
+                                                _buildTag(
                                                   capitalizeFirstLetter(
-                                                      allergen),
-                                                  _getTagColor('allergens'))),
-                                      ],
+                                                      recipe.classification!),
+                                                  _getTagColor(
+                                                      recipe.classification!),
+                                                ),
+                                              if (recipe.allergens != null)
+                                                ...recipe.allergens!
+                                                    .where((allergen) =>
+                                                        allergen
+                                                            .toLowerCase() !=
+                                                        'none')
+                                                    .map(
+                                                        (allergen) => _buildTag(
+                                                              capitalizeFirstLetter(
+                                                                  allergen),
+                                                              _getTagColor(
+                                                                  'allergens'),
+                                                            )),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     // Inside your build method, after displaying other recipe details
                                     const SizedBox(height: 16),
@@ -400,11 +419,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                   ],
                 ),
                 const SizedBox(
-                    height: 180), // Add spacing to push the buttons down
+                    height: 190), // Add spacing to push the buttons down
 
                 // Done Button and Add/Remove Buttons
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // Align buttons at the center
                   children: [
                     // Rejected Button with icon background
                     ElevatedButton(
@@ -432,21 +452,36 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                       ),
                     ),
 
+                    // Add spacing between the buttons
+                    const SizedBox(
+                        width: 16), // Adjust the width to control the space
+
                     // Done Button
                     ElevatedButton(
                       onPressed: () {
                         // Handle Done action if needed
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green, // Background color
+                        backgroundColor: const Color.fromRGBO(
+                            73, 160, 120, 1), // Background color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 12),
+                            horizontal: 70, vertical: 12),
                       ),
-                      child: const Text('Done'),
+                      child: const Text(
+                        'Done',
+                        style: TextStyle(
+                          color: Color.fromARGB(
+                              255, 255, 255, 255), // Set text color to white
+                        ),
+                      ),
                     ),
+
+                    // Add spacing between the buttons
+                    const SizedBox(
+                        width: 20), // Adjust the width to control the space
 
                     // Accepted Button with icon background
                     ElevatedButton(
@@ -523,7 +558,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/bottom_navigation/grocery-list-on.png',
+                'assets/icons/bottom_navigation/discover-recipe-on.png',
                 width: 24,
                 height: 24,
               ),
@@ -531,7 +566,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/icons/bottom_navigation/discover-recipe-off.png',
+                'assets/icons/bottom_navigation/grocery-list-off.png',
                 width: 24,
                 height: 24,
               ),
@@ -605,13 +640,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
         // Rectangle background (60x60)
         Image.asset(
           backgroundPath,
-          width: 60,
-          height: 60,
+          width: 62,
+          height: 62,
         ),
         // Foreground icon (24x24) with hard alignment using Positioned
         Positioned(
-          top: 17, // Adjust the top value to align vertically
-          left: 17, // Adjust the left value to align horizontally
+          top: 18, // Adjust the top value to align vertically
+          left: 18, // Adjust the left value to align horizontally
           child: Image.asset(
             iconPath,
             width: 20,

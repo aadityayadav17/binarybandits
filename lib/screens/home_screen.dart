@@ -380,22 +380,22 @@ class _HomeScreenState extends State<HomeScreen> {
               BottomNavigationBarItem(
                 icon: Image.asset(
                   'assets/icons/bottom_navigation/home-on.png',
-                  width: 24,
-                  height: 24,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/bottom_navigation/grocery-list-off.png',
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                 ),
                 label: '',
               ),
               BottomNavigationBarItem(
                 icon: Image.asset(
                   'assets/icons/bottom_navigation/discover-recipe-off.png',
+                  width: 22,
+                  height: 22,
+                ),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/icons/bottom_navigation/grocery-list-off.png',
                   width: 24,
                   height: 24,
                 ),
@@ -449,7 +449,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             height: height, // Adjusted height
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
+              color: const Color.fromARGB(255, 144, 186, 168).withOpacity(0.7),
               borderRadius: BorderRadius.circular(20),
             ),
           ),
@@ -459,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.robotoFlex(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: const Color.fromARGB(255, 255, 254, 254),
             ),
           ),
         ],
