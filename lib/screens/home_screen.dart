@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:binarybandits/models/recipe.dart';
-import 'package:binarybandits/screens/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 
 class HomeScreen extends StatefulWidget {
