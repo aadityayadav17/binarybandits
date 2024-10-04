@@ -5,7 +5,10 @@ import 'widgets/save_button.dart';
 import '../home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool
+      fromSignup; // Add a parameter to track where the screen was launched from
+
+  const ProfileScreen({super.key, required this.fromSignup});
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -90,13 +93,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       isSaved: _isSaved,
                       onPressed: () {
                         _updateSaveStatus(true); // Logic to save profile data
-                        // Navigate to HomeScreen after saving
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          ),
-                        );
+                        // Check where the user came from before deciding what to do next
+                        if (widget.fromSignup) {
+                          // Navigate to HomeScreen if the user came from the signup page
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        } else {
+                          // Stay on the profile page if the user came from anywhere else
+                        }
                       },
                     ),
                     const SizedBox(height: 40),

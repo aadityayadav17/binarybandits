@@ -262,8 +262,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProfileScreen()), // Make sure ProfileScreen is defined in profile.dart
+                                  builder: (context) => const ProfileScreen(
+                                      fromSignup:
+                                          true)), // Make sure ProfileScreen is defined in profile.dart
                             );
                           },
                           child: Image.asset(
