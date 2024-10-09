@@ -97,36 +97,29 @@ class RecipeCardStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: cardTopPosition + cardHeight,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: RecipeImageCard(
-              recipe: recipe,
-              isSaved: isSaved,
-              onSave: onSave,
-              onUndo: onUndo,
-              screenWidth: screenWidth,
+    return Stack(
+      children: [
+        Column(
+          children: [
+            SizedBox(
+              height: cardTopPosition,
+              child: RecipeImageCard(
+                recipe: recipe,
+                isSaved: isSaved,
+                onSave: onSave,
+                onUndo: onUndo,
+                screenWidth: screenWidth,
+              ),
             ),
-          ),
-          Positioned(
-            top: cardTopPosition - 30, // Adjust this value as needed
-            left: 0,
-            right: 0,
-            child: RecipeInformationCard(
-              recipe: recipe,
-              topPosition: 0,
-              cardHeight: cardHeight,
-              scrollController: scrollController,
-            ),
-          ),
-        ],
-      ),
+          ],
+        ),
+        RecipeInformationCard(
+          recipe: recipe,
+          topPosition: cardTopPosition + 30,
+          cardHeight: cardHeight,
+          scrollController: scrollController,
+        ),
+      ],
     );
   }
 }
