@@ -6,8 +6,11 @@ class IngredientListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          const Color.fromRGBO(245, 245, 245, 1), // Updated background color
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+        backgroundColor: const Color.fromRGBO(
+            245, 245, 245, 1), // AppBar background color matching the screen
         elevation: 0,
         toolbarHeight: 60,
         automaticallyImplyLeading: false,
@@ -104,21 +107,22 @@ class IngredientListPage extends StatelessWidget {
               onPressed: () {
                 // Add selected ingredients to grocery list
               },
-              child: Text(
-                'Add to Grocery List',
-                style: GoogleFonts.robotoFlex(),
-              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green[400],
                 padding: EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(double.infinity, 50),
+              ),
+              child: Text(
+                'Add to Grocery List',
+                style: GoogleFonts.robotoFlex(),
               ),
             ),
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromRGBO(245, 245, 245,
+            1), // Updated background color for the bottom navigation bar
         type: BottomNavigationBarType.fixed,
         currentIndex: 0,
         onTap: (index) {
@@ -193,14 +197,14 @@ class IngredientListPage extends StatelessWidget {
         onPressed: () {
           // Change selected tab logic
         },
-        child: Text(
-          title,
-          style: GoogleFonts.robotoFlex(),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: isSelected ? Colors.green[400] : Colors.grey[300],
           foregroundColor: isSelected ? Colors.white : Colors.black,
           shape: StadiumBorder(),
+        ),
+        child: Text(
+          title,
+          style: GoogleFonts.robotoFlex(),
         ),
       ),
     );
