@@ -6,20 +6,23 @@ class IngredientListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Ingredient List',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+        toolbarHeight: 60,
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: IconButton(
+            icon: Image.asset(
+              'assets/icons/screens/common/back-key.png',
+              width: 24,
+              height: 24,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
-        centerTitle: true,
       ),
       body: Column(
         children: [
