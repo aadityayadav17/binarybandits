@@ -78,7 +78,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Container(
-              height: 50,
+              height: 40, // Increase height to make sure tabs are fully visible
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
@@ -215,9 +215,8 @@ class _IngredientListPageState extends State<IngredientListPage> {
           style: GoogleFonts.robotoFlex(),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected
-              ? const Color.fromRGBO(73, 160, 120, 1)
-              : Colors.grey[300],
+          backgroundColor:
+              isSelected ? const Color.fromRGBO(73, 160, 120, 1) : Colors.white,
           foregroundColor: isSelected ? Colors.white : Colors.black,
           shape: StadiumBorder(),
         ),
