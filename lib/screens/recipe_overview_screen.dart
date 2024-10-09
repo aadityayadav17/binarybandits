@@ -96,41 +96,84 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             itemCount: _recipes.length,
                             itemBuilder: (context, index) {
                               final recipe = _recipes[index];
-                              return Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
+                              return Stack(
+                                children: [
+                                  Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        recipe.image, // Use the recipe image
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height:
-                                            200, // Adjust the height for the image
-                                      ),
                                     ),
-                                    const SizedBox(
-                                        height:
-                                            8), // Add some space between the image and name
-                                    // Display the recipe name below the image
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
-                                      child: Text(
-                                        recipe.name, // Display the recipe name
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          child: Image.asset(
+                                            recipe
+                                                .image, // Use the recipe image
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height:
+                                                250, // Adjust the height for the image
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(
+                                            height:
+                                                8), // Add some space between the image and name
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          child: Text(
+                                            recipe
+                                                .name, // Display the recipe name
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  // Positioned reject button
+                                  Positioned(
+                                    top: 10,
+                                    right: 10,
+                                    child: IconButton(
+                                      icon: Image.asset(
+                                        'assets/icons/screens/recipe_overview_screen/cross.png',
+                                        width: 16,
+                                        height: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          // Check if this is the last recipe
+                                          if (index == _recipes.length - 1 &&
+                                              _recipes.length > 1) {
+                                            // If it's the last recipe, set current index to the previous one
+                                            _currentRecipeIndex =
+                                                _currentRecipeIndex - 1;
+                                          } else if (_recipes.length > 1) {
+                                            // Otherwise, move to the next recipe (if available)
+                                            _currentRecipeIndex =
+                                                (_currentRecipeIndex + 1) %
+                                                    _recipes.length;
+                                          }
+
+                                          // Remove the recipe from the list
+                                          _recipes.removeAt(index);
+
+                                          // After removing the recipe, ensure the page controller stays updated
+                                          if (_recipes.isNotEmpty) {
+                                            _pageController?.jumpToPage(
+                                                _currentRecipeIndex);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
                               );
                             },
                           ),

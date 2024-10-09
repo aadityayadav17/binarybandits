@@ -86,6 +86,7 @@ flutter:
     - assets/icons/screens/log_screen/eye-open.png
     - assets/icons/screens/profile/dropdown-off-display.png
     - assets/icons/screens/profile/dropdown-on-display.png
+    - assets/icons/screens/recipe_overview_screen/cross.png
     - assets/icons/screens/recipe_selection_screen/calories.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-easy.png
     - assets/icons/screens/recipe_selection_screen/cooking-difficulty-hard.png
