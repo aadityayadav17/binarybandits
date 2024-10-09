@@ -123,6 +123,31 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                         },
                                       ),
                                     ),
+                                    // Add the recipe name below the image
+                                    Positioned(
+                                      bottom: 10,
+                                      left: 16,
+                                      right: 16,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          recipe
+                                              .name, // Display the recipe name
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
