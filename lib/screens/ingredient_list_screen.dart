@@ -223,12 +223,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
             recipe.ingredients, // Display the ingredients of the recipe
             style: GoogleFonts.robotoFlex(),
           ),
-          trailing: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.grey[300],
-            backgroundImage:
-                AssetImage(recipe.image), // Display the image from assets
-          ),
         ),
       ),
     );
