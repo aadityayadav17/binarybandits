@@ -1,16 +1,40 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen.dart';
+import 'package:binarybandits/models/recipe.dart'; // Assuming you store the Recipe model here
 
-class IngredientListPage extends StatelessWidget {
+class IngredientListPage extends StatefulWidget {
+  @override
+  _IngredientListPageState createState() => _IngredientListPageState();
+}
+
+class _IngredientListPageState extends State<IngredientListPage> {
+  List<Recipe> recipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    final String response = await rootBundle
+        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+    final List<dynamic> data = json.decode(response);
+
+    setState(() {
+      recipes = data.map((json) => Recipe.fromJson(json)).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          const Color.fromRGBO(245, 245, 245, 1), // Updated background color
+      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(
-            245, 245, 245, 1), // AppBar background color matching the screen
+        backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
         toolbarHeight: 60,
         automaticallyImplyLeading: false,
@@ -34,8 +58,7 @@ class IngredientListPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, top: 10.0),
             child: Align(
-              alignment:
-                  Alignment.centerLeft, // Ensure the text is left-aligned
+              alignment: Alignment.centerLeft,
               child: Text(
                 "Ingredient List",
                 style: GoogleFonts.robotoFlex(
@@ -48,7 +71,6 @@ class IngredientListPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
           // Recipe Tabs
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -58,48 +80,21 @@ class IngredientListPage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _buildRecipeTab('All', true),
-                  _buildRecipeTab('Recipe 1', false),
-                  _buildRecipeTab('Recipe 2', false),
-                  _buildRecipeTab('Recipe 3', false),
+                  for (Recipe recipe in recipes)
+                    _buildRecipeTab(recipe.name, false),
                 ],
               ),
             ),
           ),
-          // Add all button and item count
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // Add all ingredients to grocery list logic
-                  },
-                  icon: Icon(Icons.add),
-                  label: Text('Add all', style: GoogleFonts.robotoFlex()),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[400],
-                  ),
-                ),
-                Text(
-                  '10 Items',
-                  style: GoogleFonts.robotoFlex(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ],
-            ),
-          ),
           SizedBox(height: 10),
-          // Ingredients List
           Expanded(
             child: ListView.builder(
-              itemCount: 10, // dynamic based on your ingredient list
+              itemCount: recipes.length,
               itemBuilder: (context, index) {
-                return _buildIngredientCard();
+                return _buildIngredientCard(recipes[index]);
               },
             ),
           ),
-          // Add to Grocery List button
           Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -107,22 +102,21 @@ class IngredientListPage extends StatelessWidget {
               onPressed: () {
                 // Add selected ingredients to grocery list
               },
+              child: Text(
+                'Add to Grocery List',
+                style: GoogleFonts.robotoFlex(),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green[400],
                 padding: EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                'Add to Grocery List',
-                style: GoogleFonts.robotoFlex(),
               ),
             ),
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromRGBO(245, 245, 245,
-            1), // Updated background color for the bottom navigation bar
+        backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         type: BottomNavigationBarType.fixed,
         currentIndex: 0,
         onTap: (index) {
@@ -195,22 +189,22 @@ class IngredientListPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ElevatedButton(
         onPressed: () {
-          // Change selected tab logic
+          // Handle tab change
         },
+        child: Text(
+          title,
+          style: GoogleFonts.robotoFlex(),
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: isSelected ? Colors.green[400] : Colors.grey[300],
           foregroundColor: isSelected ? Colors.white : Colors.black,
           shape: StadiumBorder(),
         ),
-        child: Text(
-          title,
-          style: GoogleFonts.robotoFlex(),
-        ),
       ),
     );
   }
 
-  Widget _buildIngredientCard() {
+  Widget _buildIngredientCard(Recipe recipe) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
@@ -226,13 +220,14 @@ class IngredientListPage extends StatelessWidget {
             },
           ),
           title: Text(
-            'Ingredient name',
+            recipe.ingredients, // Display the ingredients of the recipe
             style: GoogleFonts.robotoFlex(),
           ),
           trailing: CircleAvatar(
             radius: 20,
             backgroundColor: Colors.grey[300],
-            child: Text(''),
+            backgroundImage:
+                AssetImage(recipe.image), // Display the image from assets
           ),
         ),
       ),
