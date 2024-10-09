@@ -14,6 +14,7 @@ class RecipeOverviewScreen extends StatefulWidget {
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
+  PageController? _pageController; // Use nullable PageController
 
   @override
   void initState() {
@@ -27,7 +28,17 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
+      _pageController = PageController(
+          initialPage:
+              _currentRecipeIndex); // Initialize PageController after loading recipes
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController
+        ?.dispose(); // Dispose the PageController if it's initialized
+    super.dispose();
   }
 
   @override
@@ -53,10 +64,9 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
           ),
         ),
       ),
-      body: _recipes.isEmpty
+      body: _recipes.isEmpty || _pageController == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              // Use SingleChildScrollView to prevent overflow
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -76,9 +86,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         SizedBox(
                           height: 300,
                           child: PageView.builder(
-                            controller: PageController(
-                                viewportFraction: 0.9,
-                                initialPage: _currentRecipeIndex),
+                            controller:
+                                _pageController, // Attach the PageController
                             onPageChanged: (index) {
                               setState(() {
                                 _currentRecipeIndex = index;
@@ -134,6 +143,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               setState(() {
                                 _currentRecipeIndex = value.toInt();
                               });
+                              _pageController?.jumpToPage(
+                                  _currentRecipeIndex); // Sync PageView with Slider
                             },
                           ),
                         ),
