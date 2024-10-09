@@ -53,6 +53,10 @@ class _IngredientListPageState extends State<IngredientListPage> {
     });
   }
 
+  int _getSelectedItemsCount() {
+    return selectedIngredients.values.where((isSelected) => isSelected).length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +110,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
                 backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: Text(
@@ -183,7 +187,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
                     ),
                   ),
                   Text(
-                    "${ingredients.length} Items",
+                    "${_getSelectedItemsCount()} Items Selected",
                     style: GoogleFonts.robotoFlex(
                       color: Colors.black54,
                       fontSize: 16,

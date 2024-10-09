@@ -319,14 +319,14 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               foregroundColor:
                                   const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(
+                                    8), // Keep original radius
                               ),
-                              elevation: 3, // Add shadow
                             ),
                             child: const Text(
                               'Apply All',
                               style: TextStyle(
-                                  color: const Color.fromRGBO(73, 160, 120, 1)),
+                                  color: Color.fromRGBO(73, 160, 120, 1)),
                             ),
                           ),
                         ),
@@ -342,9 +342,9 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               backgroundColor:
                                   const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(
+                                    8), // Keep original radius
                               ),
-                              elevation: 3, // Add shadow
                             ),
                             child: const Text(
                               'Next',
@@ -353,7 +353,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
