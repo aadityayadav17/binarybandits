@@ -95,18 +95,11 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                           return AnimatedBuilder(
                             animation: _pageController!,
                             builder: (context, child) {
-                              double value = 1.0;
-                              if (_pageController!.position.haveDimensions) {
-                                value = _pageController!.page! - index;
-                                value =
-                                    (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
-                              }
                               return Center(
                                 child: SizedBox(
-                                  height:
-                                      Curves.easeInOut.transform(value) * 300,
-                                  width:
-                                      Curves.easeInOut.transform(value) * 300,
+                                  height: 300,
+                                  width: MediaQuery.of(context).size.width *
+                                      0.8, // 80% of screen width
                                   child: child,
                                 ),
                               );
@@ -126,7 +119,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                           recipe.image,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
-                                          height: 220, // Reduced height
+                                          height:
+                                              220, // Maintained reduced height
                                         ),
                                       ),
                                       const SizedBox(height: 8),
@@ -137,7 +131,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                           recipe.name,
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
-                                            fontSize: 16, // Reduced font size
+                                            fontSize:
+                                                16, // Maintained reduced font size
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
