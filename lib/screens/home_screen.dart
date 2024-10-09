@@ -6,6 +6,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 import 'package:binarybandits/screens/recipe_collection_screen.dart';
+import 'package:binarybandits/screens/recipe_history.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -272,7 +273,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               'assets/images/home_screen/recipe-history.png',
                               'RECIPE\nHISTORY',
-                              () {},
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RecipeHistoryPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
