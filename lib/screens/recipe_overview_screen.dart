@@ -101,7 +101,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: Stack(
+                                child: Column(
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
@@ -109,42 +109,23 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                         recipe.image, // Use the recipe image
                                         fit: BoxFit.cover,
                                         width: double.infinity,
-                                        height: double.infinity,
+                                        height:
+                                            200, // Adjust the height for the image
                                       ),
                                     ),
-                                    Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.close,
-                                            color: Colors.white),
-                                        onPressed: () {
-                                          // Handle close button press
-                                        },
-                                      ),
-                                    ),
-                                    // Add the recipe name below the image
-                                    Positioned(
-                                      bottom: 10,
-                                      left: 16,
-                                      right: 16,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          recipe
-                                              .name, // Display the recipe name
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    const SizedBox(
+                                        height:
+                                            8), // Add some space between the image and name
+                                    // Display the recipe name below the image
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
+                                      child: Text(
+                                        recipe.name, // Display the recipe name
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
