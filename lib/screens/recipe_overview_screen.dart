@@ -171,13 +171,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        // If it's the last recipe and there are multiple recipes, set index to previous
+                                        // If it's the last recipe and there are multiple recipes, set index to the first one (index 0)
                                         if (index == _recipes.length - 1 &&
                                             _recipes.length > 1) {
-                                          _currentRecipeIndex--;
-                                        }
-                                        // Else, move to the next if it's not the last
-                                        else if (_recipes.length > 1) {
+                                          _currentRecipeIndex =
+                                              0; // Set to the first recipe
+                                        } else if (_recipes.length > 1) {
                                           _currentRecipeIndex =
                                               (_currentRecipeIndex + 1) %
                                                   _recipes.length;
@@ -187,6 +186,14 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                             .removeAt(index); // Remove recipe
                                         _servings.removeAt(
                                             index); // Remove associated servings
+
+                                        // Ensure the _currentRecipeIndex stays within bounds
+                                        if (_currentRecipeIndex >=
+                                            _recipes.length) {
+                                          _currentRecipeIndex = _recipes
+                                                  .length -
+                                              1; // Adjust the index if out of bounds
+                                        }
 
                                         if (_recipes.isNotEmpty) {
                                           _pageController?.jumpToPage(
