@@ -14,8 +14,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   List<Recipe> recipes = [];
   Recipe? selectedRecipe;
   bool isAllSelected = true;
-  int selectedCount = 0;
-  Set<String> selectedIngredients = Set<String>();
+  Map<String, bool> selectedIngredients = {};
 
   @override
   void initState() {
@@ -30,6 +29,27 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
     setState(() {
       recipes = data.map((json) => Recipe.fromJson(json)).toList();
+      _updateAllIngredients();
+    });
+  }
+
+  void _updateAllIngredients() {
+    Set<String> allIngredients = {};
+    for (var recipe in recipes) {
+      allIngredients.addAll(
+          _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
+    }
+    for (var ingredient in allIngredients) {
+      if (!selectedIngredients.containsKey(ingredient)) {
+        selectedIngredients[ingredient] = false;
+      }
+    }
+  }
+
+  void _toggleIngredient(String ingredient) {
+    setState(() {
+      selectedIngredients[ingredient] =
+          !(selectedIngredients[ingredient] ?? false);
     });
   }
 
@@ -131,20 +151,20 @@ class _IngredientListPageState extends State<IngredientListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    height: 36, // Fixed height
+                    height: 36,
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          if (selectedIngredients.length ==
-                              ingredients.length) {
-                            selectedIngredients.clear();
-                          } else {
-                            selectedIngredients = Set.from(ingredients);
+                          bool allSelected = ingredients
+                              .every((i) => selectedIngredients[i] ?? false);
+                          for (var ingredient in ingredients) {
+                            selectedIngredients[ingredient] = !allSelected;
                           }
                         });
                       },
                       child: Text(
-                        selectedIngredients.length == ingredients.length
+                        ingredients
+                                .every((i) => selectedIngredients[i] ?? false)
                             ? "Deselect all"
                             : "Select all",
                         style: GoogleFonts.robotoFlex(
@@ -187,20 +207,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Widget _buildIngredientItem(String ingredient) {
-    bool isSelected = selectedIngredients.contains(ingredient);
+    bool isSelected = selectedIngredients[ingredient] ?? false;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            if (isSelected) {
-              selectedIngredients.remove(ingredient);
-            } else {
-              selectedIngredients.add(ingredient);
-            }
-          });
-        },
+        onTap: () => _toggleIngredient(ingredient),
         child: Row(
           children: [
             Container(
@@ -223,7 +235,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
             SizedBox(width: 12),
             Expanded(
               child: Container(
-                height: 56, // Fixed height
+                height: 56,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -266,8 +278,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
         scrollDirection: Axis.horizontal,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-                left: 40.0), // Padding only for the first tab
+            padding: const EdgeInsets.only(left: 40.0),
             child:
                 _buildTabWithShadow(_buildRecipeTab('All', isAllSelected, () {
               setState(() {
