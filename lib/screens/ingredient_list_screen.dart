@@ -237,8 +237,8 @@ class _IngredientListPageState extends State<IngredientListPage> {
             color: Colors.grey.withOpacity(0.3), // Lighter shadow color
             spreadRadius:
                 0, // No extra spread, keeping shadow tight to bottom-right
-            blurRadius: 9, // Slight blur for softness
-            offset: Offset(3, 3), // Shift shadow towards bottom-right
+            blurRadius: 2, // Slight blur for softness
+            offset: Offset(2, 2), // Shift shadow towards bottom-right
           ),
         ],
       ),
