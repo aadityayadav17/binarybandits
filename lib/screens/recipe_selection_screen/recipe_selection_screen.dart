@@ -14,7 +14,8 @@ class RecipeSelectionScreen extends StatefulWidget {
   _RecipeSelectionScreenState createState() => _RecipeSelectionScreenState();
 }
 
-class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
+class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
+    with SingleTickerProviderStateMixin {
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
@@ -22,10 +23,23 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
   final ScrollController _scrollController = ScrollController();
   List<int> _recipeHistory = [];
 
+  late AnimationController _swipeController;
+  late Animation<Offset> _swipeAnimation;
+  late double _dragStartX;
+  bool _isDragging = false;
+
   @override
   void initState() {
     super.initState();
     _loadRecipes();
+    _swipeController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _swipeAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(_swipeController);
   }
 
   Future<void> _loadRecipes() async {
@@ -55,9 +69,68 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
     }
   }
 
+  void _onDragStart(DragStartDetails details) {
+    _dragStartX = details.localPosition.dx;
+    _isDragging = true;
+  }
+
+  void _onDragUpdate(DragUpdateDetails details) {
+    if (!_isDragging) return;
+
+    final dragDistance = details.localPosition.dx - _dragStartX;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final swipePercentage = dragDistance / screenWidth;
+
+    setState(() {
+      _swipeAnimation = Tween<Offset>(
+        begin: Offset.zero,
+        end: Offset(swipePercentage, 0),
+      ).animate(_swipeController);
+    });
+
+    _swipeController.value = swipePercentage.abs();
+  }
+
+  void _onDragEnd(DragEndDetails details) {
+    _isDragging = false;
+    if (_swipeController.value > 0.2) {
+      if (_swipeAnimation.value.dx > 0) {
+        _acceptRecipe();
+      } else {
+        _rejectRecipe();
+      }
+    } else {
+      _resetSwipe();
+    }
+  }
+
+  void _acceptRecipe() {
+    _swipeController.forward().then((_) {
+      setState(() {
+        _selectedCount++;
+        _nextRecipe();
+        _resetSwipe();
+      });
+    });
+  }
+
+  void _rejectRecipe() {
+    _swipeController.forward().then((_) {
+      setState(() {
+        _nextRecipe();
+        _resetSwipe();
+      });
+    });
+  }
+
+  void _resetSwipe() {
+    _swipeController.reverse();
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
+    _swipeController.dispose();
     super.dispose();
   }
 
@@ -158,60 +231,68 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                     ),
                     SizedBox(
                       height: cardTopPosition,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: screenWidth * 0.9,
-                            child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  recipe.image,
-                                  width: double.infinity,
-                                  height: 280,
-                                  fit: BoxFit.cover,
+                      child: GestureDetector(
+                        onHorizontalDragStart: _onDragStart,
+                        onHorizontalDragUpdate: _onDragUpdate,
+                        onHorizontalDragEnd: _onDragEnd,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            SlideTransition(
+                              position: _swipeAnimation,
+                              child: SizedBox(
+                                width: screenWidth * 0.9,
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.asset(
+                                      recipe.image,
+                                      width: double.infinity,
+                                      height: 280,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            top: 20,
-                            left: screenWidth * 0.05,
-                            child: IconButton(
-                              icon: Image.asset(
-                                'assets/icons/screens/recipe_selection_screen/undo.png',
-                                width: 20,
-                                height: 20,
+                            Positioned(
+                              top: 20,
+                              left: screenWidth * 0.05,
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'assets/icons/screens/recipe_selection_screen/undo.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                onPressed: _undoRecipe,
                               ),
-                              onPressed: _undoRecipe,
                             ),
-                          ),
-                          Positioned(
-                            top: 20,
-                            right: screenWidth * 0.05,
-                            child: IconButton(
-                              icon: Image.asset(
-                                _savedRecipes[_currentRecipeIndex]
-                                    ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
-                                    : 'assets/icons/screens/recipe_selection_screen/save.png',
-                                width: 20,
-                                height: 20,
+                            Positioned(
+                              top: 20,
+                              right: screenWidth * 0.05,
+                              child: IconButton(
+                                icon: Image.asset(
+                                  _savedRecipes[_currentRecipeIndex]
+                                      ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
+                                      : 'assets/icons/screens/recipe_selection_screen/save.png',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _savedRecipes[_currentRecipeIndex] =
+                                        !_savedRecipes[_currentRecipeIndex];
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _savedRecipes[_currentRecipeIndex] =
-                                      !_savedRecipes[_currentRecipeIndex];
-                                });
-                              },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -232,11 +313,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                       _buildActionButton(
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
-                        () {
-                          setState(() {
-                            _nextRecipe();
-                          });
-                        },
+                        _rejectRecipe,
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton(
@@ -263,12 +340,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen> {
                       _buildActionButton(
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
-                        () {
-                          setState(() {
-                            _selectedCount++;
-                            _nextRecipe();
-                          });
-                        },
+                        _acceptRecipe,
                       ),
                     ],
                   ),
