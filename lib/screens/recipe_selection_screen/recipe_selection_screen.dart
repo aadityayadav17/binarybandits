@@ -23,6 +23,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
   List<int> _recipeHistory = [];
+  List<bool> _acceptedRecipes = [];
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
@@ -50,11 +51,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
       _savedRecipes = List.generate(_recipes.length, (_) => false);
+      _acceptedRecipes = List.generate(_recipes.length, (_) => false);
     });
   }
 
-  void _nextRecipe() {
+  void _nextRecipe({bool accepted = false}) {
     setState(() {
+      _acceptedRecipes[_currentRecipeIndex] = accepted;
       _recipeHistory.add(_currentRecipeIndex);
       _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
       _scrollController.jumpTo(0);
@@ -64,7 +67,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   void _undoRecipe() {
     if (_recipeHistory.isNotEmpty) {
       setState(() {
-        _currentRecipeIndex = _recipeHistory.removeLast();
+        int previousIndex = _recipeHistory.removeLast();
+        if (_acceptedRecipes[previousIndex]) {
+          _selectedCount--;
+          _acceptedRecipes[previousIndex] = false;
+        }
+        _currentRecipeIndex = previousIndex;
         _scrollController.jumpTo(0);
       });
     }
@@ -109,7 +117,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     _swipeController.forward().then((_) {
       setState(() {
         _selectedCount++;
-        _nextRecipe();
+        _nextRecipe(accepted: true);
         _resetSwipe();
       });
     });
@@ -118,7 +126,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   void _rejectRecipe() {
     _swipeController.forward().then((_) {
       setState(() {
-        _nextRecipe();
+        _nextRecipe(accepted: false);
         _resetSwipe();
       });
     });
