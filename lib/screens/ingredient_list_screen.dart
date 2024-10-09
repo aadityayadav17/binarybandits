@@ -26,6 +26,21 @@ class IngredientListPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Ingredient List",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 32,
+                  letterSpacing: 0,
+                  height: 0.9,
+                ),
+              ),
+            ],
+          ),
           // Recipe Tabs
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
