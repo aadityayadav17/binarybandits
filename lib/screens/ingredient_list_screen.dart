@@ -130,32 +130,36 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (selectedIngredients.length == ingredients.length) {
-                          selectedIngredients.clear();
-                        } else {
-                          selectedIngredients = Set.from(ingredients);
-                        }
-                      });
-                    },
-                    child: Text(
-                      selectedIngredients.length == ingredients.length
-                          ? "Remove all"
-                          : "Add all",
-                      style: GoogleFonts.robotoFlex(
-                        color: Colors.white,
-                        fontSize: 14,
+                  Container(
+                    height: 36, // Fixed height
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (selectedIngredients.length ==
+                              ingredients.length) {
+                            selectedIngredients.clear();
+                          } else {
+                            selectedIngredients = Set.from(ingredients);
+                          }
+                        });
+                      },
+                      child: Text(
+                        selectedIngredients.length == ingredients.length
+                            ? "Deselect all"
+                            : "Select all",
+                        style: GoogleFonts.robotoFlex(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     ),
                   ),
                   Text(
@@ -197,43 +201,59 @@ class _IngredientListPageState extends State<IngredientListPage> {
             }
           });
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: isSelected
-                ? Border.all(
-                    color: const Color.fromRGBO(73, 160, 120, 1), width: 2)
-                : null,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 3,
-                offset: Offset(0, 1),
+        child: Row(
+          children: [
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? const Color.fromRGBO(73, 160, 120, 1)
+                    : Colors.transparent,
               ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  isSelected ? Icons.remove : Icons.add,
-                  color: const Color.fromRGBO(73, 160, 120, 1),
+              child: Icon(
+                isSelected ? Icons.remove : Icons.add,
+                size: 16,
+                color: isSelected
+                    ? Colors.white
+                    : const Color.fromRGBO(73, 160, 120, 1),
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Container(
+                height: 56, // Fixed height
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: isSelected
+                      ? Border.all(
+                          color: const Color.fromRGBO(73, 160, 120, 1),
+                          width: 2)
+                      : null,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
                 ),
-              ),
-              Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    ingredient,
-                    style: GoogleFonts.robotoFlex(fontSize: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      ingredient,
+                      style: GoogleFonts.robotoFlex(fontSize: 16),
+                    ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
