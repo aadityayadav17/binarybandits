@@ -221,43 +221,67 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Image.asset(
-                            'assets/icons/screens/recipe_overview_screen/minus.png',
-                            width: 12, // Adjust the width as needed
-                            height: 12, // Adjust the height as needed
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              if (_servings > 1) _servings--;
-                            });
-                          },
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .white, // Background color for the rounded rectangle
+                          borderRadius:
+                              BorderRadius.circular(24), // Rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(
+                                  0.3), // Optional shadow for depth
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3), // Shadow positioning
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Text(
-                          '$_servings',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        constraints: BoxConstraints(
+                          minWidth: 150, // Minimum width to cover the buttons
+                          maxWidth:
+                              180, // Maximum width to prevent it from stretching too much
                         ),
-                        const SizedBox(width: 16),
-                        IconButton(
-                          icon: Image.asset(
-                            'assets/icons/screens/recipe_overview_screen/add.png',
-                            width: 12, // Adjust the width as needed
-                            height: 12, // Adjust the height as needed
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _servings++;
-                            });
-                          },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Image.asset(
+                                'assets/icons/screens/recipe_overview_screen/minus.png',
+                                width: 12, // Adjust the width as needed
+                                height: 12, // Adjust the height as needed
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (_servings > 1) _servings--;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              '$_servings',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: Image.asset(
+                                'assets/icons/screens/recipe_overview_screen/add.png',
+                                width: 12, // Adjust the width as needed
+                                height: 12, // Adjust the height as needed
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _servings++;
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
