@@ -263,7 +263,6 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               '$_servings',
                               style: const TextStyle(
                                 fontSize: 24,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -293,13 +292,17 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              foregroundColor: const Color(0xFF49A078),
-                              side: const BorderSide(color: Color(0xFF49A078)),
+                              foregroundColor:
+                                  const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Apply All'),
+                            child: const Text(
+                              'Apply All',
+                              style: TextStyle(
+                                  color: const Color.fromRGBO(73, 160, 120, 1)),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -309,12 +312,16 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               // Handle Next
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF49A078),
+                              backgroundColor:
+                                  const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Text('Next'),
+                            child: const Text(
+                              'Next',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ],
