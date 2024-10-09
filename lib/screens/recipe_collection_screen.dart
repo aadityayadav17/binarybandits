@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen.dart';
@@ -10,12 +12,22 @@ class RecipeCollectionPage extends StatefulWidget {
 }
 
 class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
-  List<Recipe> recipes = []; // You'll need to populate this with actual recipes
+  List<Recipe> recipes = [];
 
   @override
   void initState() {
     super.initState();
-    // TODO: Load recipes here
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    final String response = await rootBundle
+        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+    final List<dynamic> data = json.decode(response);
+
+    setState(() {
+      recipes = data.map((json) => Recipe.fromJson(json)).toList();
+    });
   }
 
   @override
@@ -77,7 +89,7 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
 
   Widget _buildRecipeItem(Recipe recipe) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
       child: Container(
         height: 56,
         decoration: BoxDecoration(
