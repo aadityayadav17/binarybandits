@@ -256,44 +256,50 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                           maxWidth: 180,
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween, // Ensure buttons are spaced
                           children: [
-                            IconButton(
-                              icon: Image.asset(
-                                // Use the disabled icon if servings are 1, otherwise use the enabled icon
-                                _servings[_currentRecipeIndex] > 1
-                                    ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
-                                    : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
-                                width: 12,
-                                height: 12,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0), // Adjust padding for alignment
+                              child: IconButton(
+                                icon: Image.asset(
+                                  _servings[_currentRecipeIndex] > 1
+                                      ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
+                                      : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
+                                  width: 12,
+                                  height: 12,
+                                ),
+                                onPressed: _servings[_currentRecipeIndex] > 1
+                                    ? () {
+                                        setState(() {
+                                          _servings[_currentRecipeIndex]--;
+                                        });
+                                      }
+                                    : null, // Disable the button when servings are 1
                               ),
-                              onPressed: _servings[_currentRecipeIndex] > 1
-                                  ? () {
-                                      setState(() {
-                                        _servings[_currentRecipeIndex]--;
-                                      });
-                                    }
-                                  : null, // Disable the button when servings are 1
                             ),
-                            const SizedBox(width: 16),
                             Text(
                               '${_servings[_currentRecipeIndex]}',
                               style: const TextStyle(
                                 fontSize: 24,
                               ),
                             ),
-                            const SizedBox(width: 16),
-                            IconButton(
-                              icon: Image.asset(
-                                'assets/icons/screens/recipe_overview_screen/add.png',
-                                width: 12,
-                                height: 12,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 16.0), // Adjust padding for alignment
+                              child: IconButton(
+                                icon: Image.asset(
+                                  'assets/icons/screens/recipe_overview_screen/add.png',
+                                  width: 12,
+                                  height: 12,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _servings[_currentRecipeIndex]++;
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _servings[_currentRecipeIndex]++;
-                                });
-                              },
                             ),
                           ],
                         ),
