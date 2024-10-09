@@ -79,7 +79,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     SizedBox(
                       height: 300,
                       child: PageView.builder(
@@ -193,7 +193,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Slider(
                       value: _currentRecipeIndex.toDouble(),
                       min: 0,
@@ -210,7 +210,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         _pageController?.jumpToPage(_currentRecipeIndex);
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     const Text(
                       'How many servings for this recipe?',
                       style:
