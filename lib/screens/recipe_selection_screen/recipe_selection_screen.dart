@@ -6,6 +6,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen.dart';
 import 'package:binarybandits/screens/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
@@ -229,71 +230,20 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: cardTopPosition,
-                      child: GestureDetector(
-                        onHorizontalDragStart: _onDragStart,
-                        onHorizontalDragUpdate: _onDragUpdate,
-                        onHorizontalDragEnd: _onDragEnd,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            SlideTransition(
-                              position: _swipeAnimation,
-                              child: SizedBox(
-                                width: screenWidth * 0.9,
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.asset(
-                                      recipe.image,
-                                      width: double.infinity,
-                                      height: 280,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 20,
-                              left: screenWidth * 0.05,
-                              child: IconButton(
-                                icon: Image.asset(
-                                  'assets/icons/screens/recipe_selection_screen/undo.png',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                onPressed: _undoRecipe,
-                              ),
-                            ),
-                            Positioned(
-                              top: 20,
-                              right: screenWidth * 0.05,
-                              child: IconButton(
-                                icon: Image.asset(
-                                  _savedRecipes[_currentRecipeIndex]
-                                      ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
-                                      : 'assets/icons/screens/recipe_selection_screen/save.png',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _savedRecipes[_currentRecipeIndex] =
-                                        !_savedRecipes[_currentRecipeIndex];
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    RecipeCardStack(
+                      recipe: recipe,
+                      isSaved: _savedRecipes[_currentRecipeIndex],
+                      onSave: () {
+                        setState(() {
+                          _savedRecipes[_currentRecipeIndex] =
+                              !_savedRecipes[_currentRecipeIndex];
+                        });
+                      },
+                      onUndo: _undoRecipe,
+                      screenWidth: screenWidth,
+                      cardTopPosition: cardTopPosition,
+                      cardHeight: cardHeight,
+                      scrollController: _scrollController,
                     ),
                   ],
                 ),
