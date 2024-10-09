@@ -113,26 +113,38 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
   Widget _buildToggleButtons() {
     return Row(
       children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () => setState(() => showIngredients = true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: showIngredients ? Colors.green : Colors.grey,
-            ),
-            child: const Text('Ingredients'),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () => setState(() => showIngredients = false),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: !showIngredients ? Colors.green : Colors.grey,
-            ),
-            child: const Text('Cooking Directions'),
-          ),
-        ),
+        _buildToggleButton('Ingredients', showIngredients),
+        const SizedBox(width: 16),
+        _buildToggleButton('Steps', !showIngredients),
       ],
+    );
+  }
+
+  Widget _buildToggleButton(String text, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          showIngredients = text == 'Ingredients';
+        });
+      },
+      child: Column(
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.black : Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            height: 2,
+            width: 60, // Adjust width as needed
+            color: isSelected ? Colors.green : Colors.transparent,
+          ),
+        ],
+      ),
     );
   }
 
@@ -146,7 +158,6 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 8),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -175,7 +186,6 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 8),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
