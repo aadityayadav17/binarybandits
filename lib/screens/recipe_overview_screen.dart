@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:binarybandits/screens/home_screen.dart';
 
 class RecipeOverviewScreen extends StatelessWidget {
   const RecipeOverviewScreen({Key? key}) : super(key: key);
@@ -177,29 +178,70 @@ class RecipeOverviewScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF49A078),
+        currentIndex: 0,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+              break;
+            case 1:
+              // Action for Grocery List button
+              break;
+            case 2:
+              // Action for Discover Recipe button
+              break;
+            case 3:
+              // Action for Weekly Menu button
+              break;
+            default:
+              break;
+          }
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/home-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/discover-recipe-on.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/grocery-list-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/weekly-menu-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+        ],
+        selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
         unselectedItemColor: Colors.grey,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Recipes',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket_outlined),
-            label: 'Grocery',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            label: 'Menu',
-          ),
-        ],
       ),
     );
   }
