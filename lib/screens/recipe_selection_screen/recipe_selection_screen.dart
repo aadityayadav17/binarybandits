@@ -256,6 +256,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                   ],
                 ),
                 RecipeInformationCard(
+                  key: ValueKey(recipe.id), // Add this line
                   recipe: recipe,
                   topPosition: cardTopPosition + 30,
                   cardHeight: cardHeight,

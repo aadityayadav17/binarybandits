@@ -7,13 +7,13 @@ class RecipeInformationCard extends StatefulWidget {
   final double cardHeight;
   final ScrollController scrollController;
 
-  const RecipeInformationCard({
+  RecipeInformationCard({
     Key? key,
     required this.recipe,
     required this.topPosition,
     required this.cardHeight,
     required this.scrollController,
-  }) : super(key: key);
+  }) : super(key: ValueKey(recipe.id)); // Use recipe.id as the key
 
   @override
   _RecipeInformationCardState createState() => _RecipeInformationCardState();
@@ -21,6 +21,17 @@ class RecipeInformationCard extends StatefulWidget {
 
 class _RecipeInformationCardState extends State<RecipeInformationCard> {
   bool showIngredients = true;
+
+  @override
+  void didUpdateWidget(RecipeInformationCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.recipe.id != oldWidget.recipe.id) {
+      setState(() {
+        showIngredients =
+            true; // Reset to Ingredients when a new recipe is loaded
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +151,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
           const SizedBox(height: 4),
           Container(
             height: 2,
-            width: 60, // Adjust width as needed
+            width: 60,
             color: isSelected ? Colors.green : Colors.transparent,
           ),
         ],
