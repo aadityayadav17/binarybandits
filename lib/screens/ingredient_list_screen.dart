@@ -102,14 +102,16 @@ class _IngredientListPageState extends State<IngredientListPage> {
               onPressed: () {
                 // Add selected ingredients to grocery list
               },
-              child: Text(
-                'Add to Grocery List',
-                style: GoogleFonts.robotoFlex(),
-              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[400],
+                backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                 padding: EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(double.infinity, 50),
+              ),
+              child: Text(
+                'Add to Grocery List',
+                style: GoogleFonts.robotoFlex(
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -196,7 +198,9 @@ class _IngredientListPageState extends State<IngredientListPage> {
           style: GoogleFonts.robotoFlex(),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.green[400] : Colors.grey[300],
+          backgroundColor: isSelected
+              ? const Color.fromRGBO(73, 160, 120, 1)
+              : Colors.grey[300],
           foregroundColor: isSelected ? Colors.white : Colors.black,
           shape: StadiumBorder(),
         ),
@@ -210,11 +214,13 @@ class _IngredientListPageState extends State<IngredientListPage> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.green, width: 1),
+          border: Border.all(
+              color: const Color.fromRGBO(73, 160, 120, 1), width: 1),
         ),
         child: ListTile(
           leading: IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green),
+            icon: Icon(Icons.add_circle_outline,
+                color: const Color.fromRGBO(73, 160, 120, 1)),
             onPressed: () {
               // Add single ingredient to grocery list logic
             },
