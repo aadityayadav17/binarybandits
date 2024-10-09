@@ -201,48 +201,67 @@ class _IngredientListPageState extends State<IngredientListPage> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          // Add padding only to the first tab ('All')
           Padding(
             padding: const EdgeInsets.only(
                 left: 40.0), // Padding only for the first tab
-            child: _buildRecipeTab('All', isAllSelected, () {
+            child:
+                _buildTabWithShadow(_buildRecipeTab('All', isAllSelected, () {
               setState(() {
                 isAllSelected = true;
                 selectedRecipe = null;
               });
-            }),
+            })),
           ),
           for (Recipe recipe in recipes)
-            _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
+            _buildTabWithShadow(
+                _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
               setState(() {
                 isAllSelected = false;
                 selectedRecipe = recipe;
               });
-            }),
+            })),
         ],
       ),
     );
   }
 
+  Widget _buildTabWithShadow(Widget tab) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white, // Ensure tab background is white
+        borderRadius:
+            BorderRadius.circular(20), // Apply consistent border radius
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3), // Lighter shadow color
+            spreadRadius:
+                0, // No extra spread, keeping shadow tight to bottom-right
+            blurRadius: 9, // Slight blur for softness
+            offset: Offset(3, 3), // Shift shadow towards bottom-right
+          ),
+        ],
+      ),
+      child: tab,
+    );
+  }
+
   Widget _buildRecipeTab(String title, bool isSelected, VoidCallback onTap) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: ElevatedButton(
-        onPressed: onTap,
-        child: Text(
-          title,
-          style: GoogleFonts.robotoFlex(fontSize: 14),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor:
-              isSelected ? const Color.fromRGBO(73, 160, 120, 1) : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Colors.black,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: isSelected ? Colors.transparent : Colors.grey.shade300,
-            ),
+    return ElevatedButton(
+      onPressed: onTap,
+      child: Text(
+        title,
+        style: GoogleFonts.robotoFlex(fontSize: 14),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor:
+            isSelected ? const Color.fromRGBO(73, 160, 120, 1) : Colors.white,
+        foregroundColor: isSelected ? Colors.white : Colors.black,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: isSelected ? Colors.transparent : Colors.grey.shade300,
           ),
         ),
       ),
