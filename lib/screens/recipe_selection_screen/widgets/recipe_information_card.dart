@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
 
-class RecipeInformationCard extends StatelessWidget {
+class RecipeInformationCard extends StatefulWidget {
   final Recipe recipe;
   final double topPosition;
   final double cardHeight;
-  final ScrollController scrollController; // Add ScrollController
+  final ScrollController scrollController;
 
   const RecipeInformationCard({
     Key? key,
     required this.recipe,
     required this.topPosition,
     required this.cardHeight,
-    required this.scrollController, // Add ScrollController to constructor
+    required this.scrollController,
   }) : super(key: key);
+
+  @override
+  _RecipeInformationCardState createState() => _RecipeInformationCardState();
+}
+
+class _RecipeInformationCardState extends State<RecipeInformationCard> {
+  bool showIngredients = true;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: topPosition,
+      top: widget.topPosition,
       left: 0,
       right: 0,
       child: SizedBox(
-        height: cardHeight,
+        height: widget.cardHeight,
         child: Card(
           margin: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -37,7 +44,7 @@ class RecipeInformationCard extends StatelessWidget {
             ),
           ),
           child: SingleChildScrollView(
-            controller: scrollController, // Add the ScrollController
+            controller: widget.scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -49,16 +56,16 @@ class RecipeInformationCard extends StatelessWidget {
                     children: [
                       Expanded(
                           child: _buildIconText(
-                              'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${recipe.difficulty.toLowerCase()}.png',
-                              capitalizeFirstLetter(recipe.difficulty))),
+                              'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${widget.recipe.difficulty.toLowerCase()}.png',
+                              capitalizeFirstLetter(widget.recipe.difficulty))),
                       Expanded(
                           child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                              '${recipe.totalTime} min')),
+                              '${widget.recipe.totalTime} min')),
                       Expanded(
                           child: _buildIconText(
                               'assets/icons/screens/recipe_selection_screen/rating.png',
-                              '${recipe.rating}')),
+                              '${widget.recipe.rating}')),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -68,16 +75,16 @@ class RecipeInformationCard extends StatelessWidget {
                       Expanded(
                           child: _buildIconTextSideBySide(
                               'assets/icons/screens/recipe_selection_screen/calories.png',
-                              '${recipe.energyKcal} kcal')),
+                              '${widget.recipe.energyKcal} kcal')),
                       Expanded(
                           child: _buildIconTextSideBySide(
                               'assets/icons/screens/recipe_selection_screen/protein.png',
-                              '${recipe.protein}g Protein')),
+                              '${widget.recipe.protein}g Protein')),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    recipe.name,
+                    widget.recipe.name,
                     style: const TextStyle(
                         fontSize: 20, fontWeight: FontWeight.bold),
                   ),
@@ -85,26 +92,111 @@ class RecipeInformationCard extends StatelessWidget {
                   Wrap(
                     spacing: 8.0,
                     runSpacing: 4.0,
-                    children: _buildTags(recipe),
+                    children: _buildTags(widget.recipe),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Ingredients',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  _buildIngredientsList(recipe),
+                  _buildToggleButtons(),
                   const SizedBox(height: 16),
-                  const Text('Cooking Directions',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  _buildStepsList(recipe),
+                  if (showIngredients)
+                    _buildIngredientsList(widget.recipe)
+                  else
+                    _buildStepsList(widget.recipe),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildToggleButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () => setState(() => showIngredients = true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: showIngredients ? Colors.green : Colors.grey,
+            ),
+            child: const Text('Ingredients'),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () => setState(() => showIngredients = false),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: !showIngredients ? Colors.green : Colors.grey,
+            ),
+            child: const Text('Cooking Directions'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIngredientsList(Recipe recipe) {
+    final ingredients =
+        recipe.ingredientsQuantityInGrams.split('\n').map((line) {
+      final parts = line.split(' -> ');
+      return {'name': parts[0], 'quantity': parts[1]};
+    }).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: ingredients.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: Text(ingredients[index]['name'] ?? '',
+                          style: const TextStyle(fontSize: 16))),
+                  Text(ingredients[index]['quantity'] ?? '',
+                      style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepsList(Recipe recipe) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: recipe.steps.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${index + 1}.', style: const TextStyle(fontSize: 16)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                      child: Text(recipe.steps[index],
+                          style: const TextStyle(fontSize: 16))),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -159,58 +251,6 @@ class RecipeInformationCard extends StatelessWidget {
       ),
       child:
           Text(text, style: const TextStyle(color: Colors.black, fontSize: 14)),
-    );
-  }
-
-  Widget _buildIngredientsList(Recipe recipe) {
-    final ingredients =
-        recipe.ingredientsQuantityInGrams.split('\n').map((line) {
-      final parts = line.split(' -> ');
-      return {'name': parts[0], 'quantity': parts[1]};
-    }).toList();
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: ingredients.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                  child: Text(ingredients[index]['name'] ?? '',
-                      style: const TextStyle(fontSize: 16))),
-              Text(ingredients[index]['quantity'] ?? '',
-                  style: const TextStyle(fontSize: 16)),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildStepsList(Recipe recipe) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: recipe.steps.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('${index + 1}.', style: const TextStyle(fontSize: 16)),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: Text(recipe.steps[index],
-                      style: const TextStyle(fontSize: 16))),
-            ],
-          ),
-        );
-      },
     );
   }
 
