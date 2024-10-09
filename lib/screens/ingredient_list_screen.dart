@@ -15,6 +15,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Recipe? selectedRecipe;
   bool isAllSelected = true;
   int selectedCount = 0;
+  Set<String> selectedIngredients = Set<String>();
 
   @override
   void initState() {
@@ -129,20 +130,29 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: () {
-                      // Add all ingredients logic
+                      setState(() {
+                        if (selectedIngredients.length == ingredients.length) {
+                          selectedIngredients.clear();
+                        } else {
+                          selectedIngredients = Set.from(ingredients);
+                        }
+                      });
                     },
-                    icon: Icon(Icons.add, color: Colors.white, size: 18),
-                    label: Text(
-                      "Add all",
+                    child: Text(
+                      selectedIngredients.length == ingredients.length
+                          ? "Remove all"
+                          : "Add all",
                       style: GoogleFonts.robotoFlex(
-                          color: Colors.white, fontSize: 14),
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       padding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -158,7 +168,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
                 ],
               ),
             ),
-            Divider(height: 1, color: Colors.grey.shade300),
             Expanded(
               child: ListView.builder(
                 itemCount: ingredients.length,
@@ -174,24 +183,59 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Widget _buildIngredientItem(String ingredient) {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: Icon(
-            Icons.add_circle_outline,
-            color: const Color.fromRGBO(73, 160, 120, 1),
+    bool isSelected = selectedIngredients.contains(ingredient);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (isSelected) {
+              selectedIngredients.remove(ingredient);
+            } else {
+              selectedIngredients.add(ingredient);
+            }
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: isSelected
+                ? Border.all(
+                    color: const Color.fromRGBO(73, 160, 120, 1), width: 2)
+                : null,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 3,
+                offset: Offset(0, 1),
+              ),
+            ],
           ),
-          title: Text(
-            ingredient,
-            style: GoogleFonts.robotoFlex(fontSize: 16),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  isSelected ? Icons.remove : Icons.add,
+                  color: const Color.fromRGBO(73, 160, 120, 1),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    ingredient,
+                    style: GoogleFonts.robotoFlex(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
           ),
-          onTap: () {
-            // Add single ingredient to grocery list logic
-          },
         ),
-        Divider(height: 1, color: Colors.grey.shade300),
-      ],
+      ),
     );
   }
 
@@ -249,10 +293,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Widget _buildRecipeTab(String title, bool isSelected, VoidCallback onTap) {
     return ElevatedButton(
       onPressed: onTap,
-      child: Text(
-        title,
-        style: GoogleFonts.robotoFlex(fontSize: 14),
-      ),
       style: ElevatedButton.styleFrom(
         backgroundColor:
             isSelected ? const Color.fromRGBO(73, 160, 120, 1) : Colors.white,
@@ -264,6 +304,10 @@ class _IngredientListPageState extends State<IngredientListPage> {
             color: isSelected ? Colors.transparent : Colors.grey.shade300,
           ),
         ),
+      ),
+      child: Text(
+        title,
+        style: GoogleFonts.robotoFlex(fontSize: 14),
       ),
     );
   }
