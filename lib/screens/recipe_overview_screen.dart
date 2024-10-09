@@ -36,11 +36,13 @@ class RecipeOverviewScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'You successfully added 3 recipes\nto the My Menu!',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                Text(
+                  'You successfully added 3 recipes to the My Menu!',
+                  style: GoogleFonts.robotoFlex(
+                    textStyle: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -118,9 +120,14 @@ class RecipeOverviewScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'How many servings for this recipe?',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.robotoFlex(
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -133,10 +140,14 @@ class RecipeOverviewScreen extends StatelessWidget {
                       },
                     ),
                     const SizedBox(width: 16),
-                    const Text(
+                    Text(
                       '4',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.robotoFlex(
+                        textStyle: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     IconButton(
@@ -163,7 +174,10 @@ class RecipeOverviewScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text('Apply All'),
+                        child: Text(
+                          'Apply All',
+                          style: GoogleFonts.robotoFlex(),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -178,7 +192,12 @@ class RecipeOverviewScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text('Next'),
+                        child: Text(
+                          'Next',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
                   ],
