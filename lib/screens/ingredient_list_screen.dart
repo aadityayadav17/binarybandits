@@ -27,10 +27,13 @@ class IngredientListPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
+          // Left-align the "Ingredient List" text
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 10.0),
+            child: Align(
+              alignment:
+                  Alignment.centerLeft, // Ensure the text is left-aligned
+              child: Text(
                 "Ingredient List",
                 style: GoogleFonts.robotoFlex(
                   color: Colors.black,
@@ -40,8 +43,9 @@ class IngredientListPage extends StatelessWidget {
                   height: 0.9,
                 ),
               ),
-            ],
+            ),
           ),
+          const SizedBox(height: 16),
           // Recipe Tabs
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
