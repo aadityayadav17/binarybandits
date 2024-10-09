@@ -224,16 +224,29 @@ class _IngredientListPageState extends State<IngredientListPage> {
   // Helper method to get the list of ingredients based on the selected tab
   List<String> _getIngredientsList() {
     if (isAllSelected) {
-      // Combine ingredients from all recipes
+      // Combine ingredients from all recipes by parsing "ingredients_quantity_in_g"
       return recipes
-          .expand((recipe) => recipe.ingredients.split(', '))
+          .expand((recipe) =>
+              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams))
           .toList();
     } else if (selectedRecipe != null) {
-      // Display ingredients of the selected recipe
-      return selectedRecipe!.ingredients.split(', ');
+      // Display ingredients of the selected recipe by parsing "ingredients_quantity_in_g"
+      return _parseIngredientsQuantityInG(
+          selectedRecipe!.ingredientsQuantityInGrams);
     } else {
       return [];
     }
+  }
+
+  // Parse "ingredients_quantity_in_g" and extract the ingredient name (text before "->")
+  List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
+    return ingredientsQuantityInGrams
+        .split('\n') // Split by line breaks
+        .map((line) => line
+            .split('->')
+            .first
+            .trim()) // Extract text before "->" and trim spaces
+        .toList();
   }
 
   // Build ingredient card
