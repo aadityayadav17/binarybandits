@@ -225,7 +225,11 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove),
+                          icon: Image.asset(
+                            'assets/icons/screens/recipe_overview_screen/minus.png',
+                            width: 12, // Adjust the width as needed
+                            height: 12, // Adjust the height as needed
+                          ),
                           onPressed: () {
                             setState(() {
                               if (_servings > 1) _servings--;
@@ -242,7 +246,11 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         ),
                         const SizedBox(width: 16),
                         IconButton(
-                          icon: const Icon(Icons.add),
+                          icon: Image.asset(
+                            'assets/icons/screens/recipe_overview_screen/add.png',
+                            width: 12, // Adjust the width as needed
+                            height: 12, // Adjust the height as needed
+                          ),
                           onPressed: () {
                             setState(() {
                               _servings++;
