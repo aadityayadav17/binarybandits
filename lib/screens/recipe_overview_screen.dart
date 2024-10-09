@@ -139,6 +139,10 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             divisions: _recipes.length - 1,
                             label:
                                 'Recipe ${_currentRecipeIndex + 1} of ${_recipes.length}',
+                            activeColor: const Color.fromRGBO(73, 160, 120,
+                                1), // Changed the active color of the slider
+                            inactiveColor: Colors
+                                .grey, // Optionally, set the inactive color to grey
                             onChanged: (value) {
                               setState(() {
                                 _currentRecipeIndex = value.toInt();
