@@ -13,9 +13,9 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
+  List<int> _servings = []; // Change from int to List<int>
   int _currentRecipeIndex = 0;
   PageController? _pageController;
-  int _servings = 4;
 
   @override
   void initState() {
@@ -29,10 +29,11 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
+      _servings = List<int>.filled(_recipes.length,
+          1); // Initialize servings list with 1 for each recipe
       _pageController = PageController(
         initialPage: _currentRecipeIndex,
-        viewportFraction:
-            0.8, // This will make each page take up 80% of the width
+        viewportFraction: 0.8,
       );
     });
   }
@@ -41,6 +42,13 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   void dispose() {
     _pageController?.dispose();
     super.dispose();
+  }
+
+  void _applyAllServings() {
+    int currentServing = _servings[_currentRecipeIndex];
+    setState(() {
+      _servings = List<int>.filled(_recipes.length, currentServing);
+    });
   }
 
   @override
@@ -98,8 +106,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               return Center(
                                 child: SizedBox(
                                   height: 300,
-                                  width: MediaQuery.of(context).size.width *
-                                      0.8, // 80% of screen width
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
                                   child: child,
                                 ),
                               );
@@ -114,18 +122,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   child: Column(
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15),
-                                          bottomRight: Radius.circular(15),
-                                        ),
+                                        borderRadius: BorderRadius.circular(15),
                                         child: Image.asset(
                                           recipe.image,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
-                                          height:
-                                              260, // Maintained reduced height
+                                          height: 260,
                                         ),
                                       ),
                                       Expanded(
@@ -146,8 +148,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                                 recipe.name,
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
-                                                  fontSize:
-                                                      16, // Maintained reduced font size
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -171,14 +172,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                       setState(() {
                                         if (index == _recipes.length - 1 &&
                                             _recipes.length > 1) {
-                                          _currentRecipeIndex =
-                                              _currentRecipeIndex - 1;
+                                          _currentRecipeIndex--;
                                         } else if (_recipes.length > 1) {
-                                          _currentRecipeIndex =
-                                              (_currentRecipeIndex + 1) %
-                                                  _recipes.length;
+                                          _currentRecipeIndex++;
                                         }
                                         _recipes.removeAt(index);
+                                        _servings.removeAt(index);
                                         if (_recipes.isNotEmpty) {
                                           _pageController
                                               ?.jumpToPage(_currentRecipeIndex);
@@ -224,24 +223,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                     Center(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors
-                              .white, // Background color for the rounded rectangle
-                          borderRadius:
-                              BorderRadius.circular(24), // Rounded corners
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(
-                                  0.3), // Optional shadow for depth
+                              color: Colors.grey.withOpacity(0.3),
                               spreadRadius: 1,
                               blurRadius: 5,
-                              offset: const Offset(0, 3), // Shadow positioning
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
                         constraints: BoxConstraints(
-                          minWidth: 150, // Minimum width to cover the buttons
-                          maxWidth:
-                              180, // Maximum width to prevent it from stretching too much
+                          minWidth: 150,
+                          maxWidth: 180,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -249,18 +244,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             IconButton(
                               icon: Image.asset(
                                 'assets/icons/screens/recipe_overview_screen/minus.png',
-                                width: 12, // Adjust the width as needed
-                                height: 12, // Adjust the height as needed
+                                width: 12,
+                                height: 12,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  if (_servings > 1) _servings--;
+                                  if (_servings[_currentRecipeIndex] > 1) {
+                                    _servings[_currentRecipeIndex]--;
+                                  }
                                 });
                               },
                             ),
                             const SizedBox(width: 16),
                             Text(
-                              '$_servings',
+                              '${_servings[_currentRecipeIndex]}',
                               style: const TextStyle(
                                 fontSize: 24,
                               ),
@@ -269,12 +266,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             IconButton(
                               icon: Image.asset(
                                 'assets/icons/screens/recipe_overview_screen/add.png',
-                                width: 12, // Adjust the width as needed
-                                height: 12, // Adjust the height as needed
+                                width: 12,
+                                height: 12,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _servings++;
+                                  _servings[_currentRecipeIndex]++;
                                 });
                               },
                             ),
@@ -288,7 +285,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              // Handle Apply All
+                              _applyAllServings();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
