@@ -260,17 +260,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                           children: [
                             IconButton(
                               icon: Image.asset(
-                                'assets/icons/screens/recipe_overview_screen/minus.png',
+                                // Use the disabled icon if servings are 1, otherwise use the enabled icon
+                                _servings[_currentRecipeIndex] > 1
+                                    ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
+                                    : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
                                 width: 12,
                                 height: 12,
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  if (_servings[_currentRecipeIndex] > 1) {
-                                    _servings[_currentRecipeIndex]--;
-                                  }
-                                });
-                              },
+                              onPressed: _servings[_currentRecipeIndex] > 1
+                                  ? () {
+                                      setState(() {
+                                        _servings[_currentRecipeIndex]--;
+                                      });
+                                    }
+                                  : null, // Disable the button when servings are 1
                             ),
                             const SizedBox(width: 16),
                             Text(
