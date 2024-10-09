@@ -211,10 +211,14 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'How many servings for this recipe?',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    const Center(
+                      child: Text(
+                        'How many servings for this recipe?',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Row(
