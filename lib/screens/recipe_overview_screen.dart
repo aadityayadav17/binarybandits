@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen.dart';
+import 'package:binarybandits/screens/ingredient_list_screen.dart';
 
 class RecipeOverviewScreen extends StatefulWidget {
   const RecipeOverviewScreen({Key? key}) : super(key: key);
@@ -333,7 +334,9 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              // Handle Next
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => IngredientListPage(),
+                              ));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
