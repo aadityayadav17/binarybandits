@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
+import 'package:binarybandits/screens/recipe_collection_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -232,7 +233,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               'assets/images/home_screen/recipe-collection.png',
                               'RECIPE\nCOLLECTION',
-                              () {},
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RecipeCollectionPage(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -359,63 +368,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           // Bottom Navigation Bar
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: 0,
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  break;
-                case 1:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RecipeSelectionScreen(),
-                    ),
-                  );
-                  break;
-              }
-            },
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/bottom_navigation/home-on.png',
-                  width: 26,
-                  height: 26,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/bottom_navigation/discover-recipe-off.png',
-                  width: 22,
-                  height: 22,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/bottom_navigation/grocery-list-off.png',
-                  width: 24,
-                  height: 24,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/icons/bottom_navigation/weekly-menu-off.png',
-                  width: 24,
-                  height: 24,
-                ),
-                label: '',
-              ),
-            ],
-            selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
-            unselectedItemColor: Colors.grey,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-          ),
+          bottomNavigationBar: _buildBottomNavigationBar(),
         ),
       ),
     );
@@ -465,6 +418,73 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      backgroundColor: Colors.white,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: 1, // Assuming this is the second tab
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            // Action for Home button
+            break;
+          case 1:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RecipeSelectionScreen(),
+              ),
+            );
+            break;
+          case 2:
+            // Action for Grocery List button
+            break;
+          case 3:
+            // Action for Weekly Menu button
+            break;
+        }
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/home-on.png',
+            width: 26,
+            height: 26,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/discover-recipe-off.png',
+            width: 22,
+            height: 22,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/grocery-list-off.png',
+            width: 24,
+            height: 24,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/weekly-menu-off.png',
+            width: 24,
+            height: 24,
+          ),
+          label: '',
+        ),
+      ],
+      selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     );
   }
 }
