@@ -29,7 +29,11 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _pageController = PageController(initialPage: _currentRecipeIndex);
+      _pageController = PageController(
+        initialPage: _currentRecipeIndex,
+        viewportFraction:
+            0.8, // This will make each page take up 80% of the width
+      );
     });
   }
 
@@ -88,70 +92,90 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         itemCount: _recipes.length,
                         itemBuilder: (context, index) {
                           final recipe = _recipes[index];
-                          return Stack(
-                            children: [
-                              Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                          return AnimatedBuilder(
+                            animation: _pageController!,
+                            builder: (context, child) {
+                              double value = 1.0;
+                              if (_pageController!.position.haveDimensions) {
+                                value = _pageController!.page! - index;
+                                value =
+                                    (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
+                              }
+                              return Center(
+                                child: SizedBox(
+                                  height:
+                                      Curves.easeInOut.transform(value) * 300,
+                                  width:
+                                      Curves.easeInOut.transform(value) * 300,
+                                  child: child,
                                 ),
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        recipe.image,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: 250,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0),
-                                      child: Text(
-                                        recipe.name,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Image.asset(
+                                          recipe.image,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 220, // Reduced height
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                top: 10,
-                                right: 10,
-                                child: IconButton(
-                                  icon: Image.asset(
-                                    'assets/icons/screens/recipe_overview_screen/cross.png',
-                                    width: 16,
-                                    height: 16,
+                                      const SizedBox(height: 8),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: Text(
+                                          recipe.name,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 16, // Reduced font size
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (index == _recipes.length - 1 &&
-                                          _recipes.length > 1) {
-                                        _currentRecipeIndex =
-                                            _currentRecipeIndex - 1;
-                                      } else if (_recipes.length > 1) {
-                                        _currentRecipeIndex =
-                                            (_currentRecipeIndex + 1) %
-                                                _recipes.length;
-                                      }
-                                      _recipes.removeAt(index);
-                                      if (_recipes.isNotEmpty) {
-                                        _pageController
-                                            ?.jumpToPage(_currentRecipeIndex);
-                                      }
-                                    });
-                                  },
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: IconButton(
+                                    icon: Image.asset(
+                                      'assets/icons/screens/recipe_overview_screen/cross.png',
+                                      width: 16,
+                                      height: 16,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (index == _recipes.length - 1 &&
+                                            _recipes.length > 1) {
+                                          _currentRecipeIndex =
+                                              _currentRecipeIndex - 1;
+                                        } else if (_recipes.length > 1) {
+                                          _currentRecipeIndex =
+                                              (_currentRecipeIndex + 1) %
+                                                  _recipes.length;
+                                        }
+                                        _recipes.removeAt(index);
+                                        if (_recipes.isNotEmpty) {
+                                          _pageController
+                                              ?.jumpToPage(_currentRecipeIndex);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),
