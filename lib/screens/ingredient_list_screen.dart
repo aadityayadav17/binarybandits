@@ -344,17 +344,23 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   List<String> _getIngredientsList() {
+    List<String> ingredients;
     if (isAllSelected) {
-      return recipes
+      ingredients = recipes
           .expand((recipe) =>
               _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams))
+          .toSet()
           .toList();
     } else if (selectedRecipe != null) {
-      return _parseIngredientsQuantityInG(
+      ingredients = _parseIngredientsQuantityInG(
           selectedRecipe!.ingredientsQuantityInGrams);
     } else {
-      return [];
+      ingredients = [];
     }
+
+    // Sort the ingredients alphabetically
+    ingredients.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return ingredients;
   }
 
   List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
