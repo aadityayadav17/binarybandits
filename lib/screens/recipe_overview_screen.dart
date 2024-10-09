@@ -13,6 +13,7 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
+  int _currentRecipeIndex = 0;
 
   @override
   void initState() {
@@ -54,170 +55,183 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
       ),
       body: _recipes.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'You successfully added ${_recipes.length} recipes\nto the My Menu!',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        height: 300,
-                        child: PageView.builder(
-                          itemCount: _recipes.length,
-                          itemBuilder: (context, index) {
-                            final recipe = _recipes[index];
-                            return Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.asset(
-                                      recipe.image, // Use the recipe image
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        // Handle close button press
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          _recipes.length,
-                          (index) => Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: index == 0 ? Colors.black : Colors.grey,
-                            ),
+          : SingleChildScrollView(
+              // Use SingleChildScrollView to prevent overflow
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'You successfully added ${_recipes.length} recipes\nto the My Menu!',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, -3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'How many servings for this recipe?',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove),
-                            onPressed: () {
-                              // Handle decrease servings
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          height: 300,
+                          child: PageView.builder(
+                            controller: PageController(
+                                viewportFraction: 0.9,
+                                initialPage: _currentRecipeIndex),
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentRecipeIndex = index;
+                              });
+                            },
+                            itemCount: _recipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = _recipes[index];
+                              return Card(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: Image.asset(
+                                        recipe.image, // Use the recipe image
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 10,
+                                      right: 10,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.close,
+                                            color: Colors.white),
+                                        onPressed: () {
+                                          // Handle close button press
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                           ),
-                          const SizedBox(width: 16),
-                          const Text(
-                            '4',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              // Handle increase servings
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Slider(
+                            value: _currentRecipeIndex.toDouble(),
+                            min: 0,
+                            max: (_recipes.length - 1).toDouble(),
+                            divisions: _recipes.length - 1,
+                            label:
+                                'Recipe ${_currentRecipeIndex + 1} of ${_recipes.length}',
+                            onChanged: (value) {
+                              setState(() {
+                                _currentRecipeIndex = value.toInt();
+                              });
                             },
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Handle Apply All
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF49A078),
-                                side:
-                                    const BorderSide(color: Color(0xFF49A078)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text('Apply All'),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Handle Next
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF49A078),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: const Text('Next'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                      height: 16), // Add some spacing for better layout
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, -3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'How many servings for this recipe?',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove),
+                              onPressed: () {
+                                // Handle decrease servings
+                              },
+                            ),
+                            const SizedBox(width: 16),
+                            const Text(
+                              '4',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                // Handle increase servings
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Handle Apply All
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xFF49A078),
+                                  side: const BorderSide(
+                                      color: Color(0xFF49A078)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Apply All'),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Handle Next
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF49A078),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Next'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
