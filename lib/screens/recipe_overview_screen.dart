@@ -114,26 +114,44 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   child: Column(
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15),
+                                          bottomLeft: Radius.circular(15),
+                                          bottomRight: Radius.circular(15),
+                                        ),
                                         child: Image.asset(
                                           recipe.image,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height:
-                                              220, // Maintained reduced height
+                                              260, // Maintained reduced height
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        child: Text(
-                                          recipe.name,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize:
-                                                16, // Maintained reduced font size
-                                            fontWeight: FontWeight.bold,
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(15),
+                                              bottomRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4.0),
+                                              child: Text(
+                                                recipe.name,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize:
+                                                      16, // Maintained reduced font size
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
