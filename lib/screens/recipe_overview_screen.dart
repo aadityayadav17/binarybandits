@@ -33,7 +33,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
@@ -66,9 +66,9 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'You successfully added ${_recipes.length} recipes\nto the My Menu!',
+                          'You successfully added ${_recipes.length} recipes to the My Menu!',
                           style: const TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
