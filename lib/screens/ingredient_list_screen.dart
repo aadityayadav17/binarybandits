@@ -82,12 +82,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildRecipeTab('All', isAllSelected, () {
-                    setState(() {
-                      isAllSelected = true;
-                      selectedRecipe = null; // Display all ingredients
-                    });
-                  }),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: _buildRecipeTab('All', isAllSelected, () {
+                      setState(() {
+                        isAllSelected = true;
+                        selectedRecipe = null; // Display all ingredients
+                      });
+                    }),
+                  ),
                   for (Recipe recipe in recipes)
                     _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
                       setState(() {
@@ -99,6 +102,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
               ),
             ),
           ),
+
           SizedBox(height: 10),
           // Ingredients List
           Expanded(
