@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:binarybandits/screens/home_screen.dart';
 
 class IngredientListPage extends StatelessWidget {
   @override
@@ -89,7 +90,72 @@ class IngredientListPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 0,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
+              break;
+            case 1:
+              // Action for Grocery List button
+              break;
+            case 2:
+              // Action for Discover Recipe button
+              break;
+            case 3:
+              // Action for Weekly Menu button
+              break;
+            default:
+              break;
+          }
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/home-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/discover-recipe-on.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/grocery-list-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/bottom_navigation/weekly-menu-off.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '',
+          ),
+        ],
+        selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
+        unselectedItemColor: Colors.grey,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+      ),
     );
   }
 
@@ -133,35 +199,6 @@ class IngredientListPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomNavigationBar(
-      currentIndex: 0,
-      onTap: (int index) {
-        // Handle tab switching
-      },
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.kitchen),
-          label: 'Recipes',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          label: 'Grocery List',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.note),
-          label: 'Notes',
-        ),
-      ],
-      selectedItemColor: Colors.green[400],
-      unselectedItemColor: Colors.grey[600],
     );
   }
 }
