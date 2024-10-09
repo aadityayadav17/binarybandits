@@ -12,6 +12,8 @@ class IngredientListPage extends StatefulWidget {
 
 class _IngredientListPageState extends State<IngredientListPage> {
   List<Recipe> recipes = [];
+  Recipe? selectedRecipe; // Track the selected recipe
+  bool isAllSelected = true; // To track if "All" is selected
 
   @override
   void initState() {
@@ -71,6 +73,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
               ),
             ),
           ),
+          const SizedBox(height: 16),
           // Recipe Tabs
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -79,19 +82,30 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildRecipeTab('All', true),
+                  _buildRecipeTab('All', isAllSelected, () {
+                    setState(() {
+                      isAllSelected = true;
+                      selectedRecipe = null; // Display all ingredients
+                    });
+                  }),
                   for (Recipe recipe in recipes)
-                    _buildRecipeTab(recipe.name, false),
+                    _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
+                      setState(() {
+                        isAllSelected = false;
+                        selectedRecipe = recipe; // Set the selected recipe
+                      });
+                    }),
                 ],
               ),
             ),
           ),
           SizedBox(height: 10),
+          // Ingredients List
           Expanded(
             child: ListView.builder(
-              itemCount: recipes.length,
+              itemCount: _getIngredientsList().length,
               itemBuilder: (context, index) {
-                return _buildIngredientCard(recipes[index]);
+                return _buildIngredientCard(_getIngredientsList()[index]);
               },
             ),
           ),
@@ -186,13 +200,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  Widget _buildRecipeTab(String title, bool isSelected) {
+  // Helper method to build Recipe Tabs
+  Widget _buildRecipeTab(String title, bool isSelected, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ElevatedButton(
-        onPressed: () {
-          // Handle tab change
-        },
+        onPressed: onTap,
         child: Text(
           title,
           style: GoogleFonts.robotoFlex(),
@@ -208,7 +221,23 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  Widget _buildIngredientCard(Recipe recipe) {
+  // Helper method to get the list of ingredients based on the selected tab
+  List<String> _getIngredientsList() {
+    if (isAllSelected) {
+      // Combine ingredients from all recipes
+      return recipes
+          .expand((recipe) => recipe.ingredients.split(', '))
+          .toList();
+    } else if (selectedRecipe != null) {
+      // Display ingredients of the selected recipe
+      return selectedRecipe!.ingredients.split(', ');
+    } else {
+      return [];
+    }
+  }
+
+  // Build ingredient card
+  Widget _buildIngredientCard(String ingredient) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
@@ -226,7 +255,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
             },
           ),
           title: Text(
-            recipe.ingredients, // Display the ingredients of the recipe
+            ingredient, // Display each ingredient
             style: GoogleFonts.robotoFlex(),
           ),
         ),
