@@ -13,7 +13,7 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
-  List<int> _servings = []; // Change from int to List<int>
+  List<int> _servings = []; // Growable list for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
 
@@ -29,8 +29,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _servings = List<int>.filled(_recipes.length,
-          1); // Initialize servings list with 1 for each recipe
+      _servings = List<int>.filled(_recipes.length, 1,
+          growable: true); // Use growable list
       _pageController = PageController(
         initialPage: _currentRecipeIndex,
         viewportFraction: 0.8,
@@ -47,7 +47,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   void _applyAllServings() {
     int currentServing = _servings[_currentRecipeIndex];
     setState(() {
-      _servings = List<int>.filled(_recipes.length, currentServing);
+      _servings =
+          List<int>.filled(_recipes.length, currentServing, growable: true);
     });
   }
 
@@ -170,17 +171,26 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                     ),
                                     onPressed: () {
                                       setState(() {
+                                        // If it's the last recipe and there are multiple recipes, set index to previous
                                         if (index == _recipes.length - 1 &&
                                             _recipes.length > 1) {
                                           _currentRecipeIndex--;
-                                        } else if (_recipes.length > 1) {
-                                          _currentRecipeIndex++;
                                         }
-                                        _recipes.removeAt(index);
-                                        _servings.removeAt(index);
+                                        // Else, move to the next if it's not the last
+                                        else if (_recipes.length > 1) {
+                                          _currentRecipeIndex =
+                                              (_currentRecipeIndex + 1) %
+                                                  _recipes.length;
+                                        }
+
+                                        _recipes
+                                            .removeAt(index); // Remove recipe
+                                        _servings.removeAt(
+                                            index); // Remove associated servings
+
                                         if (_recipes.isNotEmpty) {
-                                          _pageController
-                                              ?.jumpToPage(_currentRecipeIndex);
+                                          _pageController?.jumpToPage(
+                                              _currentRecipeIndex); // Update the view
                                         }
                                       });
                                     },
@@ -294,6 +304,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
+                              elevation: 3, // Add shadow
                             ),
                             child: const Text(
                               'Apply All',
@@ -314,6 +325,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
+                              elevation: 3, // Add shadow
                             ),
                             child: const Text(
                               'Next',
