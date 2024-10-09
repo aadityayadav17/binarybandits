@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen.dart';
 
 class IngredientListPage extends StatelessWidget {
@@ -26,12 +27,12 @@ class IngredientListPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Ingredient List",
-                style: TextStyle(
+                style: GoogleFonts.robotoFlex(
                   color: Colors.black,
                   fontWeight: FontWeight.w900,
                   fontSize: 32,
@@ -68,14 +69,15 @@ class IngredientListPage extends StatelessWidget {
                     // Add all ingredients to grocery list logic
                   },
                   icon: Icon(Icons.add),
-                  label: Text('Add all'),
+                  label: Text('Add all', style: GoogleFonts.robotoFlex()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[400],
                   ),
                 ),
                 Text(
                   '10 Items',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: GoogleFonts.robotoFlex(
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
@@ -98,7 +100,10 @@ class IngredientListPage extends StatelessWidget {
               onPressed: () {
                 // Add selected ingredients to grocery list
               },
-              child: Text('Add to Grocery List'),
+              child: Text(
+                'Add to Grocery List',
+                style: GoogleFonts.robotoFlex(),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green[400],
                 padding: EdgeInsets.symmetric(vertical: 16),
@@ -184,7 +189,10 @@ class IngredientListPage extends StatelessWidget {
         onPressed: () {
           // Change selected tab logic
         },
-        child: Text(title),
+        child: Text(
+          title,
+          style: GoogleFonts.robotoFlex(),
+        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: isSelected ? Colors.green[400] : Colors.grey[300],
           foregroundColor: isSelected ? Colors.white : Colors.black,
@@ -209,7 +217,10 @@ class IngredientListPage extends StatelessWidget {
               // Add single ingredient to grocery list logic
             },
           ),
-          title: Text('Ingredient name'),
+          title: Text(
+            'Ingredient name',
+            style: GoogleFonts.robotoFlex(),
+          ),
           trailing: CircleAvatar(
             radius: 20,
             backgroundColor: Colors.grey[300],
