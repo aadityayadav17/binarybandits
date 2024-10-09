@@ -201,13 +201,17 @@ class _IngredientListPageState extends State<IngredientListPage> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          SizedBox(width: 16),
-          _buildRecipeTab('All', isAllSelected, () {
-            setState(() {
-              isAllSelected = true;
-              selectedRecipe = null;
-            });
-          }),
+          // Add padding only to the first tab ('All')
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 40.0), // Padding only for the first tab
+            child: _buildRecipeTab('All', isAllSelected, () {
+              setState(() {
+                isAllSelected = true;
+                selectedRecipe = null;
+              });
+            }),
+          ),
           for (Recipe recipe in recipes)
             _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
               setState(() {
@@ -268,11 +272,31 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
-      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+      backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
-      currentIndex: 1,
+      currentIndex: 0,
       onTap: (index) {
-        // Navigation logic
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+            break;
+          case 1:
+            // Action for Grocery List button
+            break;
+          case 2:
+            // Action for Discover Recipe button
+            break;
+          case 3:
+            // Action for Weekly Menu button
+            break;
+          default:
+            break;
+        }
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
