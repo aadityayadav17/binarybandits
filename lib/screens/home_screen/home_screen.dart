@@ -7,6 +7,7 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_screen.dart';
 import 'package:binarybandits/screens/recipe_history/recipe_history.dart';
+import 'package:binarybandits/screens/home_screen/recipe_search_detail_screen.dart'; // Import the RecipeSearchDetailScreen
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -362,7 +363,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                               onTap: () {
-                                // Handle recipe selection
+                                // Navigate to RecipeSearchDetailScreen with selected recipe
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RecipeSearchDetailScreen(
+                                        recipe:
+                                            recipe), // Navigate to the RecipeSearchDetailScreen
+                                  ),
+                                );
                               },
                             ),
                             if (index != _filteredRecipes.length - 1) Divider(),
@@ -495,8 +504,4 @@ class _HomeScreenState extends State<HomeScreen> {
       showUnselectedLabels: false,
     );
   }
-}
-
-void main() {
-  runApp(const HomeScreen());
 }
