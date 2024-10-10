@@ -43,12 +43,42 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  void _removeRecipe(int index) {
+    setState(() {
+      widget.recipes.removeAt(index);
+      // Adjust the current index to ensure it's within the bounds of the list
+      if (_currentIndex >= widget.recipes.length) {
+        _currentIndex = widget.recipes.length - 1;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
     final cardHeight = screenHeight * 0.3; // Height for the card
+
+    if (widget.recipes.isEmpty) {
+      // If no recipes are left, return a message
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('My Menu'),
+        ),
+        body: Center(
+          child: Text(
+            'No more recipes',
+            style: GoogleFonts.robotoFlex(
+              textStyle: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -106,7 +136,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${widget.recipes.length}', // Number of recipes in the list
+                                '${widget.recipes.length}', // Reflect the number of loaded recipes
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -133,12 +163,31 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   ),
                 ),
                 // Recipe Card
-                RecipeCardStack(
-                  recipe: widget.recipes[_currentIndex],
-                  screenWidth: screenWidth - 30,
-                  cardTopPosition: cardTopPosition,
-                  cardHeight: cardHeight,
-                  scrollController: _scrollController,
+                Stack(
+                  children: [
+                    RecipeCardStack(
+                      recipe: widget.recipes[_currentIndex],
+                      screenWidth: screenWidth - 30,
+                      cardTopPosition: cardTopPosition,
+                      cardHeight: cardHeight,
+                      scrollController: _scrollController,
+                    ),
+                    // Cross Button on Top-Left to remove recipe
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/screens/recipe_overview_screen/cross.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {
+                          _removeRecipe(_currentIndex);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
