@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
@@ -8,11 +10,7 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 import 'package:binarybandits/screens/weekly_menu_screen/no_weekly_menu_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  final List<Recipe> recipes;
-  final int initialIndex;
-
-  WeeklyMenuScreen({Key? key, required this.recipes, this.initialIndex = 0})
-      : super(key: key);
+  WeeklyMenuScreen({Key? key}) : super(key: key);
 
   @override
   _WeeklyMenuScreenState createState() => _WeeklyMenuScreenState();
@@ -21,17 +19,30 @@ class WeeklyMenuScreen extends StatefulWidget {
 class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
+  late List<Recipe> _recipes = [];
   late List<bool> _savedRecipes;
+  bool _isLoading = true; // Flag to indicate loading state
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex; // Start with the initial recipe index
-    _savedRecipes = List.generate(widget.recipes.length, (index) => false);
+    _currentIndex = 0; // Start with the first recipe
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    final String response = await rootBundle
+        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+    final data = await json.decode(response) as List;
+    setState(() {
+      _recipes = data.map((json) => Recipe.fromJson(json)).toList();
+      _savedRecipes = List.generate(_recipes.length, (index) => false);
+      _isLoading = false; // Loading complete
+    });
   }
 
   void _nextRecipe() {
-    if (_currentIndex < widget.recipes.length - 1) {
+    if (_currentIndex < _recipes.length - 1) {
       setState(() {
         _currentIndex++;
       });
@@ -48,17 +59,17 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
 
   void _removeRecipe(int index) {
     setState(() {
-      widget.recipes.removeAt(index);
-      if (_currentIndex >= widget.recipes.length) {
-        _currentIndex = widget.recipes.length - 1;
+      _recipes.removeAt(index);
+      if (_currentIndex >= _recipes.length) {
+        _currentIndex = _recipes.length - 1;
       }
     });
   }
 
   void _clearAllRecipes() {
     setState(() {
-      widget.recipes.clear();
-      // Redirect to NoWeeklyMenuScreen
+      _recipes.clear();
+      // Redirect to NoWeeklyMenuScreen once the recipes are cleared
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
       );
@@ -189,8 +200,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
     final cardHeight = screenHeight * 0.3; // Height for the card
 
-    if (widget.recipes.isEmpty) {
-      // Redirect to NoWeeklyMenuScreen
+    // Show loading indicator while recipes are being loaded
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Check if the recipes list is empty after loading is complete
+    if (_recipes.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
@@ -254,7 +270,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${widget.recipes.length}',
+                                '${_recipes.length}',
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -325,7 +341,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                 Stack(
                   children: [
                     RecipeCardStack(
-                      recipe: widget.recipes[_currentIndex],
+                      recipe: _recipes[_currentIndex],
                       isSaved: _savedRecipes[_currentIndex],
                       onSave: () {
                         setState(() {
@@ -344,8 +360,8 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
               ],
             ),
             RecipeInformationCard(
-              key: ValueKey(widget.recipes[_currentIndex].id),
-              recipe: widget.recipes[_currentIndex],
+              key: ValueKey(_recipes[_currentIndex].id),
+              recipe: _recipes[_currentIndex],
               topPosition: cardTopPosition + 70,
               cardHeight: cardHeight,
               scrollController: _scrollController,
@@ -364,7 +380,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   onPressed: _previousRecipe,
                 ),
               ),
-            if (_currentIndex < widget.recipes.length - 1)
+            if (_currentIndex < _recipes.length - 1)
               Positioned(
                 right: -15,
                 top: (screenHeight - 180) / 2,

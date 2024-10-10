@@ -270,13 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => WeeklyMenuScreen(
-                                      recipes: _filteredRecipes.isNotEmpty
-                                          ? _filteredRecipes // Pass the list of filtered recipes
-                                          : _allRecipes, // Or pass all recipes if no filter is applied
-                                      initialIndex:
-                                          0, // Optionally start at the first recipe
-                                    ),
+                                    builder: (context) => WeeklyMenuScreen(),
                                   ),
                                 );
                               },
@@ -477,12 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => WeeklyMenuScreen(
-                  recipes: _filteredRecipes.isNotEmpty
-                      ? _filteredRecipes // Pass the list of filtered recipes
-                      : _allRecipes, // Or pass all recipes if no filter is applied
-                  initialIndex: 0, // Start at the first recipe
-                ),
+                builder: (context) => WeeklyMenuScreen(),
               ),
             );
             break;
