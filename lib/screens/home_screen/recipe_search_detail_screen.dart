@@ -19,7 +19,7 @@ class RecipeSearchDetailScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.35; // Height for the card
+    final cardHeight = screenHeight * 0.24; // Height for the card
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -90,9 +90,36 @@ class RecipeSearchDetailScreen extends StatelessWidget {
               RecipeInformationCard(
                 key: ValueKey(recipe.id),
                 recipe: recipe,
-                topPosition: cardTopPosition + 20,
+                topPosition: cardTopPosition + 30,
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
+              ),
+              Positioned(
+                top: cardTopPosition + 260,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Action for Add to My Menu button
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 120, vertical: 12),
+                      ),
+                      child: const Text(
+                        'Add to My Menu',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
