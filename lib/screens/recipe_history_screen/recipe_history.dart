@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
-import 'package:binarybandits/screens/recipe_history/recipe_history_detail_screen.dart';
+import 'package:binarybandits/screens/recipe_history_screen/recipe_history_detail_screen.dart';
 
 class RecipeHistoryPage extends StatefulWidget {
   @override
