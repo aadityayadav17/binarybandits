@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:binarybandits/models/recipe.dart';
-import 'package:binarybandits/screens/home_screen.dart';
-import 'package:binarybandits/screens/recipe_overview_screen.dart';
+import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 
