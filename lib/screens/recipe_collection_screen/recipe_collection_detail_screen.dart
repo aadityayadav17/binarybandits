@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import GoogleFonts package
+import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
@@ -48,33 +48,31 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
+                    padding: const EdgeInsets.only(
+                        left: 16.0,
+                        top: 10.0,
+                        bottom:
+                            16.0), // Match spacing with RecipeCollectionPage
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SizedBox(height: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Recipe Collection",
-                                  style: GoogleFonts.robotoFlex(
-                                    textStyle: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 32,
-                                      letterSpacing: 0,
-                                      height: 0.9,
-                                    ),
-                                  ),
+                            Text(
+                              "Recipe Collection",
+                              style: GoogleFonts.robotoFlex(
+                                textStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 32,
+                                  letterSpacing: 0,
+                                  height: 0.9,
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
