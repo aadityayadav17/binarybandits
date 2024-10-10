@@ -20,7 +20,6 @@ class WeeklyMenuScreen extends StatefulWidget {
 class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
-  final int _selectedCount = 0; // For keeping track of selected recipes
 
   @override
   void initState() {
@@ -107,7 +106,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '$_selectedCount',
+                                '${widget.recipes.length}', // Number of recipes in the list
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
