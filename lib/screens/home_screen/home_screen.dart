@@ -474,7 +474,17 @@ class _HomeScreenState extends State<HomeScreen> {
             // Action for Grocery List button
             break;
           case 3:
-            // Action for Weekly Menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(
+                  recipes: _filteredRecipes.isNotEmpty
+                      ? _filteredRecipes // Pass the list of filtered recipes
+                      : _allRecipes, // Or pass all recipes if no filter is applied
+                  initialIndex: 0, // Start at the first recipe
+                ),
+              ),
+            );
             break;
         }
       },
