@@ -30,7 +30,7 @@ class RecipeImageCard extends StatelessWidget {
               child: Image.asset(
                 recipe.image,
                 width: double.infinity,
-                height: 280,
+                height: 320,
                 fit: BoxFit.cover,
               ),
             ),

@@ -4,6 +4,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
 class RecipeCollectionDetailScreen extends StatelessWidget {
   final Recipe recipe;
@@ -17,7 +18,7 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.24; // Height for the card
+    final cardHeight = screenHeight * 0.35; // Height for the card
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -111,7 +112,12 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
               );
               break;
             case 1:
-              // Action for Grocery List button
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecipeSelectionScreen(),
+                ),
+              );
               break;
             case 2:
               // Action for Discover Recipe button
@@ -134,9 +140,9 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/bottom_navigation/discover-recipe-on.png',
-              width: 24,
-              height: 24,
+              'assets/icons/bottom_navigation/discover-recipe-off.png',
+              width: 22,
+              height: 22,
             ),
             label: '',
           ),
