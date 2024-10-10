@@ -2,10 +2,14 @@ import 'package:binarybandits/screens/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Import your Firebase options
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions
+        .currentPlatform, // Use the correct platform options
+  );
   runApp(MyApp());
 }
 
