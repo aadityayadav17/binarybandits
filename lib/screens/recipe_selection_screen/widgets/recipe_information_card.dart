@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import GoogleFonts package
 import 'package:binarybandits/models/recipe.dart';
 
 class RecipeInformationCard extends StatefulWidget {
@@ -96,8 +97,12 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
                   const SizedBox(height: 16),
                   Text(
                     widget.recipe.name,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.robotoFlex(
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -142,10 +147,12 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
         children: [
           Text(
             text,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.black : Colors.grey,
+            style: GoogleFonts.robotoFlex(
+              textStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: isSelected ? Colors.black : Colors.grey,
+              ),
             ),
           ),
           const SizedBox(height: 4),
@@ -181,9 +188,13 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
                 children: [
                   Expanded(
                       child: Text(ingredients[index]['name'] ?? '',
-                          style: const TextStyle(fontSize: 16))),
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(fontSize: 16),
+                          ))),
                   Text(ingredients[index]['quantity'] ?? '',
-                      style: const TextStyle(fontSize: 16)),
+                      style: GoogleFonts.robotoFlex(
+                        textStyle: const TextStyle(fontSize: 16),
+                      )),
                 ],
               ),
             );
@@ -207,11 +218,16 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${index + 1}.', style: const TextStyle(fontSize: 16)),
+                  Text('${index + 1}.',
+                      style: GoogleFonts.robotoFlex(
+                        textStyle: const TextStyle(fontSize: 16),
+                      )),
                   const SizedBox(width: 8),
                   Expanded(
                       child: Text(recipe.steps[index],
-                          style: const TextStyle(fontSize: 16))),
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(fontSize: 16),
+                          ))),
                 ],
               ),
             );
@@ -226,7 +242,9 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
       children: [
         Image.asset(iconPath, width: 24, height: 24),
         const SizedBox(height: 8),
-        Text(text, style: const TextStyle(fontSize: 14)),
+        Text(text,
+            style: GoogleFonts.robotoFlex(
+                textStyle: const TextStyle(fontSize: 14))),
       ],
     );
   }
@@ -237,7 +255,9 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
       children: [
         Image.asset(iconPath, width: 24, height: 24),
         const SizedBox(width: 8),
-        Text(text, style: const TextStyle(fontSize: 14)),
+        Text(text,
+            style: GoogleFonts.robotoFlex(
+                textStyle: const TextStyle(fontSize: 14))),
       ],
     );
   }
@@ -270,8 +290,9 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
       ),
-      child:
-          Text(text, style: const TextStyle(color: Colors.black, fontSize: 14)),
+      child: Text(text,
+          style: GoogleFonts.robotoFlex(
+              textStyle: const TextStyle(color: Colors.black, fontSize: 14))),
     );
   }
 

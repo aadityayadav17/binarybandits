@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import GoogleFonts package
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
@@ -49,8 +50,8 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
-                      children: const [
-                        SizedBox(height: 1),
+                      children: [
+                        const SizedBox(height: 1),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -59,37 +60,37 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   "Recipe Collection",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 32,
-                                    letterSpacing: 0,
-                                    height: 0.9,
+                                  style: GoogleFonts.robotoFlex(
+                                    textStyle: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 32,
+                                      letterSpacing: 0,
+                                      height: 0.9,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
                   RecipeCardStack(
-                    // This is where the recipe image and info are displayed
                     recipe: recipe,
                     screenWidth: screenWidth,
                     cardTopPosition: cardTopPosition,
                     cardHeight: cardHeight,
-                    scrollController:
-                        ScrollController(), // Scroll controller for the ingredients/steps list
+                    scrollController: ScrollController(),
                   ),
                 ],
               ),
               RecipeInformationCard(
-                key: ValueKey(recipe.id), // Add this line
+                key: ValueKey(recipe.id),
                 recipe: recipe,
-                topPosition: cardTopPosition + 30,
+                topPosition: cardTopPosition + 20,
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
               ),
