@@ -20,6 +20,7 @@ class WeeklyMenuScreen extends StatefulWidget {
 class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
+  final int _selectedCount = 0; // For keeping track of selected recipes
 
   @override
   void initState() {
@@ -47,8 +48,8 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35;
-    final cardHeight = screenHeight * 0.3;
+    final cardTopPosition = screenHeight * 0.35; // Top position for the card
+    final cardHeight = screenHeight * 0.3; // Height for the card
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -71,92 +72,116 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: screenHeight - 60,
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 1),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "My Menu",
-                                  style: GoogleFonts.robotoFlex(
-                                    textStyle: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 32,
-                                      letterSpacing: 0,
-                                      height: 0.9,
-                                    ),
+      body: SizedBox(
+        height: screenHeight - 60, // Adjust height for the scrollable area
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 1),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "My Menu",
+                                style: GoogleFonts.robotoFlex(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 32,
+                                    letterSpacing: 0,
+                                    height: 0.9,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
-                  ),
-                  RecipeCardStack(
-                    recipe: widget.recipes[_currentIndex],
-                    screenWidth: screenWidth,
-                    cardTopPosition: cardTopPosition,
-                    cardHeight: cardHeight,
-                    scrollController: _scrollController,
-                  ),
-                ],
-              ),
-              RecipeInformationCard(
-                key: ValueKey(widget.recipes[_currentIndex].id),
-                recipe: widget.recipes[_currentIndex],
-                topPosition: cardTopPosition + 60,
-                cardHeight: cardHeight,
-                scrollController: _scrollController,
-              ),
-
-              // Left Arrow Button (disappears if at the first recipe)
-              if (_currentIndex > 0)
-                Positioned(
-                  left: 16,
-                  top: (screenHeight - 60) / 2,
-                  child: IconButton(
-                    icon: Image.asset(
-                      'assets/icons/screens/weekly_menu_screen/left.png',
-                      width: 48,
-                      height: 48,
-                    ),
-                    onPressed: _previousRecipe,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '$_selectedCount',
+                                style: GoogleFonts.robotoFlex(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "Selected",
+                                style: GoogleFonts.robotoFlex(
+                                  textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ),
                 ),
-
-              // Right Arrow Button (disappears if at the last recipe)
-              if (_currentIndex < widget.recipes.length - 1)
-                Positioned(
-                  right: 16,
-                  top: (screenHeight - 60) / 2,
-                  child: IconButton(
-                    icon: Image.asset(
-                      'assets/icons/screens/weekly_menu_screen/right.png',
-                      width: 48,
-                      height: 48,
-                    ),
-                    onPressed: _nextRecipe,
-                  ),
+                // Recipe Card
+                RecipeCardStack(
+                  recipe: widget.recipes[_currentIndex],
+                  screenWidth: screenWidth,
+                  cardTopPosition: cardTopPosition,
+                  cardHeight: cardHeight,
+                  scrollController: _scrollController,
                 ),
-            ],
-          ),
+              ],
+            ),
+            // Recipe Information Card
+            RecipeInformationCard(
+              key: ValueKey(widget.recipes[_currentIndex].id),
+              recipe: widget.recipes[_currentIndex],
+              topPosition: cardTopPosition + 60,
+              cardHeight: cardHeight,
+              scrollController: _scrollController,
+            ),
+
+            // Left Arrow Button (disappears if at the first recipe)
+            if (_currentIndex > 0)
+              Positioned(
+                left: 0, // Adjusted closer to the left edge
+                top: (screenHeight - 60) / 2,
+                child: IconButton(
+                  icon: Image.asset(
+                    'assets/icons/screens/weekly_menu_screen/left.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onPressed: _previousRecipe,
+                ),
+              ),
+
+// Right Arrow Button (disappears if at the last recipe)
+            if (_currentIndex < widget.recipes.length - 1)
+              Positioned(
+                right: 0, // Adjusted closer to the right edge
+                top: (screenHeight - 60) / 2,
+                child: IconButton(
+                  icon: Image.asset(
+                    'assets/icons/screens/weekly_menu_screen/right.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onPressed: _nextRecipe,
+                ),
+              ),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
