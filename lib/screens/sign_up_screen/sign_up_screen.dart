@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'login_screen.dart';
-import 'profile_screen/profile.dart';
+import '../login_screen/login_screen.dart';
+import '../profile_screen/profile.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -262,8 +262,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProfileScreen()), // Make sure ProfileScreen is defined in profile.dart
+                                  builder: (context) => const ProfileScreen(
+                                      fromSignup:
+                                          true)), // Make sure ProfileScreen is defined in profile.dart
                             );
                           },
                           child: Image.asset(

@@ -19,7 +19,7 @@ class HeightWeightField extends StatelessWidget {
     return Container(
       width: 300,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Overall white rectangle remains
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -42,16 +42,11 @@ class HeightWeightField extends StatelessWidget {
               color: const Color(0xFF979797),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(
             children: [
-              Container(
-                width: 50,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF979797)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              SizedBox(
+                width: 30, // Set the width for the TextField
                 child: TextField(
                   onChanged:
                       onChanged, // Connect the TextField onChanged to the widget's callback
@@ -61,9 +56,21 @@ class HeightWeightField extends StatelessWidget {
                     LengthLimitingTextInputFormatter(3),
                   ],
                   style: GoogleFonts.roboto(fontSize: 16),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 4), // Reduced padding
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey, // Underline color
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: const Color.fromRGBO(
+                            73, 160, 120, 1), // Underline color when focused
+                      ),
+                    ),
                   ),
                 ),
               ),

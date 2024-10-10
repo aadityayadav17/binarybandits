@@ -135,8 +135,8 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
               iconStyleData: IconStyleData(
                 icon: Image.asset(
                   _isDropdownOpen
-                      ? 'assets/icons/screens/profile/dropdown-off-display.png'
-                      : 'assets/icons/screens/profile/dropdown-on-display.png',
+                      ? 'assets/icons/screens/profile_screen/dropdown-off-display.png'
+                      : 'assets/icons/screens/profile_screen/dropdown-on-display.png',
                   width: 24,
                   height: 24,
                 ),

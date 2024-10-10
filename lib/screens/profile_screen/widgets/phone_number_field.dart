@@ -39,7 +39,7 @@ class PhoneNumberField extends StatelessWidget {
               color: const Color(0xFF979797),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(
             children: [
               CountryCodePicker(
