@@ -7,6 +7,7 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
@@ -330,7 +331,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                 // Action for Discover Recipe button
                 break;
               case 3:
-                // Action for Weekly Menu button
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WeeklyMenuScreen(),
+                  ),
+                );
                 break;
               default:
                 break;

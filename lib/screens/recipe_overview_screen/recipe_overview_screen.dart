@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/ingredient_list_screen/ingredient_list_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class RecipeOverviewScreen extends StatefulWidget {
   const RecipeOverviewScreen({Key? key}) : super(key: key);
@@ -379,7 +380,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
               // Action for Discover Recipe button
               break;
             case 3:
-              // Action for Weekly Menu button
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeklyMenuScreen(),
+                ),
+              );
               break;
             default:
               break;

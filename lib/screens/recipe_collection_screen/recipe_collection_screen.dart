@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
-import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_detail_screen.dart'; // Updated import
+import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_detail_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class RecipeCollectionPage extends StatefulWidget {
   @override
@@ -158,7 +159,12 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
             // Action for Grocery List button
             break;
           case 3:
-            // Action for Weekly Menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(),
+              ),
+            );
             break;
         }
       },

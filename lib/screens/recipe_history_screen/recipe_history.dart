@@ -6,6 +6,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/recipe_history_screen/recipe_history_detail_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class RecipeHistoryPage extends StatefulWidget {
   @override
@@ -157,7 +158,12 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
             // Action for Grocery List button
             break;
           case 3:
-            // Action for Weekly Menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(),
+              ),
+            );
             break;
         }
       },

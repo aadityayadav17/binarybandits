@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/models/recipe.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class IngredientListPage extends StatefulWidget {
   @override
@@ -396,7 +397,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
             // Action for Discover Recipe button
             break;
           case 3:
-            // Action for Weekly Menu button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(),
+              ),
+            );
             break;
           default:
             break;
