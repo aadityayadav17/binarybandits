@@ -156,13 +156,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             // Left Arrow Button (disappears if at the first recipe)
             if (_currentIndex > 0)
               Positioned(
-                left: 0, // Adjusted closer to the left edge
-                top: (screenHeight - 60) / 2,
+                left: -15, // Push further outside the screen's edge
+                top: (screenHeight - 180) / 2,
                 child: IconButton(
                   icon: Image.asset(
                     'assets/icons/screens/weekly_menu_screen/left.png',
-                    width: 24,
-                    height: 24,
+                    width: 48,
+                    height: 48,
                   ),
                   onPressed: _previousRecipe,
                 ),
@@ -171,13 +171,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             // Right Arrow Button (disappears if at the last recipe)
             if (_currentIndex < widget.recipes.length - 1)
               Positioned(
-                right: 0, // Adjusted closer to the right edge
-                top: (screenHeight - 60) / 2,
+                right: -15, // Push further outside the screen's edge
+                top: (screenHeight - 180) / 2,
                 child: IconButton(
                   icon: Image.asset(
                     'assets/icons/screens/weekly_menu_screen/right.png',
-                    width: 24,
-                    height: 24,
+                    width: 48,
+                    height: 48,
                   ),
                   onPressed: _nextRecipe,
                 ),
