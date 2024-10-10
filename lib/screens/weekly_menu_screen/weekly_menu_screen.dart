@@ -91,7 +91,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: 40, // Reduced from 60
         automaticallyImplyLeading: false,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0),
@@ -108,7 +108,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         ),
       ),
       body: SizedBox(
-        height: screenHeight - 60, // Adjust height for the scrollable area
+        height: screenHeight - 40, // Adjusted for the new AppBar height
         child: Stack(
           children: [
             Column(
@@ -117,7 +117,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     children: [
-                      const SizedBox(height: 1),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -142,7 +141,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${widget.recipes.length}', // Reflect the number of loaded recipes
+                                '${widget.recipes.length}',
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -164,37 +163,30 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 0),
-                      // Add "Clear all" button in a rounded rectangle
+                      const SizedBox.shrink(),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white, // Background color
-                            borderRadius:
-                                BorderRadius.circular(20), // Rounded corners
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey
-                                    .withOpacity(0.3), // Shadow color
+                                color: Colors.grey.withOpacity(0.3),
                                 spreadRadius: 1,
                                 blurRadius: 5,
-                                offset: const Offset(0, 3), // Shadow position
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8), // Padding inside the button
+                              horizontal: 16, vertical: 6),
                           child: TextButton(
                             onPressed: _clearAllRecipes,
                             style: TextButton.styleFrom(
-                              padding:
-                                  EdgeInsets.zero, // Remove default padding
-                              minimumSize:
-                                  Size.zero, // Remove minimum size constraints
-                              tapTargetSize: MaterialTapTargetSize
-                                  .shrinkWrap, // Shrink hit area
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: Text(
                               'Clear all',
@@ -209,8 +201,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           ),
                         ),
                       ),
-
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 ),
@@ -239,7 +230,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             RecipeInformationCard(
               key: ValueKey(widget.recipes[_currentIndex].id),
               recipe: widget.recipes[_currentIndex],
-              topPosition: cardTopPosition + 50,
+              topPosition: cardTopPosition + 70,
               cardHeight: cardHeight,
               scrollController: _scrollController,
               screenWidth: screenWidth,
