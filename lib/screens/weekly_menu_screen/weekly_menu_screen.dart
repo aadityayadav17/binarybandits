@@ -5,10 +5,11 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_card_component.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/no_weekly_menu_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  final List<Recipe> recipes; // List of recipes
-  final int initialIndex; // Starting index of the recipe
+  final List<Recipe> recipes;
+  final int initialIndex;
 
   WeeklyMenuScreen({Key? key, required this.recipes, this.initialIndex = 0})
       : super(key: key);
@@ -56,7 +57,11 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
 
   void _clearAllRecipes() {
     setState(() {
-      widget.recipes.clear(); // Clear all recipes
+      widget.recipes.clear();
+      // Redirect to NoWeeklyMenuScreen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
+      );
     });
   }
 
@@ -185,22 +190,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     final cardHeight = screenHeight * 0.3; // Height for the card
 
     if (widget.recipes.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('My Menu'),
-        ),
-        body: Center(
-          child: Text(
-            'No more recipes',
-            style: GoogleFonts.robotoFlex(
-              textStyle: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      );
+      // Redirect to NoWeeklyMenuScreen
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
+        );
+      });
+      return Container(); // Return an empty container while redirecting
     }
 
     return Scaffold(
