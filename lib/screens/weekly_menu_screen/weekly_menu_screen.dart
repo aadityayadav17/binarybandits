@@ -66,62 +66,102 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius:
+                BorderRadius.circular(20), // Rounded corners for the dialog
           ),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white, // Set background color to white
+              borderRadius: BorderRadius.circular(20), // Ensure rounded corners
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3), // Shadow around the box
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3), // Shadow position
+                ),
+              ],
+            ),
+            padding:
+                const EdgeInsets.all(30), // Increased padding for inner content
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Are you sure you want to clear it all?",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+                Align(
+                  alignment: Alignment.centerLeft, // Align text to the left
+                  child: Text(
+                    "Are you sure you want to clear it all?",
+                    style: GoogleFonts.robotoFlex(
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    textAlign: TextAlign.left, // Left justify the text
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30), // Increased space
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child: TextButton(
+                      child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(); // Close the dialog
                         },
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(
-                                color: Color.fromRGBO(73, 160, 120, 1)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.white, // White background for "No" button
+                          side: const BorderSide(
+                            color:
+                                Color.fromRGBO(73, 160, 120, 1), // Green border
                           ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(10), // Rounded corners
+                          ),
+                          elevation: 5, // Apply shadow similar to "Apply All"
+                          shadowColor: Colors.grey.withOpacity(0.3),
                         ),
-                        child: const Text(
+                        child: Text(
                           'No',
-                          style: TextStyle(
-                            color: Color.fromRGBO(73, 160, 120, 1),
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(
+                              color:
+                                  Color.fromRGBO(73, 160, 120, 1), // Green text
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(
+                        width: 20), // Increased space between buttons
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          _clearAllRecipes();
-                          Navigator.of(context).pop();
+                          _clearAllRecipes(); // Perform action to clear all recipes
+                          Navigator.of(context).pop(); // Close the dialog
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(73, 160, 120, 1),
+                          backgroundColor: const Color.fromRGBO(73, 160, 120,
+                              1), // Green background for "Yes" button
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius:
+                                BorderRadius.circular(10), // Rounded corners
+                          ),
+                          elevation: 5, // Apply shadow similar to "Next"
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                        ),
+                        child: Text(
+                          'Yes',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(
+                              color: Colors.white, // White text
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        child: const Text('Yes',
-                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
