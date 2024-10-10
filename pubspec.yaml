@@ -84,8 +84,8 @@ flutter:
     - assets/icons/screens/log_screen/log-rectangle.png
     - assets/icons/screens/log_screen/eye-closed.png
     - assets/icons/screens/log_screen/eye-open.png
-    - assets/icons/screens/profile/dropdown-off-display.png
-    - assets/icons/screens/profile/dropdown-on-display.png
+    - assets/icons/screens/profile_screen/dropdown-off-display.png
+    - assets/icons/screens/profile_screen/dropdown-on-display.png
     - assets/icons/screens/recipe_overview_screen/add.png
     - assets/icons/screens/recipe_overview_screen/cross.png
     - assets/icons/screens/recipe_overview_screen/minus-disabled.png
@@ -104,6 +104,8 @@ flutter:
     - assets/icons/screens/recipe_selection_screen/save-on.png
     - assets/icons/screens/recipe_selection_screen/time-clock.png
     - assets/icons/screens/recipe_selection_screen/undo.png
+    - assets/icons/screens/weekly_menu_screen/left.png
+    - assets/icons/screens/weekly_menu_screen/right.png
     - assets/images/home_screen/discover-recipe.png
     - assets/images/home_screen/grocery-list.png
     - assets/images/home_screen/recipe-collection.png

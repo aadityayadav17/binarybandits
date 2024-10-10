@@ -271,9 +271,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => WeeklyMenuScreen(
-                                        recipe: _filteredRecipes.isNotEmpty
-                                            ? _filteredRecipes[0]
-                                            : _allRecipes[0]),
+                                      recipes: _filteredRecipes.isNotEmpty
+                                          ? _filteredRecipes // Pass the list of filtered recipes
+                                          : _allRecipes, // Or pass all recipes if no filter is applied
+                                      initialIndex:
+                                          0, // Optionally start at the first recipe
+                                    ),
                                   ),
                                 );
                               },

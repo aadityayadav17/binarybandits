@@ -6,21 +6,49 @@ import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_ca
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
-class WeeklyMenuScreen extends StatelessWidget {
-  // Updated class name
-  final Recipe recipe;
-  final ScrollController _scrollController = ScrollController();
-  final int _selectedCount = 0; // Define the _selectedCount variable
+class WeeklyMenuScreen extends StatefulWidget {
+  final List<Recipe> recipes; // List of recipes
+  final int initialIndex; // Starting index of the recipe
 
-  WeeklyMenuScreen({Key? key, required this.recipe})
-      : super(key: key); // Updated constructor
+  WeeklyMenuScreen({Key? key, required this.recipes, this.initialIndex = 0})
+      : super(key: key);
+
+  @override
+  _WeeklyMenuScreenState createState() => _WeeklyMenuScreenState();
+}
+
+class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
+  late int _currentIndex;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex; // Start with the initial recipe index
+  }
+
+  void _nextRecipe() {
+    if (_currentIndex < widget.recipes.length - 1) {
+      setState(() {
+        _currentIndex++;
+      });
+    }
+  }
+
+  void _previousRecipe() {
+    if (_currentIndex > 0) {
+      setState(() {
+        _currentIndex--;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.3; // Height for the card
+    final cardTopPosition = screenHeight * 0.35;
+    final cardHeight = screenHeight * 0.3;
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -45,7 +73,7 @@ class WeeklyMenuScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          height: screenHeight - 60, // Adjust height for the scrollable area
+          height: screenHeight - 60,
           child: Stack(
             children: [
               Column(
@@ -75,30 +103,6 @@ class WeeklyMenuScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '$_selectedCount',
-                                  style: GoogleFonts.robotoFlex(
-                                    textStyle: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  "Selected",
-                                  style: GoogleFonts.robotoFlex(
-                                    textStyle: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -106,21 +110,51 @@ class WeeklyMenuScreen extends StatelessWidget {
                     ),
                   ),
                   RecipeCardStack(
-                    recipe: recipe,
+                    recipe: widget.recipes[_currentIndex],
                     screenWidth: screenWidth,
                     cardTopPosition: cardTopPosition,
                     cardHeight: cardHeight,
-                    scrollController: ScrollController(),
+                    scrollController: _scrollController,
                   ),
                 ],
               ),
               RecipeInformationCard(
-                key: ValueKey(recipe.id),
-                recipe: recipe,
+                key: ValueKey(widget.recipes[_currentIndex].id),
+                recipe: widget.recipes[_currentIndex],
                 topPosition: cardTopPosition + 60,
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
               ),
+
+              // Left Arrow Button (disappears if at the first recipe)
+              if (_currentIndex > 0)
+                Positioned(
+                  left: 16,
+                  top: (screenHeight - 60) / 2,
+                  child: IconButton(
+                    icon: Image.asset(
+                      'assets/icons/screens/weekly_menu_screen/left.png',
+                      width: 48,
+                      height: 48,
+                    ),
+                    onPressed: _previousRecipe,
+                  ),
+                ),
+
+              // Right Arrow Button (disappears if at the last recipe)
+              if (_currentIndex < widget.recipes.length - 1)
+                Positioned(
+                  right: 16,
+                  top: (screenHeight - 60) / 2,
+                  child: IconButton(
+                    icon: Image.asset(
+                      'assets/icons/screens/weekly_menu_screen/right.png',
+                      width: 48,
+                      height: 48,
+                    ),
+                    onPressed: _nextRecipe,
+                  ),
+                ),
             ],
           ),
         ),
