@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
-import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart'; // Updated to the correct path
+import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 
 class RecipeCollectionDetailScreen extends StatelessWidget {
   final Recipe recipe;
+  final ScrollController _scrollController = ScrollController();
 
-  const RecipeCollectionDetailScreen({Key? key, required this.recipe})
+  RecipeCollectionDetailScreen({Key? key, required this.recipe})
       : super(key: key);
 
   @override
@@ -83,6 +85,13 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                         ScrollController(), // Scroll controller for the ingredients/steps list
                   ),
                 ],
+              ),
+              RecipeInformationCard(
+                key: ValueKey(recipe.id), // Add this line
+                recipe: recipe,
+                topPosition: cardTopPosition + 30,
+                cardHeight: cardHeight,
+                scrollController: _scrollController,
               ),
             ],
           ),
