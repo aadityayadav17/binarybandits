@@ -58,17 +58,19 @@ class WeeklyMenuScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   "My Menu",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 32,
-                                    letterSpacing: 0,
-                                    height: 0.9,
+                                  style: GoogleFonts.robotoFlex(
+                                    textStyle: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 32,
+                                      letterSpacing: 0,
+                                      height: 0.9,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -78,17 +80,21 @@ class WeeklyMenuScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   '$_selectedCount',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w700,
+                                  style: GoogleFonts.robotoFlex(
+                                    textStyle: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
-                                const Text(
+                                Text(
                                   "Selected",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
+                                  style: GoogleFonts.robotoFlex(
+                                    textStyle: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                               ],
