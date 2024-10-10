@@ -7,8 +7,8 @@ import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_informat
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  final List<Recipe> recipes;
-  final int initialIndex;
+  final List<Recipe> recipes; // List of recipes
+  final int initialIndex; // Starting index of the recipe
 
   WeeklyMenuScreen({Key? key, required this.recipes, this.initialIndex = 0})
       : super(key: key);
@@ -20,13 +20,13 @@ class WeeklyMenuScreen extends StatefulWidget {
 class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
-  List<bool> _savedRecipes = [];
+  late List<bool> _savedRecipes;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
-    _savedRecipes = List.generate(widget.recipes.length, (_) => false);
+    _currentIndex = widget.initialIndex; // Start with the initial recipe index
+    _savedRecipes = List.generate(widget.recipes.length, (index) => false);
   }
 
   void _nextRecipe() {
@@ -48,10 +48,15 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   void _removeRecipe(int index) {
     setState(() {
       widget.recipes.removeAt(index);
-      _savedRecipes.removeAt(index);
       if (_currentIndex >= widget.recipes.length) {
         _currentIndex = widget.recipes.length - 1;
       }
+    });
+  }
+
+  void _clearAllRecipes() {
+    setState(() {
+      widget.recipes.clear(); // Clear all recipes
     });
   }
 
@@ -59,8 +64,8 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35;
-    final cardHeight = screenHeight * 0.3;
+    final cardTopPosition = screenHeight * 0.35; // Top position for the card
+    final cardHeight = screenHeight * 0.3; // Height for the card
 
     if (widget.recipes.isEmpty) {
       return Scaffold(
@@ -103,7 +108,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         ),
       ),
       body: SizedBox(
-        height: screenHeight - 60,
+        height: screenHeight - 60, // Adjust height for the scrollable area
         child: Stack(
           children: [
             Column(
@@ -137,7 +142,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${widget.recipes.length}',
+                                '${widget.recipes.length}', // Reflect the number of loaded recipes
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -159,6 +164,52 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 0),
+                      // Add "Clear all" button in a rounded rectangle
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Background color
+                            borderRadius:
+                                BorderRadius.circular(20), // Rounded corners
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey
+                                    .withOpacity(0.3), // Shadow color
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3), // Shadow position
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8), // Padding inside the button
+                          child: TextButton(
+                            onPressed: _clearAllRecipes,
+                            style: TextButton.styleFrom(
+                              padding:
+                                  EdgeInsets.zero, // Remove default padding
+                              minimumSize:
+                                  Size.zero, // Remove minimum size constraints
+                              tapTargetSize: MaterialTapTargetSize
+                                  .shrinkWrap, // Shrink hit area
+                            ),
+                            child: Text(
+                              'Clear all',
+                              style: GoogleFonts.robotoFlex(
+                                textStyle: const TextStyle(
+                                  color: Color.fromRGBO(73, 160, 120, 1),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(height: 16),
                     ],
                   ),
@@ -281,9 +332,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/bottom_navigation/weekly-menu-off.png',
-              width: 24,
-              height: 24,
+              'assets/icons/bottom_navigation/weekly-menu-on.png',
+              width: 26,
+              height: 26,
             ),
             label: '',
           ),
