@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/recipe_history/recipe_history_detail_screen.dart';
 
 class RecipeHistoryPage extends StatefulWidget {
   @override
@@ -90,27 +91,38 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
   Widget _buildRecipeItem(Recipe recipe) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 3,
-              offset: Offset(0, 1),
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to the new recipe collection detail screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecipeHistoryDetailScreen(recipe: recipe),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              recipe.name,
-              style: GoogleFonts.robotoFlex(fontSize: 16),
+          );
+        },
+        child: Container(
+          height: 56,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 3,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                recipe.name,
+                style: GoogleFonts.robotoFlex(fontSize: 16),
+              ),
             ),
           ),
         ),
