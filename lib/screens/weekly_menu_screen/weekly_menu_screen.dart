@@ -4,7 +4,6 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_card_component.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
-import 'package:binarybandits/screens/weekly_menu_screen/widgets/no_recipes_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
@@ -59,14 +58,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     setState(() {
       widget.recipes.clear(); // Clear all recipes
     });
-
-    // After clearing, if no recipes left, redirect to NoRecipesScreen
-    if (widget.recipes.isEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const NoRecipesScreen()),
-      );
-    }
   }
 
   void _showClearAllDialog(BuildContext context) {
