@@ -25,7 +25,7 @@ class RecipeImageCard extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: screenWidth * 0.75,
+          width: screenWidth * 0.9,
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(

@@ -43,7 +43,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
         height: widget.cardHeight,
         child: Card(
           margin: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.13),
+              horizontal: MediaQuery.of(context).size.width * 0.05),
           color: Colors.white,
           elevation: 4,
           shape: const RoundedRectangleBorder(
@@ -62,9 +62,37 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: _buildIconText(
+                              'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${widget.recipe.difficulty.toLowerCase()}.png',
+                              capitalizeFirstLetter(widget.recipe.difficulty))),
+                      Expanded(
+                          child: _buildIconText(
+                              'assets/icons/screens/recipe_selection_screen/time-clock.png',
+                              '${widget.recipe.totalTime} min')),
+                      Expanded(
+                          child: _buildIconText(
+                              'assets/icons/screens/recipe_selection_screen/rating.png',
+                              '${widget.recipe.rating}')),
+                    ],
+                  ),
                   const SizedBox(height: 12),
-                  _buildNutritionRow(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          child: _buildIconTextSideBySide(
+                              'assets/icons/screens/recipe_selection_screen/calories.png',
+                              '${widget.recipe.energyKcal} kcal')),
+                      Expanded(
+                          child: _buildIconTextSideBySide(
+                              'assets/icons/screens/recipe_selection_screen/protein.png',
+                              '${widget.recipe.protein}g Protein')),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     widget.recipe.name,
@@ -90,78 +118,6 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-            child: _buildIconText(
-                'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${widget.recipe.difficulty.toLowerCase()}.png',
-                capitalizeFirstLetter(widget.recipe.difficulty))),
-        Expanded(
-            child: _buildIconText(
-                'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                '${widget.recipe.totalTime} min')),
-        Expanded(
-            child: _buildIconText(
-                'assets/icons/screens/recipe_selection_screen/rating.png',
-                '${widget.recipe.rating}')),
-      ],
-    );
-  }
-
-  Widget _buildNutritionRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: _buildIconTextSideBySide(
-            'assets/icons/screens/recipe_selection_screen/calories.png',
-            '${widget.recipe.energyKcal} kcal',
-          ),
-        ),
-        Expanded(
-          child: _buildIconTextSideBySide(
-            'assets/icons/screens/recipe_selection_screen/protein.png',
-            '${widget.recipe.protein}g Protein',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIconText(String iconPath, String text) {
-    return Column(
-      children: [
-        Image.asset(iconPath, width: 24, height: 24),
-        const SizedBox(height: 8),
-        Text(
-          text,
-          style: const TextStyle(fontSize: 14),
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIconTextSideBySide(String iconPath, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(iconPath, width: 24, height: 24),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 14),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
     );
   }
 
@@ -261,6 +217,27 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
             );
           },
         ),
+      ],
+    );
+  }
+
+  Widget _buildIconText(String iconPath, String text) {
+    return Column(
+      children: [
+        Image.asset(iconPath, width: 24, height: 24),
+        const SizedBox(height: 8),
+        Text(text, style: const TextStyle(fontSize: 14)),
+      ],
+    );
+  }
+
+  Widget _buildIconTextSideBySide(String iconPath, String text) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(iconPath, width: 24, height: 24),
+        const SizedBox(width: 8),
+        Text(text, style: const TextStyle(fontSize: 14)),
       ],
     );
   }
