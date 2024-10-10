@@ -7,7 +7,8 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_screen.dart';
 import 'package:binarybandits/screens/recipe_history_screen/recipe_history.dart';
-import 'package:binarybandits/screens/home_screen/recipe_search_detail_screen.dart'; // Import the RecipeSearchDetailScreen
+import 'package:binarybandits/screens/home_screen/recipe_search_detail_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -265,7 +266,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               'assets/images/home_screen/weekly-menu.png',
                               'WEEKLY\nMENU',
-                              () {},
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WeeklyMenuScreen(
+                                        recipe: _filteredRecipes.isNotEmpty
+                                            ? _filteredRecipes[0]
+                                            : _allRecipes[0]),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
