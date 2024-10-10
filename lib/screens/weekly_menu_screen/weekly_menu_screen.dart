@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
-import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_card_component.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  final List<Recipe> recipes; // List of recipes
-  final int initialIndex; // Starting index of the recipe
+  final List<Recipe> recipes;
+  final int initialIndex;
 
   WeeklyMenuScreen({Key? key, required this.recipes, this.initialIndex = 0})
       : super(key: key);
@@ -20,11 +20,13 @@ class WeeklyMenuScreen extends StatefulWidget {
 class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
+  List<bool> _savedRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex; // Start with the initial recipe index
+    _currentIndex = widget.initialIndex;
+    _savedRecipes = List.generate(widget.recipes.length, (_) => false);
   }
 
   void _nextRecipe() {
@@ -46,7 +48,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   void _removeRecipe(int index) {
     setState(() {
       widget.recipes.removeAt(index);
-      // Adjust the current index to ensure it's within the bounds of the list
+      _savedRecipes.removeAt(index);
       if (_currentIndex >= widget.recipes.length) {
         _currentIndex = widget.recipes.length - 1;
       }
@@ -57,11 +59,10 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.3; // Height for the card
+    final cardTopPosition = screenHeight * 0.35;
+    final cardHeight = screenHeight * 0.3;
 
     if (widget.recipes.isEmpty) {
-      // If no recipes are left, return a message
       return Scaffold(
         appBar: AppBar(
           title: const Text('My Menu'),
@@ -102,7 +103,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         ),
       ),
       body: SizedBox(
-        height: screenHeight - 60, // Adjust height for the scrollable area
+        height: screenHeight - 60,
         child: Stack(
           children: [
             Column(
@@ -136,7 +137,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                '${widget.recipes.length}', // Reflect the number of loaded recipes
+                                '${widget.recipes.length}',
                                 style: GoogleFonts.robotoFlex(
                                   textStyle: const TextStyle(
                                     color: Colors.black,
@@ -167,31 +168,23 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   children: [
                     RecipeCardStack(
                       recipe: widget.recipes[_currentIndex],
+                      isSaved: _savedRecipes[_currentIndex],
+                      onSave: () {
+                        setState(() {
+                          _savedRecipes[_currentIndex] =
+                              !_savedRecipes[_currentIndex];
+                        });
+                      },
+                      onRemove: () => _removeRecipe(_currentIndex),
                       screenWidth: screenWidth - 30,
                       cardTopPosition: cardTopPosition,
                       cardHeight: cardHeight,
                       scrollController: _scrollController,
                     ),
-                    // Cross Button on Top-Left to remove recipe
-                    Positioned(
-                      top: 10,
-                      left: 10,
-                      child: IconButton(
-                        icon: Image.asset(
-                          'assets/icons/screens/recipe_overview_screen/cross.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                        onPressed: () {
-                          _removeRecipe(_currentIndex);
-                        },
-                      ),
-                    ),
                   ],
                 ),
               ],
             ),
-            // Recipe Information Card
             RecipeInformationCard(
               key: ValueKey(widget.recipes[_currentIndex].id),
               recipe: widget.recipes[_currentIndex],
@@ -200,11 +193,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
               scrollController: _scrollController,
               screenWidth: screenWidth,
             ),
-
-            // Left Arrow Button (disappears if at the first recipe)
             if (_currentIndex > 0)
               Positioned(
-                left: -15, // Push further outside the screen's edge
+                left: -15,
                 top: (screenHeight - 180) / 2,
                 child: IconButton(
                   icon: Image.asset(
@@ -215,11 +206,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   onPressed: _previousRecipe,
                 ),
               ),
-
-            // Right Arrow Button (disappears if at the last recipe)
             if (_currentIndex < widget.recipes.length - 1)
               Positioned(
-                right: -15, // Push further outside the screen's edge
+                right: -15,
                 top: (screenHeight - 180) / 2,
                 child: IconButton(
                   icon: Image.asset(

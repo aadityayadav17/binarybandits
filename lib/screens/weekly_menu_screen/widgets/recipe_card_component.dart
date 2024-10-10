@@ -6,6 +6,7 @@ class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;
   final bool isSaved;
   final VoidCallback onSave;
+  final VoidCallback onRemove;
   final double screenWidth;
 
   const RecipeImageCard({
@@ -13,6 +14,7 @@ class RecipeImageCard extends StatelessWidget {
     required this.recipe,
     required this.isSaved,
     required this.onSave,
+    required this.onRemove, // Ensure the remove function is accepted
     required this.screenWidth,
   }) : super(key: key);
 
@@ -40,6 +42,20 @@ class RecipeImageCard extends StatelessWidget {
             ),
           ),
         ),
+        // Remove (Cross) Button at the top-left corner
+        Positioned(
+          top: 20,
+          left: screenWidth * 0.05,
+          child: IconButton(
+            icon: Image.asset(
+              'assets/icons/screens/recipe_overview_screen/cross.png',
+              width: 20,
+              height: 20,
+            ),
+            onPressed: onRemove, // Trigger the remove function
+          ),
+        ),
+        // Save Button at the top-right corner
         Positioned(
           top: 20,
           right: screenWidth * 0.05,
@@ -51,7 +67,7 @@ class RecipeImageCard extends StatelessWidget {
               width: 20,
               height: 20,
             ),
-            onPressed: onSave,
+            onPressed: onSave, // Trigger the save function
           ),
         ),
       ],
@@ -63,6 +79,7 @@ class RecipeCardStack extends StatelessWidget {
   final Recipe recipe;
   final bool isSaved;
   final VoidCallback onSave;
+  final VoidCallback onRemove;
   final double screenWidth;
   final double cardTopPosition;
   final double cardHeight;
@@ -73,6 +90,7 @@ class RecipeCardStack extends StatelessWidget {
     required this.recipe,
     required this.isSaved,
     required this.onSave,
+    required this.onRemove,
     required this.screenWidth,
     required this.cardTopPosition,
     required this.cardHeight,
@@ -91,13 +109,14 @@ class RecipeCardStack extends StatelessWidget {
                 recipe: recipe,
                 isSaved: isSaved,
                 onSave: onSave,
+                onRemove: onRemove,
                 screenWidth: screenWidth,
               ),
             ),
           ],
         ),
         RecipeInformationCard(
-          key: ValueKey(recipe.id), // Add this line
+          key: ValueKey(recipe.id),
           recipe: recipe,
           topPosition: cardTopPosition + 30,
           cardHeight: cardHeight,
