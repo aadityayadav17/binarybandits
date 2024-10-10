@@ -10,6 +10,7 @@ class WeeklyMenuScreen extends StatelessWidget {
   // Updated class name
   final Recipe recipe;
   final ScrollController _scrollController = ScrollController();
+  final int _selectedCount = 0; // Define the _selectedCount variable
 
   WeeklyMenuScreen({Key? key, required this.recipe})
       : super(key: key); // Updated constructor
@@ -19,7 +20,7 @@ class WeeklyMenuScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.24; // Height for the card
+    final cardHeight = screenHeight * 0.3; // Height for the card
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -50,31 +51,51 @@ class WeeklyMenuScreen extends StatelessWidget {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0,
-                        top: 10.0,
-                        bottom:
-                            16.0), // Match spacing with RecipeCollectionPage
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(height: 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Weekly Menu", // Updated title to reflect the new screen name
-                              style: GoogleFonts.robotoFlex(
-                                textStyle: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 32,
-                                  letterSpacing: 0,
-                                  height: 0.9,
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "My Menu",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 32,
+                                    letterSpacing: 0,
+                                    height: 0.9,
+                                  ),
                                 ),
-                              ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '$_selectedCount',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const Text(
+                                  "Selected",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -90,36 +111,9 @@ class WeeklyMenuScreen extends StatelessWidget {
               RecipeInformationCard(
                 key: ValueKey(recipe.id),
                 recipe: recipe,
-                topPosition: cardTopPosition + 30,
+                topPosition: cardTopPosition + 60,
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
-              ),
-              Positioned(
-                top: cardTopPosition + 260,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Action for Add to My Menu button
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 120, vertical: 12),
-                      ),
-                      child: const Text(
-                        'Add to My Menu',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
