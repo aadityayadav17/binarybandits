@@ -7,6 +7,7 @@ class RecipeInformationCard extends StatefulWidget {
   final double topPosition;
   final double cardHeight;
   final ScrollController scrollController;
+  final double screenWidth; // Add screenWidth parameter
 
   RecipeInformationCard({
     Key? key,
@@ -14,6 +15,7 @@ class RecipeInformationCard extends StatefulWidget {
     required this.topPosition,
     required this.cardHeight,
     required this.scrollController,
+    required this.screenWidth, // Add screenWidth to the constructor
   }) : super(key: ValueKey(recipe.id)); // Use recipe.id as the key
 
   @override
@@ -42,9 +44,11 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
       right: 0,
       child: SizedBox(
         height: widget.cardHeight,
+        width: widget.screenWidth * 0.9, // Use screenWidth for card width
         child: Card(
           margin: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.05),
+              horizontal:
+                  widget.screenWidth * 0.05), // Adjust based on screen width
           color: Colors.white,
           elevation: 4,
           shape: const RoundedRectangleBorder(

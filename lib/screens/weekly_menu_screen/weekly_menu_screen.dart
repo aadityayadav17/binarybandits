@@ -150,6 +150,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
               topPosition: cardTopPosition + 60,
               cardHeight: cardHeight,
               scrollController: _scrollController,
+              screenWidth: screenWidth,
             ),
 
             // Left Arrow Button (disappears if at the first recipe)
@@ -167,7 +168,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                 ),
               ),
 
-// Right Arrow Button (disappears if at the last recipe)
+            // Right Arrow Button (disappears if at the last recipe)
             if (_currentIndex < widget.recipes.length - 1)
               Positioned(
                 right: 0, // Adjusted closer to the right edge

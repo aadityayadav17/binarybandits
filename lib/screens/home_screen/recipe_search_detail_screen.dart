@@ -93,6 +93,7 @@ class RecipeSearchDetailScreen extends StatelessWidget {
                 topPosition: cardTopPosition + 30,
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
+                screenWidth: screenWidth,
               ),
               Positioned(
                 top: cardTopPosition + 260,

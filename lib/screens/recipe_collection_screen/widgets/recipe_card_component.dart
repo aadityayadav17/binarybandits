@@ -79,6 +79,7 @@ class RecipeCardStack extends StatelessWidget {
           topPosition: cardTopPosition + 30,
           cardHeight: cardHeight,
           scrollController: scrollController,
+          screenWidth: screenWidth,
         ),
       ],
     );
