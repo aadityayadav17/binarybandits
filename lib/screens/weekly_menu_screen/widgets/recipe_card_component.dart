@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
-import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 
 class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;

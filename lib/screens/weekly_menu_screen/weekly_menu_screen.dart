@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
-import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
@@ -136,7 +136,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                 // Recipe Card
                 RecipeCardStack(
                   recipe: widget.recipes[_currentIndex],
-                  screenWidth: screenWidth,
+                  screenWidth: screenWidth - 30,
                   cardTopPosition: cardTopPosition,
                   cardHeight: cardHeight,
                   scrollController: _scrollController,
@@ -147,7 +147,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             RecipeInformationCard(
               key: ValueKey(widget.recipes[_currentIndex].id),
               recipe: widget.recipes[_currentIndex],
-              topPosition: cardTopPosition + 60,
+              topPosition: cardTopPosition + 50,
               cardHeight: cardHeight,
               scrollController: _scrollController,
               screenWidth: screenWidth,
