@@ -82,8 +82,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                 ),
               ],
             ),
-            padding:
-                const EdgeInsets.all(30), // Increased padding for inner content
+            padding: const EdgeInsets.symmetric(
+                horizontal: 40,
+                vertical: 30), // Increased padding for inner content
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -100,7 +101,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                     textAlign: TextAlign.left, // Left justify the text
                   ),
                 ),
-                const SizedBox(height: 30), // Increased space
+                const SizedBox(height: 30), // Increased space below the text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -110,12 +111,11 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           Navigator.of(context).pop(); // Close the dialog
                         },
                         style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical:
+                                  5), // Increased padding inside the button
                           backgroundColor:
                               Colors.white, // White background for "No" button
-                          side: const BorderSide(
-                            color:
-                                Color.fromRGBO(73, 160, 120, 1), // Green border
-                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(10), // Rounded corners
@@ -144,6 +144,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           Navigator.of(context).pop(); // Close the dialog
                         },
                         style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical:
+                                  5), // Increased padding inside the button
                           backgroundColor: const Color.fromRGBO(73, 160, 120,
                               1), // Green background for "Yes" button
                           shape: RoundedRectangleBorder(
