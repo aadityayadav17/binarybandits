@@ -1,13 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
 
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
@@ -155,8 +168,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     final recipe = _recipes[_currentRecipeIndex];
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35;
-    final cardHeight = screenHeight * 0.24;
 
     return MaterialApp(
       theme: ThemeData(
@@ -167,15 +178,15 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
           elevation: 0,
-          toolbarHeight: 60,
+          toolbarHeight: proportionalHeight(context, 60),
           automaticallyImplyLeading: false,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
             child: IconButton(
               icon: Image.asset(
                 'assets/icons/screens/common/back-key.png',
-                width: 24,
-                height: 24,
+                width: proportionalWidth(context, 24),
+                height: proportionalHeight(context, 24),
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -185,20 +196,21 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         ),
         body: SingleChildScrollView(
           child: SizedBox(
-            height: screenHeight - 60,
+            height: screenHeight - proportionalHeight(context, 60),
             child: Stack(
               children: [
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: proportionalWidth(context, 16)),
                       child: Column(
                         children: [
-                          const SizedBox(height: 1),
+                          SizedBox(height: proportionalHeight(context, 1)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -206,7 +218,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
-                                      fontSize: 32,
+                                      fontSize: proportionalFontSize(context,
+                                          32), // Proportional font size
                                       letterSpacing: 0,
                                       height: 0.9,
                                     ),
@@ -218,24 +231,26 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                 children: [
                                   Text(
                                     '$_selectedCount',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 32,
+                                      fontSize: proportionalFontSize(context,
+                                          32), // Proportional font size
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     "Selected",
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: proportionalFontSize(context,
+                                          16), // Proportional font size
                                     ),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: proportionalHeight(context, 16)),
                         ],
                       ),
                     ),
@@ -250,22 +265,25 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                       },
                       onUndo: _undoRecipe,
                       screenWidth: screenWidth,
-                      cardTopPosition: cardTopPosition,
-                      cardHeight: cardHeight,
+                      cardTopPosition: proportionalHeight(context, 280),
+                      cardHeight: proportionalHeight(context, 196),
                       scrollController: _scrollController,
                     ),
                   ],
                 ),
                 RecipeInformationCard(
-                  key: ValueKey(recipe.id), // Add this line
+                  key: ValueKey(recipe.id),
                   recipe: recipe,
-                  topPosition: cardTopPosition + 30,
-                  cardHeight: cardHeight,
+                  topPosition: proportionalHeight(
+                      context, 310), // Adjusted proportionally
+                  cardHeight: proportionalHeight(context, 196),
                   scrollController: _scrollController,
                   screenWidth: screenWidth,
                 ),
                 Positioned(
-                  top: cardTopPosition + 260,
+                  // Position the action buttons (including Done) below the RecipeInformationCard
+                  top: proportionalHeight(context, 530),
+                  // Adjust 'top' to be below the recipe information card
                   left: 0,
                   right: 0,
                   child: Row(
@@ -275,8 +293,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
                         _rejectRecipe,
+                        screenWidth, // Pass screen width for proportional size
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: proportionalWidth(context, 16)),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -287,21 +306,28 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           backgroundColor:
                               const Color.fromRGBO(73, 160, 120, 1),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(
+                                proportionalWidth(context, 10)),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 70, vertical: 12),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: proportionalWidth(context, 70),
+                            vertical: proportionalHeight(context, 12),
+                          ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Done',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: proportionalFontSize(context, 16),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: proportionalWidth(context, 16)),
                       _buildActionButton(
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
                         _acceptRecipe,
+                        screenWidth, // Pass screen width for proportional size
                       ),
                     ],
                   ),
@@ -310,88 +336,20 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
             ),
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: 0,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ),
-                );
-                break;
-              case 1:
-                // Action for Grocery List button
-                break;
-              case 2:
-                // Action for Discover Recipe button
-                break;
-              case 3:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WeeklyMenuScreen(),
-                  ),
-                );
-                break;
-              default:
-                break;
-            }
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/home-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/discover-recipe-on.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/grocery-list-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/weekly-menu-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-          ],
-          selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-        ),
+        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
 
-  Widget _buildActionButton(
-      String backgroundPath, String iconPath, VoidCallback onPressed) {
+  Widget _buildActionButton(String backgroundPath, String iconPath,
+      VoidCallback onPressed, double screenWidth) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(proportionalWidth(context, 10))),
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
@@ -399,14 +357,92 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       ),
       child: Stack(
         children: [
-          Image.asset(backgroundPath, width: 62, height: 62),
+          Image.asset(backgroundPath,
+              width: proportionalWidth(context, 62),
+              height: proportionalHeight(context, 62)),
           Positioned(
-            top: 18,
-            left: 18,
-            child: Image.asset(iconPath, width: 20, height: 20),
+            top: proportionalHeight(context, 18),
+            left: proportionalWidth(context, 18),
+            child: Image.asset(iconPath,
+                width: proportionalWidth(context, 20),
+                height: proportionalHeight(context, 20)),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Colors.white,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: 0,
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+            break;
+          case 1:
+            // Action for Discover Recipe button
+            break;
+          case 2:
+            // Action for Grocery List button
+            break;
+          case 3:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(),
+              ),
+            );
+            break;
+          default:
+            break;
+        }
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/home-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/discover-recipe-on.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/grocery-list-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/weekly-menu-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+      ],
+      selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     );
   }
 }
