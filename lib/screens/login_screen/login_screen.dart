@@ -33,11 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    // Defining proportional sizes based on screen dimensions
-    double proportionalFontSize(double size) =>
-        size * screenWidth / 375; // Assuming base screen width is 375
-    double proportionalHeight(double size) =>
-        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalFontSize(double size) => size * screenWidth / 375;
+    double proportionalHeight(double size) => size * screenHeight / 812;
     double proportionalWidth(double size) => size * screenWidth / 375;
 
     return GestureDetector(
@@ -52,15 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: proportionalWidth(24)),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/app-logo.png',
-                      width: proportionalWidth(164),
-                      height: proportionalHeight(26),
-                      alignment: Alignment.centerLeft,
-                    ),
-                  ],
+                child: Image.asset(
+                  'assets/images/app-logo.png',
+                  width: proportionalWidth(164),
+                  height: proportionalHeight(26),
+                  alignment: Alignment.centerLeft,
                 ),
               ),
               SizedBox(height: proportionalHeight(20)),
@@ -69,7 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.all(proportionalWidth(24)),
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(48)),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(48),
+                    topRight: Radius.circular(48),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,53 +151,53 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: proportionalHeight(10)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: proportionalHeight(24),
-                              width: proportionalWidth(24),
-                              child: Checkbox(
-                                value: _keepMeSignedIn,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _keepMeSignedIn = value ?? false;
-                                    _clearFocus();
-                                  });
-                                },
+                        Expanded(
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: proportionalHeight(24),
+                                width: proportionalWidth(24),
+                                child: Checkbox(
+                                  value: _keepMeSignedIn,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _keepMeSignedIn = value ?? false;
+                                      _clearFocus();
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                            SizedBox(width: proportionalWidth(8)),
-                            Text(
-                              'Keep me signed in',
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400,
-                                fontSize: proportionalFontSize(14),
-                                color: Colors.black,
+                              SizedBox(width: proportionalWidth(8)),
+                              Flexible(
+                                child: Text(
+                                  'Keep me signed in',
+                                  style: GoogleFonts.roboto(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: proportionalFontSize(14),
+                                    color: Colors.black,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: proportionalHeight(4)),
-                          child: TextButton(
-                            onPressed: () {
-                              // Forgot password action
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Forgot Password?',
-                              style: GoogleFonts.roboto(
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.w400,
-                                fontSize: proportionalFontSize(14),
-                                color: Colors.black,
-                              ),
+                        TextButton(
+                          onPressed: () {
+                            // Forgot password action
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.roboto(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w400,
+                              fontSize: proportionalFontSize(14),
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -212,11 +208,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'Sign In',
-                          style: GoogleFonts.roboto(
-                            fontSize: proportionalFontSize(36),
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            'Sign In',
+                            style: GoogleFonts.roboto(
+                              fontSize: proportionalFontSize(36),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         GestureDetector(
@@ -232,33 +230,35 @@ class _LoginScreenState extends State<LoginScreen> {
                             'assets/icons/screens/log_screen/log-rectangle.png',
                             width: proportionalWidth(110),
                             height: proportionalHeight(110),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: proportionalHeight(100)),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignUpScreen(),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignUpScreen(),
+                            ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Sign Up',
+                          style: GoogleFonts.roboto(
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w400,
+                            fontSize: proportionalFontSize(20),
+                            color: Colors.black,
                           ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.roboto(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w400,
-                          fontSize: proportionalFontSize(20),
-                          color: Colors.black,
                         ),
                       ),
                     ),
