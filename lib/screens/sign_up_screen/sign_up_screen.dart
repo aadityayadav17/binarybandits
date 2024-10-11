@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import '../login_screen/login_screen.dart';
 import '../profile_screen/profile.dart';
 
@@ -15,19 +16,76 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _keepMeSignedIn = false;
   bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
+
+  // Create TextEditingController for email and password
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
   @override
   void dispose() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
+  }
+
+  // Sign up method using Firebase Authentication
+  Future<void> _signUp() async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Navigate to ProfileScreen after successful sign-up
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfileScreen(fromSignup: true),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Show error messages for different FirebaseAuth errors
+      if (e.code == 'weak-password') {
+        _showErrorDialog('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        _showErrorDialog('An account already exists for that email.');
+      } else {
+        _showErrorDialog(e.message!);
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred. Please try again.');
+    }
+  }
+
+  // Function to show error messages
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -75,9 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: Colors.black,
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     Text(
                       'Email',
                       style: GoogleFonts.roboto(
@@ -90,6 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 40,
                       child: TextField(
+                        controller: _emailController, // Add controller
                         focusNode: _emailFocusNode,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -100,9 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     Text(
                       'Password',
                       style: GoogleFonts.roboto(
@@ -115,6 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: 40,
                       child: TextField(
+                        controller: _passwordController, // Add controller
                         focusNode: _passwordFocusNode,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
@@ -145,106 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: Checkbox(
-                                value: _keepMeSignedIn,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _keepMeSignedIn = value ?? false;
-                                    _clearFocus();
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Keep me sign in',
-                                style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    color: Colors.black)),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: TextButton(
-                            onPressed: () {
-                              // Forgot password action
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Forgot Password?',
-                              style: GoogleFonts.roboto(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Colors.black),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // Privacy Policy Checkbox
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: Checkbox(
-                            value: _agreeToPrivacyPolicy,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _agreeToPrivacyPolicy = value ?? false;
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                              children: [
-                                const TextSpan(text: 'I have read '),
-                                TextSpan(
-                                  text: 'privacy policy',
-                                  style: const TextStyle(
-                                      decoration: TextDecoration.underline),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      // Navigate to privacy policy
-                                    },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 10),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,16 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            // Navigate to the ProfileScreen when tapped
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ProfileScreen(
-                                      fromSignup:
-                                          true)), // Make sure ProfileScreen is defined in profile.dart
-                            );
-                          },
+                          onTap: _signUp, // Call the sign-up method
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
                             width: 110,
@@ -276,36 +224,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 100),
-
-                    TextButton(
-                      onPressed: () {
-                        // Sign up action
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        'Sign In',
-                        style: GoogleFonts.roboto(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 100),
                   ],
                 ),
               ),
