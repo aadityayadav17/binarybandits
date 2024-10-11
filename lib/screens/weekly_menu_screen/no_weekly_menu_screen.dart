@@ -6,20 +6,23 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 class NoWeeklyMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 40,
+        toolbarHeight: screenHeight * 0.05,
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: screenWidth * 0.02),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -28,7 +31,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,10 +41,10 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                 Text(
                   "My Menu",
                   style: GoogleFonts.robotoFlex(
-                    textStyle: const TextStyle(
+                    textStyle: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w900,
-                      fontSize: 32,
+                      fontSize: screenHeight * 0.04,
                       letterSpacing: 0,
                       height: 0.9,
                     ),
@@ -53,9 +56,9 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                     Text(
                       '0',
                       style: GoogleFonts.robotoFlex(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           color: Colors.black,
-                          fontSize: 32,
+                          fontSize: screenHeight * 0.04,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -63,9 +66,9 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                     Text(
                       "Selected",
                       style: GoogleFonts.robotoFlex(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          fontSize: screenHeight * 0.02,
                         ),
                       ),
                     ),
@@ -73,28 +76,28 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 240),
+            SizedBox(height: screenHeight * 0.3),
             Center(
               child: Column(
                 children: [
                   Text(
                     'You have no recipes in the Weekly Menu!',
                     style: GoogleFonts.robotoFlex(
-                      textStyle: const TextStyle(
+                      textStyle: TextStyle(
                         color: Colors.grey,
-                        fontSize: 16,
+                        fontSize: screenHeight * 0.02,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: screenHeight * 0.01),
                   Text(
                     'Go to Home to add recipes!',
                     style: GoogleFonts.robotoFlex(
-                      textStyle: const TextStyle(
+                      textStyle: TextStyle(
                         color: Colors.grey,
-                        fontSize: 16,
+                        fontSize: screenHeight * 0.02,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -137,32 +140,32 @@ class NoWeeklyMenuScreen extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/home-off.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/discover-recipe-off.png',
-              width: 22,
-              height: 22,
+              width: screenWidth * 0.055,
+              height: screenWidth * 0.055,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/grocery-list-off.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/weekly-menu-on.png',
-              width: 26,
-              height: 26,
+              width: screenWidth * 0.065,
+              height: screenWidth * 0.065,
             ),
             label: '',
           ),
