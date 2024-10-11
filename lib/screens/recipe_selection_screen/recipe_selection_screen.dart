@@ -279,6 +279,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                   cardHeight: proportionalHeight(context, 196),
                   scrollController: _scrollController,
                   screenWidth: screenWidth,
+                  screenHeight: screenHeight, // Added screenHeight argument
                 ),
                 Positioned(
                   // Position the action buttons (including Done) below the RecipeInformationCard

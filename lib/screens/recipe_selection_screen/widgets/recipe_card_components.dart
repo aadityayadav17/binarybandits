@@ -38,7 +38,7 @@ class RecipeImageCard extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: proportionalWidth(context, screenWidth * 0.9),
+          width: screenWidth * 0.9,
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
@@ -117,13 +117,15 @@ class RecipeCardStack extends StatelessWidget {
         Column(
           children: [
             SizedBox(
-              height: proportionalHeight(context, cardTopPosition),
+              height:
+                  cardTopPosition, // This will push the image down to the specified top position
               child: RecipeImageCard(
                 recipe: recipe,
                 isSaved: isSaved,
                 onSave: onSave,
                 onUndo: onUndo,
                 screenWidth: screenWidth,
+                // Ensures proportional height
               ),
             ),
           ],
@@ -131,10 +133,12 @@ class RecipeCardStack extends StatelessWidget {
         RecipeInformationCard(
           key: ValueKey(recipe.id),
           recipe: recipe,
-          topPosition: proportionalHeight(context, cardTopPosition + 30),
-          cardHeight: proportionalHeight(context, cardHeight),
+          topPosition: cardTopPosition + 30,
+          cardHeight: cardHeight,
           scrollController: scrollController,
-          screenWidth: proportionalWidth(context, screenWidth),
+          screenWidth: screenWidth,
+          screenHeight:
+              MediaQuery.of(context).size.height, // Ensures proportional height
         ),
       ],
     );

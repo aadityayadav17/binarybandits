@@ -32,7 +32,7 @@ class RecipeImageCard extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: proportionalWidth(context, screenWidth * 0.9),
+          width: screenWidth * 0.9,
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
@@ -94,6 +94,7 @@ class RecipeCardStack extends StatelessWidget {
           cardHeight: proportionalHeight(context, cardHeight),
           scrollController: scrollController,
           screenWidth: proportionalWidth(context, screenWidth),
+          screenHeight: MediaQuery.of(context).size.height,
         ),
       ],
     );

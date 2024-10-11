@@ -106,6 +106,7 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
                 screenWidth: screenWidth,
+                screenHeight: screenHeight,
               ),
               Positioned(
                 top: cardTopPosition + proportionalHeight(context, 260),
