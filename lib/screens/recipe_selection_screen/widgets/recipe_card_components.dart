@@ -2,6 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
 class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;
   final bool isSaved;
@@ -25,18 +38,20 @@ class RecipeImageCard extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: screenWidth * 0.9,
+          width: proportionalWidth(context, screenWidth * 0.9),
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius:
+                  BorderRadius.circular(proportionalWidth(context, 20)),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius:
+                  BorderRadius.circular(proportionalWidth(context, 20)),
               child: Image.asset(
                 recipe.image,
                 width: double.infinity,
-                height: 280,
+                height: proportionalHeight(context, 320),
                 fit: BoxFit.cover,
               ),
             ),
@@ -102,7 +117,7 @@ class RecipeCardStack extends StatelessWidget {
         Column(
           children: [
             SizedBox(
-              height: cardTopPosition,
+              height: proportionalHeight(context, cardTopPosition),
               child: RecipeImageCard(
                 recipe: recipe,
                 isSaved: isSaved,
@@ -114,12 +129,12 @@ class RecipeCardStack extends StatelessWidget {
           ],
         ),
         RecipeInformationCard(
-          key: ValueKey(recipe.id), // Add this line
+          key: ValueKey(recipe.id),
           recipe: recipe,
-          topPosition: cardTopPosition + 30,
-          cardHeight: cardHeight,
+          topPosition: proportionalHeight(context, cardTopPosition + 30),
+          cardHeight: proportionalHeight(context, cardHeight),
           scrollController: scrollController,
-          screenWidth: screenWidth,
+          screenWidth: proportionalWidth(context, screenWidth),
         ),
       ],
     );
