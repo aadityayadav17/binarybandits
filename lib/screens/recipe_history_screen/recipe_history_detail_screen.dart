@@ -6,18 +6,30 @@ import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_ca
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
 class RecipeHistoryDetailScreen extends StatelessWidget {
-  // Updated class name
   final Recipe recipe;
   final ScrollController _scrollController = ScrollController();
 
-  RecipeHistoryDetailScreen({Key? key, required this.recipe})
-      : super(key: key); // Updated constructor
+  RecipeHistoryDetailScreen({Key? key, required this.recipe}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
     final cardTopPosition = screenHeight * 0.35; // Top position for the card
     final cardHeight = screenHeight * 0.24; // Height for the card
 
@@ -26,15 +38,15 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: proportionalHeight(context, 60),
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -44,17 +56,17 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          height: screenHeight - 60, // Adjust height for the scrollable area
+          height: screenHeight - proportionalHeight(context, 60),
           child: Stack(
             children: [
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0,
-                        top: 10.0,
-                        bottom:
-                            16.0), // Match spacing with RecipeCollectionPage
+                    padding: EdgeInsets.only(
+                      left: proportionalWidth(context, 16),
+                      top: proportionalHeight(context, 10),
+                      bottom: proportionalHeight(context, 16),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -62,12 +74,12 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Recipe History", // Updated title to reflect the new screen name
+                              "Recipe History",
                               style: GoogleFonts.robotoFlex(
-                                textStyle: const TextStyle(
+                                textStyle: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 32,
+                                  fontSize: proportionalFontSize(context, 32),
                                   letterSpacing: 0,
                                   height: 0.9,
                                 ),
@@ -90,13 +102,13 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
               RecipeInformationCard(
                 key: ValueKey(recipe.id),
                 recipe: recipe,
-                topPosition: cardTopPosition + 30,
+                topPosition: cardTopPosition + proportionalHeight(context, 30),
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
                 screenWidth: screenWidth,
               ),
               Positioned(
-                top: cardTopPosition + 260,
+                top: cardTopPosition + proportionalHeight(context, 260),
                 left: 0,
                 right: 0,
                 child: Row(
@@ -109,14 +121,20 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(
+                              proportionalWidth(context, 10)),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 120, vertical: 12),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: proportionalWidth(context, 120),
+                          vertical: proportionalHeight(context, 12),
+                        ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Add to My Menu',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: proportionalFontSize(context, 16),
+                        ),
                       ),
                     ),
                   ],
@@ -162,32 +180,32 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/home-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/discover-recipe-off.png',
-              width: 22,
-              height: 22,
+              width: proportionalWidth(context, 22),
+              height: proportionalHeight(context, 22),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/grocery-list-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/weekly-menu-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
