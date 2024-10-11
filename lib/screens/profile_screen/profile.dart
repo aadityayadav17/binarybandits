@@ -5,8 +5,7 @@ import 'widgets/save_button.dart';
 import '../home_screen/home_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final bool
-      fromSignup; // Add a parameter to track where the screen was launched from
+  final bool fromSignup; // Track where the screen was launched from
 
   const ProfileScreen({super.key, required this.fromSignup});
 
@@ -17,7 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'Classic';
   List<String> dietaryRestrictions = [];
-  bool _isSaved = false; // Added state to manage save status
+  bool _isSaved = false; // State to manage save status
 
   void _updateSaveStatus(bool saved) {
     setState(() {
@@ -27,6 +26,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return MaterialApp(
       theme: ThemeData(
         textTheme: GoogleFonts.robotoFlexTextTheme(
@@ -38,10 +47,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(239, 250, 244, 1),
           elevation: 0,
-          toolbarHeight: 60,
+          toolbarHeight: proportionalHeight(60),
           automaticallyImplyLeading: false,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: EdgeInsets.only(left: proportionalWidth(8)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
@@ -54,7 +63,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 24),
+                padding: EdgeInsets.only(
+                  left: proportionalWidth(16),
+                  top: proportionalHeight(10),
+                  bottom: proportionalHeight(24),
+                ),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -62,14 +75,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w900,
-                      fontSize: 36,
+                      fontSize: proportionalFontSize(36),
                       letterSpacing: 0,
                     ),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding:
+                    EdgeInsets.symmetric(horizontal: proportionalWidth(16)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -88,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _updateSaveStatus(false);
                       },
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: proportionalHeight(24)),
                     SaveButton(
                       isSaved: _isSaved,
                       onPressed: () {
@@ -102,12 +116,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               builder: (context) => const HomeScreen(),
                             ),
                           );
-                        } else {
-                          // Stay on the profile page if the user came from anywhere else
                         }
                       },
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: proportionalHeight(40)),
                   ],
                 ),
               ),

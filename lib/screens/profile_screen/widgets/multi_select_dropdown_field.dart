@@ -33,28 +33,41 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return Container(
-      width: 300,
+      width: proportionalWidth(300), // Proportional width for the container
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(proportionalWidth(10)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
+            spreadRadius: proportionalWidth(1),
+            blurRadius: proportionalWidth(5),
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: proportionalWidth(16),
+        vertical: proportionalHeight(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             widget.labelText,
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: proportionalFontSize(14),
               fontWeight: FontWeight.bold,
               color: const Color(0xFF979797),
             ),
@@ -67,7 +80,9 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                     ? 'Select Options'
                     : _selectedItems.join(', '),
                 style: GoogleFonts.roboto(
-                    fontSize: 16, color: const Color(0xFF000000)),
+                  fontSize: proportionalFontSize(16),
+                  color: const Color(0xFF000000),
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
               items: widget.items
@@ -89,14 +104,14 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                               },
                               child: Container(
                                 height: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: proportionalWidth(16)),
                                 child: Row(
                                   children: [
                                     // Replacing the icon-based checkboxes with actual checkboxes
                                     SizedBox(
-                                      height: 24,
-                                      width: 24,
+                                      height: proportionalHeight(24),
+                                      width: proportionalWidth(24),
                                       child: Checkbox(
                                         value: isSelected,
                                         onChanged: (bool? value) {
@@ -111,11 +126,11 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                                         },
                                       ),
                                     ),
-                                    const SizedBox(width: 16),
+                                    SizedBox(width: proportionalWidth(16)),
                                     Text(
                                       item,
                                       style: GoogleFonts.roboto(
-                                        fontSize: 16,
+                                        fontSize: proportionalFontSize(16),
                                         color: Colors.black,
                                       ),
                                     ),
@@ -137,26 +152,26 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                   _isDropdownOpen
                       ? 'assets/icons/screens/profile_screen/dropdown-off-display.png'
                       : 'assets/icons/screens/profile_screen/dropdown-on-display.png',
-                  width: 24,
-                  height: 24,
+                  width: proportionalWidth(24),
+                  height: proportionalHeight(24),
                 ),
-                iconSize: 24,
+                iconSize: proportionalWidth(24),
               ),
               dropdownStyleData: DropdownStyleData(
-                maxHeight: 200,
-                width: 268,
+                maxHeight: proportionalHeight(200),
+                width: proportionalWidth(268),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(proportionalWidth(10)),
                   color: Colors.white,
                 ),
                 scrollbarTheme: ScrollbarThemeData(
-                  radius: const Radius.circular(40),
-                  thickness: MaterialStateProperty.all(6),
+                  radius: Radius.circular(proportionalWidth(40)),
+                  thickness: MaterialStateProperty.all(proportionalWidth(6)),
                   thumbVisibility: MaterialStateProperty.all(true),
                 ),
               ),
-              menuItemStyleData: const MenuItemStyleData(
-                height: 40,
+              menuItemStyleData: MenuItemStyleData(
+                height: proportionalHeight(40),
                 padding: EdgeInsets.zero,
               ),
               onChanged: (value) {},

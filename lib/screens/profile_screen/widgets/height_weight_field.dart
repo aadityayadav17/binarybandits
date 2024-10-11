@@ -5,61 +5,76 @@ import 'package:flutter/services.dart';
 class HeightWeightField extends StatelessWidget {
   final String labelText;
   final String unit;
-  final Function(String) onChanged; // Add onChanged callback
+  final Function(String) onChanged;
 
   const HeightWeightField({
     Key? key,
     required this.labelText,
     required this.unit,
-    required this.onChanged, // Make this parameter required
+    required this.onChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return Container(
-      width: 300,
+      width: proportionalWidth(300), // Proportional width for the container
       decoration: BoxDecoration(
         color: Colors.white, // Overall white rectangle remains
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(
+            proportionalWidth(10)), // Proportional border radius
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
+            spreadRadius: proportionalWidth(1),
+            blurRadius: proportionalWidth(5),
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: proportionalWidth(16),
+        vertical: proportionalHeight(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             labelText,
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: proportionalFontSize(14),
               fontWeight: FontWeight.bold,
               color: const Color(0xFF979797),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: proportionalHeight(8)),
           Row(
             children: [
               SizedBox(
-                width: 30, // Set the width for the TextField
+                width: proportionalWidth(
+                    30), // Proportional width for the TextField
                 child: TextField(
-                  onChanged:
-                      onChanged, // Connect the TextField onChanged to the widget's callback
+                  onChanged: onChanged,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(3),
                   ],
-                  style: GoogleFonts.roboto(fontSize: 16),
+                  style: GoogleFonts.roboto(fontSize: proportionalFontSize(16)),
                   decoration: InputDecoration(
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 4), // Reduced padding
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: proportionalHeight(4),
+                    ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.grey, // Underline color
@@ -74,11 +89,13 @@ class HeightWeightField extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: proportionalWidth(8)),
               Text(
                 unit,
                 style: GoogleFonts.roboto(
-                    fontSize: 16, color: const Color(0xFF979797)),
+                  fontSize: proportionalFontSize(16),
+                  color: const Color(0xFF979797),
+                ),
               ),
             ],
           ),

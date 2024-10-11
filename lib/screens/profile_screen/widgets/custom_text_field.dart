@@ -15,34 +15,48 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return Container(
-      width: 300,
+      width: proportionalWidth(300), // Proportional width for the container
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(
+            proportionalWidth(10)), // Proportional border radius
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
+            spreadRadius: proportionalWidth(1),
+            blurRadius: proportionalWidth(5),
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: proportionalWidth(16),
+        vertical: proportionalHeight(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             labelText,
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: proportionalFontSize(14),
               fontWeight: FontWeight.bold,
               color: const Color(0xFF979797),
             ),
           ),
           TextField(
-            style: GoogleFonts.roboto(fontSize: 16),
+            style: GoogleFonts.roboto(fontSize: proportionalFontSize(16)),
             onChanged: onChanged,
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -50,11 +64,14 @@ class CustomTextField extends StatelessWidget {
                   ? const Icon(Icons.location_on,
                       color: Color.fromRGBO(2, 2, 2, 1))
                   : null,
-              suffixIconConstraints: const BoxConstraints(
-                minWidth: 24,
-                minHeight: 24,
+              suffixIconConstraints: BoxConstraints(
+                minWidth: proportionalWidth(24),
+                minHeight: proportionalHeight(24),
               ),
-              contentPadding: const EdgeInsets.only(top: 8, bottom: 8),
+              contentPadding: EdgeInsets.only(
+                top: proportionalHeight(8),
+                bottom: proportionalHeight(8),
+              ),
             ),
           ),
         ],
