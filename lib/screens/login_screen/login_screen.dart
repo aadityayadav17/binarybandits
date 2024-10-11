@@ -7,7 +7,6 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -32,6 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Defining proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
 
     return GestureDetector(
       onTap: _clearFocus,
@@ -41,24 +48,25 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 120),
+              SizedBox(height: proportionalHeight(120)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                padding:
+                    EdgeInsets.symmetric(horizontal: proportionalWidth(24)),
                 child: Row(
                   children: [
                     Image.asset(
                       'assets/images/app-logo.png',
-                      width: 164,
-                      height: 26,
+                      width: proportionalWidth(164),
+                      height: proportionalHeight(26),
                       alignment: Alignment.centerLeft,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: proportionalHeight(20)),
               Container(
                 width: screenWidth,
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(proportionalWidth(24)),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(48)),
@@ -69,52 +77,56 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Welcome Back',
                       style: GoogleFonts.roboto(
-                        fontSize: 36,
+                        fontSize: proportionalFontSize(36),
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(16)),
                     Text(
                       'Email',
                       style: GoogleFonts.roboto(
-                        fontSize: 14,
+                        fontSize: proportionalFontSize(14),
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: proportionalHeight(5)),
                     SizedBox(
-                      height: 40,
+                      height: proportionalHeight(40),
                       child: TextField(
                         focusNode: _emailFocusNode,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: proportionalHeight(10),
+                            horizontal: proportionalWidth(10),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: proportionalHeight(20)),
                     Text(
                       'Password',
                       style: GoogleFonts.roboto(
-                        fontSize: 14,
+                        fontSize: proportionalFontSize(14),
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: proportionalHeight(5)),
                     SizedBox(
-                      height: 40,
+                      height: proportionalHeight(40),
                       child: TextField(
                         focusNode: _passwordFocusNode,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: proportionalHeight(10),
+                            horizontal: proportionalWidth(10),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -125,26 +137,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             child: Container(
-                              width:
-                                  40, // Adjust this value to control the tap area width
-                              height:
-                                  40, // Adjust this value to control the tap area height
+                              width: proportionalWidth(40),
+                              height: proportionalHeight(40),
                               alignment: Alignment.center,
                               child: Image.asset(
                                 _showPassword
                                     ? 'assets/icons/screens/log_screen/eye-open.png'
                                     : 'assets/icons/screens/log_screen/eye-closed.png',
-                                width:
-                                    20, // Adjust this value to control the icon width
-                                height:
-                                    20, // Adjust this value to control the icon height
+                                width: proportionalWidth(20),
+                                height: proportionalHeight(20),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: proportionalHeight(10)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,28 +160,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           children: [
                             SizedBox(
-                              height: 24,
-                              width: 24,
+                              height: proportionalHeight(24),
+                              width: proportionalWidth(24),
                               child: Checkbox(
                                 value: _keepMeSignedIn,
                                 onChanged: (bool? value) {
                                   setState(() {
                                     _keepMeSignedIn = value ?? false;
-                                    _clearFocus(); // Clear focus when checkbox is ticked
+                                    _clearFocus();
                                   });
                                 },
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Text('Keep me signed in',
-                                style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    color: Colors.black)),
+                            SizedBox(width: proportionalWidth(8)),
+                            Text(
+                              'Keep me signed in',
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w400,
+                                fontSize: proportionalFontSize(14),
+                                color: Colors.black,
+                              ),
+                            ),
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
+                          padding: EdgeInsets.only(top: proportionalHeight(4)),
                           child: TextButton(
                             onPressed: () {
                               // Forgot password action
@@ -186,16 +197,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               'Forgot Password?',
                               style: GoogleFonts.roboto(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Colors.black),
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.w400,
+                                fontSize: proportionalFontSize(14),
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 43),
+                    SizedBox(height: proportionalHeight(43)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,13 +215,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           'Sign In',
                           style: GoogleFonts.roboto(
-                            fontSize: 36,
+                            fontSize: proportionalFontSize(36),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Navigate to HomeScreen when the button is clicked
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -219,17 +230,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
-                            width: 110,
-                            height: 110,
+                            width: proportionalWidth(110),
+                            height: proportionalHeight(110),
                             fit: BoxFit.fill,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: proportionalHeight(100)),
                     TextButton(
                       onPressed: () {
-                        // Sign up action
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -247,12 +257,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.roboto(
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.w400,
-                          fontSize: 20,
+                          fontSize: proportionalFontSize(20),
                           color: Colors.black,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: proportionalHeight(100)),
                   ],
                 ),
               ),
