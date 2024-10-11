@@ -58,22 +58,45 @@ class _IngredientListPageState extends State<IngredientListPage> {
     return selectedIngredients.values.where((isSelected) => isSelected).length;
   }
 
+  // Proportional width based on screen size
+  double proportionalWidth(double width) {
+    return width * MediaQuery.of(context).size.width / 375;
+  }
+
+  // Proportional height based on screen size
+  double proportionalHeight(double height) {
+    return height * MediaQuery.of(context).size.height / 812;
+  }
+
+  // Proportional font size based on screen size
+  double proportionalFontSize(double fontSize) {
+    return fontSize * MediaQuery.of(context).size.width / 375;
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Proportional sizing functions
+    double proportionalFontSize(double size) => size * screenWidth / 375;
+    double proportionalHeight(double size) => size * screenHeight / 812;
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: proportionalHeight(60),
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: proportionalWidth(8)),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(24),
+              height: proportionalHeight(24),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -85,40 +108,44 @@ class _IngredientListPageState extends State<IngredientListPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 10.0, bottom: 16.0),
+            padding: EdgeInsets.only(
+              left: proportionalWidth(16),
+              top: proportionalHeight(10),
+              bottom: proportionalHeight(16),
+            ),
             child: Text(
               "Ingredient List",
               style: GoogleFonts.robotoFlex(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
-                fontSize: 32,
+                fontSize: proportionalFontSize(32),
                 height: 0.9,
               ),
             ),
           ),
-          _buildRecipeTabs(),
-          SizedBox(height: 16),
+          _buildRecipeTabs(screenWidth),
+          SizedBox(height: proportionalHeight(16)),
           Expanded(
-            child: _buildIngredientCard(),
+            child: _buildIngredientCard(screenWidth, screenHeight),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(proportionalWidth(16)),
             child: ElevatedButton(
               onPressed: () {
                 // Add selected ingredients to grocery list
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, proportionalHeight(50)),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(proportionalWidth(10)),
                 ),
               ),
               child: Text(
                 'Add to Grocery List',
                 style: GoogleFonts.robotoFlex(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: proportionalFontSize(16),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -130,15 +157,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  Widget _buildIngredientCard() {
+  Widget _buildIngredientCard(double screenWidth, double screenHeight) {
     List<String> ingredients = _getIngredientsList();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: proportionalWidth(16)),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(proportionalWidth(10)),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.2),
@@ -151,12 +178,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(proportionalWidth(16)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    height: 36,
+                    height: proportionalHeight(36),
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -174,16 +201,19 @@ class _IngredientListPageState extends State<IngredientListPage> {
                             : "Select all",
                         style: GoogleFonts.robotoFlex(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: proportionalFontSize(14),
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius:
+                              BorderRadius.circular(proportionalWidth(12)),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: proportionalWidth(12),
+                          vertical: proportionalHeight(8),
+                        ),
                       ),
                     ),
                   ),
@@ -191,7 +221,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
                     "${_getSelectedItemsCount()} Items Selected",
                     style: GoogleFonts.robotoFlex(
                       color: Colors.black54,
-                      fontSize: 16,
+                      fontSize: proportionalFontSize(16),
                     ),
                   ),
                 ],
@@ -201,7 +231,8 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: ListView.builder(
                 itemCount: ingredients.length,
                 itemBuilder: (context, index) {
-                  return _buildIngredientItem(ingredients[index]);
+                  return _buildIngredientItem(
+                      ingredients[index], screenWidth, screenHeight);
                 },
               ),
             ),
@@ -211,18 +242,22 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  Widget _buildIngredientItem(String ingredient) {
+  Widget _buildIngredientItem(
+      String ingredient, double screenWidth, double screenHeight) {
     bool isSelected = selectedIngredients[ingredient] ?? false;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: proportionalWidth(16),
+        vertical: proportionalHeight(8),
+      ),
       child: GestureDetector(
         onTap: () => _toggleIngredient(ingredient),
         child: Row(
           children: [
             Container(
-              width: 24,
-              height: 24,
+              width: proportionalWidth(24),
+              height: proportionalHeight(24),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected
@@ -231,23 +266,24 @@ class _IngredientListPageState extends State<IngredientListPage> {
               ),
               child: Icon(
                 isSelected ? Icons.remove : Icons.add,
-                size: 16,
+                size: proportionalFontSize(16),
                 color: isSelected
                     ? Colors.white
                     : const Color.fromRGBO(73, 160, 120, 1),
               ),
             ),
-            SizedBox(width: 12),
+            SizedBox(width: proportionalWidth(12)),
             Expanded(
               child: Container(
-                height: 56,
+                height: proportionalHeight(56),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(proportionalWidth(10)),
                   border: isSelected
                       ? Border.all(
                           color: const Color.fromRGBO(73, 160, 120, 1),
-                          width: 2)
+                          width: proportionalWidth(2),
+                        )
                       : null,
                   boxShadow: [
                     BoxShadow(
@@ -259,12 +295,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: proportionalWidth(16)),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       ingredient,
-                      style: GoogleFonts.robotoFlex(fontSize: 16),
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(16),
+                      ),
                     ),
                   ),
                 ),
@@ -276,14 +315,14 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  Widget _buildRecipeTabs() {
+  Widget _buildRecipeTabs(double screenWidth) {
     return Container(
-      height: 40,
+      height: proportionalHeight(40),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 40.0),
+            padding: EdgeInsets.only(left: proportionalWidth(40)),
             child:
                 _buildTabWithShadow(_buildRecipeTab('All', isAllSelected, () {
               setState(() {
@@ -294,12 +333,13 @@ class _IngredientListPageState extends State<IngredientListPage> {
           ),
           for (Recipe recipe in recipes)
             _buildTabWithShadow(
-                _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
-              setState(() {
-                isAllSelected = false;
-                selectedRecipe = recipe;
-              });
-            })),
+              _buildRecipeTab(recipe.name, selectedRecipe == recipe, () {
+                setState(() {
+                  isAllSelected = false;
+                  selectedRecipe = recipe;
+                });
+              }),
+            ),
         ],
       ),
     );
@@ -307,18 +347,16 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
   Widget _buildTabWithShadow(Widget tab) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      margin: EdgeInsets.symmetric(horizontal: proportionalWidth(8)),
       decoration: BoxDecoration(
-        color: Colors.white, // Ensure tab background is white
-        borderRadius:
-            BorderRadius.circular(20), // Apply consistent border radius
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(proportionalWidth(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3), // Lighter shadow color
-            spreadRadius:
-                0, // No extra spread, keeping shadow tight to bottom-right
-            blurRadius: 2, // Slight blur for softness
-            offset: Offset(2, 2), // Shift shadow towards bottom-right
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 0,
+            blurRadius: proportionalWidth(2),
+            offset: Offset(2, 2),
           ),
         ],
       ),
@@ -335,7 +373,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
         foregroundColor: isSelected ? Colors.white : Colors.black,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(proportionalWidth(20)),
           side: BorderSide(
             color: isSelected ? Colors.transparent : Colors.grey.shade300,
           ),
@@ -343,7 +381,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
       ),
       child: Text(
         title,
-        style: GoogleFonts.robotoFlex(fontSize: 14),
+        style: GoogleFonts.robotoFlex(fontSize: proportionalFontSize(14)),
       ),
     );
   }
@@ -363,7 +401,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
       ingredients = [];
     }
 
-    // Sort the ingredients alphabetically
     ingredients.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     return ingredients;
   }
@@ -412,32 +449,32 @@ class _IngredientListPageState extends State<IngredientListPage> {
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/home-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(24),
+            height: proportionalHeight(24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/discover-recipe-on.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(24),
+            height: proportionalHeight(24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/grocery-list-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(24),
+            height: proportionalHeight(24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/weekly-menu-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(24),
+            height: proportionalHeight(24),
           ),
           label: '',
         ),
