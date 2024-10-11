@@ -21,12 +21,12 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   final ScrollController _scrollController = ScrollController();
   late List<Recipe> _recipes = [];
   late List<bool> _savedRecipes;
-  bool _isLoading = true; // Flag to indicate loading state
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = 0; // Start with the first recipe
+    _currentIndex = 0;
     _loadRecipes();
   }
 
@@ -37,7 +37,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     setState(() {
       _recipes = data.map((json) => Recipe.fromJson(json)).toList();
       _savedRecipes = List.generate(_recipes.length, (index) => false);
-      _isLoading = false; // Loading complete
+      _isLoading = false;
     });
   }
 
@@ -69,7 +69,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   void _clearAllRecipes() {
     setState(() {
       _recipes.clear();
-      // Redirect to NoWeeklyMenuScreen once the recipes are cleared
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
       );
@@ -82,101 +81,95 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(20), // Rounded corners for the dialog
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white, // Set background color to white
-              borderRadius: BorderRadius.circular(20), // Ensure rounded corners
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.3), // Shadow around the box
+                  color: Colors.grey.withOpacity(0.3),
                   spreadRadius: 1,
                   blurRadius: 5,
-                  offset: const Offset(0, 3), // Shadow position
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 30), // Increased padding for inner content
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+                vertical: MediaQuery.of(context).size.height * 0.03),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
-                  alignment: Alignment.centerLeft, // Align text to the left
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     "Are you sure you want to clear it all?",
                     style: GoogleFonts.robotoFlex(
-                      textStyle: const TextStyle(
-                        fontSize: 18,
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.022,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    textAlign: TextAlign.left, // Left justify the text
+                    textAlign: TextAlign.left,
                   ),
                 ),
-                const SizedBox(height: 30), // Increased space below the text
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               vertical:
-                                  5), // Increased padding inside the button
-                          backgroundColor:
-                              Colors.white, // White background for "No" button
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(10), // Rounded corners
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          elevation: 5, // Apply shadow similar to "Apply All"
+                          elevation: 5,
                           shadowColor: Colors.grey.withOpacity(0.3),
                         ),
                         child: Text(
                           'No',
                           style: GoogleFonts.robotoFlex(
-                            textStyle: const TextStyle(
-                              color:
-                                  Color.fromRGBO(73, 160, 120, 1), // Green text
+                            textStyle: TextStyle(
+                              color: Color.fromRGBO(73, 160, 120, 1),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(
-                        width: 20), // Increased space between buttons
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          _clearAllRecipes(); // Perform action to clear all recipes
-                          Navigator.of(context).pop(); // Close the dialog
+                          _clearAllRecipes();
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               vertical:
-                                  5), // Increased padding inside the button
-                          backgroundColor: const Color.fromRGBO(73, 160, 120,
-                              1), // Green background for "Yes" button
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor:
+                              const Color.fromRGBO(73, 160, 120, 1),
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(10), // Rounded corners
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          elevation: 5, // Apply shadow similar to "Next"
+                          elevation: 5,
                           shadowColor: Colors.grey.withOpacity(0.3),
                         ),
                         child: Text(
                           'Yes',
                           style: GoogleFonts.robotoFlex(
                             textStyle: const TextStyle(
-                              color: Colors.white, // White text
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -197,22 +190,20 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35; // Top position for the card
-    final cardHeight = screenHeight * 0.3; // Height for the card
+    final cardTopPosition = screenHeight * 0.35;
+    final cardHeight = screenHeight * 0.3;
 
-    // Show loading indicator while recipes are being loaded
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // Check if the recipes list is empty after loading is complete
     if (_recipes.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
         );
       });
-      return Container(); // Return an empty container while redirecting
+      return Container();
     }
 
     return Scaffold(
@@ -220,15 +211,15 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 40, // Reduced from 60
+        toolbarHeight: screenHeight * 0.05,
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: screenWidth * 0.02),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -237,34 +228,27 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         ),
       ),
       body: SizedBox(
-        height: screenHeight - 40, // Adjusted for the new AppBar height
+        height: screenHeight - screenHeight * 0.05,
         child: Stack(
           children: [
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "My Menu",
-                                style: GoogleFonts.robotoFlex(
-                                  textStyle: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 32,
-                                    letterSpacing: 0,
-                                    height: 0.9,
-                                  ),
-                                ),
+                          Text(
+                            "My Menu",
+                            style: GoogleFonts.robotoFlex(
+                              textStyle: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w900,
+                                fontSize: screenHeight * 0.04,
                               ),
-                            ],
+                            ),
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -272,9 +256,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                               Text(
                                 '${_recipes.length}',
                                 style: GoogleFonts.robotoFlex(
-                                  textStyle: const TextStyle(
+                                  textStyle: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 32,
+                                    fontSize: screenHeight * 0.04,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -282,9 +266,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                               Text(
                                 "Selected",
                                 style: GoogleFonts.robotoFlex(
-                                  textStyle: const TextStyle(
+                                  textStyle: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 16,
+                                    fontSize: screenHeight * 0.02,
                                   ),
                                 ),
                               ),
@@ -292,7 +276,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox.shrink(),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
@@ -308,12 +291,12 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 6),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.03,
+                              vertical: screenHeight * 0.008),
                           child: TextButton(
                             onPressed: () {
-                              _showClearAllDialog(
-                                  context); // Show confirmation dialog
+                              _showClearAllDialog(context);
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -323,9 +306,9 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                             child: Text(
                               'Clear all',
                               style: GoogleFonts.robotoFlex(
-                                textStyle: const TextStyle(
+                                textStyle: TextStyle(
                                   color: Color.fromRGBO(73, 160, 120, 1),
-                                  fontSize: 12,
+                                  fontSize: screenHeight * 0.015,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -337,7 +320,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                     ],
                   ),
                 ),
-                // Recipe Card
                 Stack(
                   children: [
                     RecipeCardStack(
@@ -350,7 +332,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                         });
                       },
                       onRemove: () => _removeRecipe(_currentIndex),
-                      screenWidth: screenWidth - 30,
+                      screenWidth: screenWidth * 0.9,
                       cardTopPosition: cardTopPosition,
                       cardHeight: cardHeight,
                       scrollController: _scrollController,
@@ -362,33 +344,33 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             RecipeInformationCard(
               key: ValueKey(_recipes[_currentIndex].id),
               recipe: _recipes[_currentIndex],
-              topPosition: cardTopPosition + 70,
+              topPosition: cardTopPosition + screenHeight * 0.08,
               cardHeight: cardHeight,
               scrollController: _scrollController,
               screenWidth: screenWidth,
             ),
             if (_currentIndex > 0)
               Positioned(
-                left: -15,
-                top: (screenHeight - 180) / 2,
+                left: -screenWidth * 0.04,
+                top: (screenHeight - screenHeight * 0.25) / 2,
                 child: IconButton(
                   icon: Image.asset(
                     'assets/icons/screens/weekly_menu_screen/left.png',
-                    width: 48,
-                    height: 48,
+                    width: screenWidth * 0.12,
+                    height: screenWidth * 0.12,
                   ),
                   onPressed: _previousRecipe,
                 ),
               ),
             if (_currentIndex < _recipes.length - 1)
               Positioned(
-                right: -15,
-                top: (screenHeight - 180) / 2,
+                right: -screenWidth * 0.04,
+                top: (screenHeight - screenHeight * 0.25) / 2,
                 child: IconButton(
                   icon: Image.asset(
                     'assets/icons/screens/weekly_menu_screen/right.png',
-                    width: 48,
-                    height: 48,
+                    width: screenWidth * 0.12,
+                    height: screenWidth * 0.12,
                   ),
                   onPressed: _nextRecipe,
                 ),
@@ -432,32 +414,32 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/home-off.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/discover-recipe-off.png',
-              width: 22,
-              height: 22,
+              width: screenWidth * 0.055,
+              height: screenWidth * 0.055,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/grocery-list-off.png',
-              width: 24,
-              height: 24,
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/weekly-menu-on.png',
-              width: 26,
-              height: 26,
+              width: screenWidth * 0.065,
+              height: screenWidth * 0.065,
             ),
             label: '',
           ),
