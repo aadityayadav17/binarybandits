@@ -8,6 +8,8 @@ import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_scr
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -92,58 +94,54 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  void _onDragStart(DragStartDetails details) {
-    _dragStartX = details.localPosition.dx;
-    _isDragging = true;
-  }
-
-  void _onDragUpdate(DragUpdateDetails details) {
-    if (!_isDragging) return;
-
-    final dragDistance = details.localPosition.dx - _dragStartX;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final swipePercentage = dragDistance / screenWidth;
-
-    setState(() {
-      _swipeAnimation = Tween<Offset>(
-        begin: Offset.zero,
-        end: Offset(swipePercentage, 0),
-      ).animate(_swipeController);
-    });
-
-    _swipeController.value = swipePercentage.abs();
-  }
-
-  void _onDragEnd(DragEndDetails details) {
-    _isDragging = false;
-    if (_swipeController.value > 0.2) {
-      if (_swipeAnimation.value.dx > 0) {
-        _acceptRecipe();
-      } else {
-        _rejectRecipe();
-      }
-    } else {
-      _resetSwipe();
-    }
-  }
-
   void _acceptRecipe() {
-    _swipeController.forward().then((_) {
+    _swipeController.forward().then((_) async {
       setState(() {
         _selectedCount++;
         _nextRecipe(accepted: true);
         _resetSwipe();
       });
+
+      // Save only the recipe title as accepted in Firebase
+      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
+          accepted: true);
     });
   }
 
   void _rejectRecipe() {
-    _swipeController.forward().then((_) {
+    _swipeController.forward().then((_) async {
       setState(() {
         _nextRecipe(accepted: false);
         _resetSwipe();
       });
+
+      // Save only the recipe title as rejected in Firebase
+      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
+          accepted: false);
     });
+  }
+
+  Future<void> _saveRecipeToFirebase(Recipe recipe,
+      {required bool accepted}) async {
+    // Get current user
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Prepare a reference to the user's recipe collection in the database
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref() // Use ref() instead of reference()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      // Create a Map for the recipe data to store (using name instead of title)
+      Map<String, dynamic> recipeData = {
+        'name': recipe.name, // Using 'name' as per your Recipe class
+        'accepted': accepted, // true if accepted, false if rejected
+      };
+
+      // Push the recipe data to Firebase
+      await userRef.push().set(recipeData);
+    }
   }
 
   void _resetSwipe() {
