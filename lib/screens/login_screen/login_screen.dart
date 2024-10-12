@@ -236,29 +236,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     SizedBox(height: proportionalHeight(100)),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignUpScreen(),
-                            ),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          'Sign Up',
-                          style: GoogleFonts.roboto(
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.w400,
-                            fontSize: proportionalFontSize(20),
-                            color: Colors.black,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen(),
                           ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Sign Up',
+                        style: GoogleFonts.roboto(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.w400,
+                          fontSize: proportionalFontSize(20),
+                          color: Colors.black,
                         ),
                       ),
                     ),
