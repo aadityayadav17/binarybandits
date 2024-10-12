@@ -17,13 +17,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _keepMeSignedIn = false;
   bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -47,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _signUp() async {
     if (!_agreeToPrivacyPolicy) {
-      _showErrorDialog('Please agree to the privacy policy to continue.');
+      _showSnackBar('Please agree to the privacy policy to continue.');
       return;
     }
 
@@ -55,28 +52,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
-        password: _passwordController.text,
+        password: _passwordController.text.trim(),
       );
-
-      // Save the keep me signed in preference
       await _saveKeepMeSignedInPreference(_keepMeSignedIn);
-
-      // If keep me signed in is false, set up a listener to sign out when the app is closed
       if (!_keepMeSignedIn) {
         FirebaseAuth.instance.authStateChanges().listen((User? user) {
           if (user == null) {
-            // User has been signed out
             _saveKeepMeSignedInPreference(false);
           }
         });
       }
-
-      // Navigate to ProfileScreen after successful sign-up
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const ProfileScreen(fromSignup: true),
-        ),
+            builder: (context) => const ProfileScreen(fromSignup: true)),
       );
     } on FirebaseAuthException catch (e) {
       String errorMessage;
@@ -91,12 +80,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
           errorMessage = 'The password provided is too weak.';
           break;
         default:
-          errorMessage = 'An error occurred: ${e.message}';
+          errorMessage = 'Signup failed: ${e.message}';
+          break;
       }
-      _showErrorDialog(errorMessage);
+      _showSnackBar(errorMessage);
     } catch (e) {
-      _showErrorDialog('An unexpected error occurred: $e');
+      _showSnackBar('An unexpected error occurred. Please try again.');
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   void _showErrorDialog(String message) {
