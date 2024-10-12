@@ -119,7 +119,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .ref() // Use ref() instead of reference()
           .child('users')
           .child(user.uid)
-          .child('recipeCollection');
+          .child('recipeHistory');
 
       // Create a Map for the recipe data to store
       Map<String, dynamic> recipeData = {
@@ -159,7 +159,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .ref()
           .child('users')
           .child(user.uid)
-          .child('recipeCollection');
+          .child('recipeHistory');
 
       // Query to find the existing entry for this recipe
       Query query = userRef.orderByChild('id').equalTo(recipe.id);
