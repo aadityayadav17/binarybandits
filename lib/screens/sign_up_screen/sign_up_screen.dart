@@ -57,16 +57,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      // Show error messages for different FirebaseAuth errors
-      if (e.code == 'weak-password') {
-        _showErrorDialog('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        _showErrorDialog('An account already exists for that email.');
-      } else {
-        _showErrorDialog(e.message!);
-      }
+      print('FirebaseAuthException: ${e.code} - ${e.message}');
+      _showErrorDialog('${e.code}: ${e.message}');
     } catch (e) {
-      _showErrorDialog('An error occurred. Please try again.');
+      print('Unexpected error: $e');
+      _showErrorDialog('An unexpected error occurred: $e');
     }
   }
 
@@ -245,28 +240,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                           ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: proportionalHeight(4)),
-                          child: TextButton(
-                            onPressed: () {
-                              // Forgot password action
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Forgot Password?',
-                              style: GoogleFonts.roboto(
-                                decoration: TextDecoration.underline,
-                                fontWeight: FontWeight.w400,
-                                fontSize: proportionalFontSize(14),
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
