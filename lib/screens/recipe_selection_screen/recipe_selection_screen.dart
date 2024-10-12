@@ -133,9 +133,10 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .child(user.uid)
           .child('recipeCollection');
 
-      // Create a Map for the recipe data to store (using name instead of title)
+      // Create a Map for the recipe data to store
       Map<String, dynamic> recipeData = {
-        'name': recipe.name, // Using 'name' as per your Recipe class
+        'id': recipe.id, // Save the recipe ID
+        'name': recipe.name, // Save the recipe name
         'accepted': accepted, // true if accepted, false if rejected
       };
 
