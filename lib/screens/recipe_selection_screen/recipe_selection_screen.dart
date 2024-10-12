@@ -133,6 +133,16 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
       _scrollController.jumpTo(0);
     });
+
+    // Check if all recipes are accepted after moving to the next one
+    _checkAllRecipesAccepted();
+  }
+
+  void _checkAllRecipesAccepted() {
+    if (_acceptedRecipes.every((isAccepted) => isAccepted)) {
+      // Redirect if all recipes are accepted
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    }
   }
 
   void _acceptRecipe() {
