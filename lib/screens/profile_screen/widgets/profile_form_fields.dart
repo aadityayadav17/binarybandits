@@ -53,7 +53,7 @@ class ProfileFormFields extends StatelessWidget {
           controller: nameController, // Attach name controller
           onChanged: (String? value) {
             onAnyFieldChanged();
-            onNameValidated(value);
+            onNameValidated(value); // Validate the name on every change
           },
         ),
         const SizedBox(height: 16),

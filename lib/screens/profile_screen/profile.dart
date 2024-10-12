@@ -49,6 +49,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Save profile data to Firebase Realtime Database
   void _saveProfile() async {
+    _validateName(
+        _nameController.text); // Ensure validation is called before checking
+
     if (_isNameValid && user != null) {
       try {
         await databaseRef.child('users/${user!.uid}').set({
@@ -76,22 +79,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print('Error saving profile: $e');
       }
     } else {
-      // Show a dialog or alert if name is not valid
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Invalid Input'),
-          content: Text('Please enter a valid name to save your profile.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+      // Show the dialog only if the name is not valid (empty)
+      if (!_isNameValid) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Invalid Input'),
+            content: Text('Please enter a valid name to save your profile.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
@@ -163,7 +168,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _validateName(String? name) {
     setState(() {
-      _isNameValid = name?.isNotEmpty ?? false;
+      _isNameValid = name?.trim().isNotEmpty ??
+          false; // Trim spaces before checking for empty
     });
   }
 
