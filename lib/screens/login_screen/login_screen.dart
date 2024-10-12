@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text('Please enter both email and password'),
         ),
       );
-      return; // Do not proceed with sign-in if fields are empty
+      return;
     }
 
     try {
@@ -53,13 +53,15 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      String errorMessage = 'Authentication failed';
+      String errorMessage;
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
-        errorMessage = 'Wrong password provided.';
+        errorMessage = 'Wrong password provided for that user.';
       } else if (e.code == 'invalid-email') {
         errorMessage = 'The email address is not valid.';
+      } else {
+        errorMessage = 'Authentication failed. Please check your credentials.';
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -69,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to sign in. Please try again.'),
+        const SnackBar(
+          content: Text('An unexpected error occurred. Please try again.'),
         ),
       );
     }
