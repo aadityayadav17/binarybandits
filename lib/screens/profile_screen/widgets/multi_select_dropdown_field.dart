@@ -32,19 +32,26 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
   }
 
   @override
+  void didUpdateWidget(MultiSelectDropdownField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedItems != oldWidget.selectedItems) {
+      setState(() {
+        _selectedItems = List.from(widget.selectedItems);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    // Define proportional sizes based on screen dimensions
-    double proportionalFontSize(double size) =>
-        size * screenWidth / 375; // Assuming base screen width is 375
-    double proportionalHeight(double size) =>
-        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalFontSize(double size) => size * screenWidth / 375;
+    double proportionalHeight(double size) => size * screenHeight / 812;
     double proportionalWidth(double size) => size * screenWidth / 375;
 
     return Container(
-      width: proportionalWidth(300), // Proportional width for the container
+      width: proportionalWidth(300),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(proportionalWidth(10)),
@@ -108,7 +115,6 @@ class _MultiSelectDropdownFieldState extends State<MultiSelectDropdownField> {
                                     horizontal: proportionalWidth(16)),
                                 child: Row(
                                   children: [
-                                    // Replacing the icon-based checkboxes with actual checkboxes
                                     SizedBox(
                                       height: proportionalHeight(24),
                                       width: proportionalWidth(24),
