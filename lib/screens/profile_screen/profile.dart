@@ -115,10 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       isSaved: _isSaved,
                       onPressed: () {
                         if (_isNameValid) {
-                          _updateSaveStatus(true); // Logic to save profile data
-                          // Check where the user came from before deciding what to do next
+                          _updateSaveStatus(true);
                           if (widget.fromSignup) {
-                            // Navigate to HomeScreen if the user came from the signup page
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -127,29 +125,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           }
                         } else {
-                          // Optionally handle what happens when the name isn't valid
-                          // For example, you could show a dialog or a notification
                           showDialog(
                             context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('Invalid Input'),
-                                content: Text(
-                                    'Please enter a valid name to proceed.'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Dismiss the dialog
-                                    },
-                                    child: Text('OK'),
+                            builder: (context) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Please enter a valid name to proceed.",
+                                      style: GoogleFonts.robotoFlex(
+                                        textStyle: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.022,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01,
+                                            ),
+                                            backgroundColor:
+                                                const Color.fromRGBO(
+                                                    73, 160, 120, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            elevation: 5,
+                                            shadowColor:
+                                                Colors.grey.withOpacity(0.3),
+                                          ),
+                                          child: Text(
+                                            'OK',
+                                            style: GoogleFonts.robotoFlex(
+                                              textStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              );
-                            },
+                              ),
+                            ),
                           );
                         }
-                      }, // Always provide a non-nullable function
+                      },
                     ),
                     SizedBox(height: proportionalHeight(40)),
                   ],
