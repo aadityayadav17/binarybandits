@@ -71,7 +71,7 @@ class PhoneNumberField extends StatelessWidget {
                 alignLeft: false,
                 textStyle: GoogleFonts.roboto(
                   fontSize: proportionalFontSize(16),
-                  color: Colors.black,
+                  color: const Color(0xFF979797), // Set the color to 0xFF979797
                 ),
                 padding: EdgeInsets.zero,
               ),
