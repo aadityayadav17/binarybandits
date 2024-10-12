@@ -17,10 +17,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
   bool _isSaved = false; // State to manage save status
+  bool _isNameValid = false; // State to manage if the name is entered
 
   void _updateSaveStatus(bool saved) {
     setState(() {
       _isSaved = saved;
+    });
+  }
+
+  void _validateName(String? name) {
+    setState(() {
+      _isNameValid = name?.isNotEmpty ?? false;
     });
   }
 
@@ -88,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileFormFields(
+                      onNameValidated: _validateName,
                       onDietaryPreferenceChanged: (value) {
                         _updateSaveStatus(false);
                         dietaryPreference = value;
@@ -106,18 +114,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SaveButton(
                       isSaved: _isSaved,
                       onPressed: () {
-                        _updateSaveStatus(true); // Logic to save profile data
-                        // Check where the user came from before deciding what to do next
-                        if (widget.fromSignup) {
-                          // Navigate to HomeScreen if the user came from the signup page
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
+                        if (_isNameValid) {
+                          _updateSaveStatus(true); // Logic to save profile data
+                          // Check where the user came from before deciding what to do next
+                          if (widget.fromSignup) {
+                            // Navigate to HomeScreen if the user came from the signup page
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
+                          }
+                        } else {
+                          // Optionally handle what happens when the name isn't valid
+                          // For example, you could show a dialog or a notification
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('Invalid Input'),
+                                content: Text(
+                                    'Please enter a valid name to proceed.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Dismiss the dialog
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         }
-                      },
+                      }, // Always provide a non-nullable function
                     ),
                     SizedBox(height: proportionalHeight(40)),
                   ],
