@@ -237,7 +237,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(width: proportionalWidth(8)),
                             Text(
-                              'Keep me sign in',
+                              'Keep me signed in',
                               style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w400,
                                 fontSize: proportionalFontSize(14),

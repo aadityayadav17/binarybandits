@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/sign_up_screen/sign_up_screen.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _loadKeepMeSignedInPreference();
+  }
+
+  @override
   void dispose() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
@@ -29,6 +36,18 @@ class _LoginScreenState extends State<LoginScreen> {
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
+  }
+
+  Future<void> _loadKeepMeSignedInPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _keepMeSignedIn = prefs.getBool('keepMeSignedIn') ?? false;
+    });
+  }
+
+  Future<void> _saveKeepMeSignedInPreference(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('keepMeSignedIn', value);
   }
 
   Future<void> _signIn() async {
@@ -48,6 +67,20 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      // Save the keep me signed in preference
+      await _saveKeepMeSignedInPreference(_keepMeSignedIn);
+
+      // If keep me signed in is false, set up a listener to sign out when the app is closed
+      if (!_keepMeSignedIn) {
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          if (user == null) {
+            // User has been signed out
+            _saveKeepMeSignedInPreference(false);
+          }
+        });
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
