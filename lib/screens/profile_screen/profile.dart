@@ -267,19 +267,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ElevatedButton(
                       onPressed: _logout,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red, // Red color for logout
+                        backgroundColor: const Color.fromARGB(
+                            255, 255, 255, 255), // Same green as Save button
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              proportionalWidth(10)), // Same border radius
+                        ),
+                        fixedSize: Size(
+                          proportionalWidth(315), // Same width
+                          proportionalHeight(48), // Same height
+                        ),
                       ),
-                      child: Text('Log Out'),
-                    ),
-                    SizedBox(height: proportionalHeight(16)),
-                    ElevatedButton(
-                      onPressed: _resetAccount,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.orange, // Orange color for reset
+                      child: Text(
+                        'Log Out',
+                        style: GoogleFonts.robotoFlex(
+                          fontSize: proportionalFontSize(18), // Same font size
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromRGBO(
+                              73, 160, 120, 1), // Same font color
+                        ),
                       ),
-                      child: Text('Reset Account'),
                     ),
+
                     SizedBox(height: proportionalHeight(40)),
                   ],
                 ),
