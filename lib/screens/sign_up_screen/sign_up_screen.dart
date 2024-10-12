@@ -43,6 +43,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
+    // Check if the email or password fields are empty
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      _showSnackBar('Please enter both email and password.');
+      return;
+    }
+
+    // Check if the user agreed to the privacy policy
     if (!_agreeToPrivacyPolicy) {
       _showSnackBar('Please agree to the privacy policy to continue.');
       return;
@@ -54,20 +62,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
       await _saveKeepMeSignedInPreference(_keepMeSignedIn);
-      if (!_keepMeSignedIn) {
-        FirebaseAuth.instance.authStateChanges().listen((User? user) {
-          if (user == null) {
-            _saveKeepMeSignedInPreference(false);
-          }
-        });
-      }
+
+      // Navigate to the next screen after successful sign-up
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => const ProfileScreen(fromSignup: true)),
       );
     } on FirebaseAuthException catch (e) {
+      // Handle specific FirebaseAuth errors
       String errorMessage;
       switch (e.code) {
         case 'email-already-in-use':
@@ -85,6 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
       _showSnackBar(errorMessage);
     } catch (e) {
+      // Catch any other errors that may occur
       _showSnackBar('An unexpected error occurred. Please try again.');
     }
   }
