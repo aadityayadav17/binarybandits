@@ -42,10 +42,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // Sign up method using Firebase Authentication
   Future<void> _signUp() async {
+    if (!_agreeToPrivacyPolicy) {
+      _showErrorDialog('Please agree to the privacy policy to continue.');
+      return;
+    }
+
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
@@ -57,10 +62,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException: ${e.code} - ${e.message}');
-      _showErrorDialog('${e.code}: ${e.message}');
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = 'An account already exists for that email.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        default:
+          errorMessage = 'An error occurred: ${e.message}';
+      }
+      _showErrorDialog(errorMessage);
     } catch (e) {
-      print('Unexpected error: $e');
       _showErrorDialog('An unexpected error occurred: $e');
     }
   }
