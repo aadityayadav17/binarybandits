@@ -61,21 +61,76 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   Future<void> _loadRecipes() async {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    // Load the recipe JSON from local assets
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
-    setState(() {
-      _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _savedRecipes = List.generate(_recipes.length, (_) => false);
-      _acceptedRecipes = List.generate(_recipes.length, (_) => false);
-    });
+    List<Recipe> allRecipes =
+        jsonData.map((data) => Recipe.fromJson(data)).toList();
+
+    if (user != null) {
+      // Reference to the user's recipeHistory in Firebase
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
+
+      // Fetch accepted recipes from Firebase
+      DataSnapshot snapshot =
+          await userRef.once().then((event) => event.snapshot);
+
+      // If there are accepted recipes, filter them out
+      List<String> acceptedRecipeIds = [];
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            snapshot.value as Map<dynamic, dynamic>;
+        acceptedRecipeIds = recipeMap.values
+            .where((recipe) => recipe['accepted'] == true)
+            .map<String>((recipe) => recipe['id'].toString())
+            .toList();
+      }
+
+      // Filter out recipes that have been accepted
+      List<Recipe> remainingRecipes = allRecipes
+          .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
+          .toList();
+
+      // Check if no recipes are left, then redirect
+      if (remainingRecipes.isEmpty) {
+        Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+      } else {
+        // Load remaining recipes
+        setState(() {
+          _recipes = remainingRecipes;
+          _savedRecipes = List.generate(_recipes.length, (_) => false);
+          _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+        });
+      }
+    } else {
+      // If the user is not logged in or there is an error, load all recipes
+      setState(() {
+        _recipes = allRecipes;
+        _savedRecipes = List.generate(_recipes.length, (_) => false);
+        _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+      });
+    }
   }
 
   void _nextRecipe({bool accepted = false}) {
     setState(() {
       _acceptedRecipes[_currentRecipeIndex] = accepted;
       _recipeHistory.add(_currentRecipeIndex);
-      _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
+
+      // Move to the next recipe, but skip over accepted ones
+      do {
+        _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
+      } while (_acceptedRecipes[_currentRecipeIndex] &&
+          _recipeHistory.length < _recipes.length);
+
       _scrollController.jumpTo(0);
     });
   }
@@ -116,7 +171,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     if (user != null) {
       // Prepare a reference to the user's recipe collection in the database
       DatabaseReference userRef = FirebaseDatabase.instance
-          .ref() // Use ref() instead of reference()
+          .ref()
           .child('users')
           .child(user.uid)
           .child('recipeHistory');

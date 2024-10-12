@@ -1,5 +1,7 @@
 import 'package:binarybandits/screens/login_screen/login_screen.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/no_recipe_selection_screen.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart'; // Assuming you have this screen
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,6 +68,11 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: _user != null ? const HomeScreen() : const LoginScreen(),
+      routes: {
+        '/recipe_selection_screen': (context) =>
+            const RecipeSelectionScreen(), // Assuming you have this screen
+        '/no_recipe_selection_screen': (context) => NoRecipeSelectionScreen(),
+      },
     );
   }
 }
