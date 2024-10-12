@@ -32,16 +32,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _signIn() async {
-    // Validate email and password are not empty
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
-      // Show an error message (using Snackbar or AlertDialog)
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter both email and password'),
         ),
       );
-      return; // Do not proceed with sign-in
+      return; // Do not proceed with sign-in if fields are empty
     }
 
     try {
@@ -50,17 +48,29 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // If successful, navigate to HomeScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      print('Error: $e');
-      // Handle Firebase sign-in errors (e.g., invalid email, wrong password)
+      String errorMessage = 'Authentication failed';
+      if (e.code == 'user-not-found') {
+        errorMessage = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Wrong password provided.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'The email address is not valid.';
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.message ?? 'Authentication failed'),
+          content: Text(errorMessage),
+        ),
+      );
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to sign in. Please try again.'),
         ),
       );
     }
