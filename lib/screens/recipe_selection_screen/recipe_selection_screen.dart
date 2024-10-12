@@ -80,20 +80,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     });
   }
 
-  void _undoRecipe() {
-    if (_recipeHistory.isNotEmpty) {
-      setState(() {
-        int previousIndex = _recipeHistory.removeLast();
-        if (_acceptedRecipes[previousIndex]) {
-          _selectedCount--;
-          _acceptedRecipes[previousIndex] = false;
-        }
-        _currentRecipeIndex = previousIndex;
-        _scrollController.jumpTo(0);
-      });
-    }
-  }
-
   void _acceptRecipe() {
     // Save the current recipe before moving to the next
     _swipeController.forward().then((_) async {
@@ -144,6 +130,62 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
       // Push the recipe data to Firebase
       await userRef.push().set(recipeData);
+    }
+  }
+
+  void _undoRecipe() {
+    if (_recipeHistory.isNotEmpty) {
+      setState(() {
+        int previousIndex = _recipeHistory.removeLast();
+        _currentRecipeIndex = previousIndex;
+        _scrollController.jumpTo(0);
+
+        // Check if the previous recipe was accepted and update the count
+        if (_acceptedRecipes[previousIndex]) {
+          _selectedCount--;
+          _acceptedRecipes[previousIndex] = false;
+        }
+
+        // Update Firebase to remove the previous decision
+        _updateRecipeInFirebase(_recipes[previousIndex], accepted: null);
+      });
+    }
+  }
+
+  Future<void> _updateRecipeInFirebase(Recipe recipe, {bool? accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      // Query to find the existing entry for this recipe
+      Query query = userRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
+
+      if (event.snapshot.value != null) {
+        // If the recipe exists, update it
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+        if (accepted == null) {
+          // If accepted is null, remove the entry
+          await userRef.child(key).remove();
+        } else {
+          // Update the accepted status
+          await userRef.child(key).update({'accepted': accepted});
+        }
+      } else if (accepted != null) {
+        // If the recipe doesn't exist and we have a decision, add it
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+        };
+        await userRef.push().set(recipeData);
+      }
     }
   }
 
