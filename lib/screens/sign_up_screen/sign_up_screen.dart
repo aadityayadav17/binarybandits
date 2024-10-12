@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import '../login_screen/login_screen.dart';
 import '../profile_screen/profile.dart';
 
@@ -15,19 +16,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _keepMeSignedIn = false;
   bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
+
+  // Create TextEditingController for email and password
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
   @override
   void dispose() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
+  }
+
+  // Sign up method using Firebase Authentication
+  Future<void> _signUp() async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Navigate to ProfileScreen after successful sign-up
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfileScreen(fromSignup: true),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Show error messages for different FirebaseAuth errors
+      if (e.code == 'weak-password') {
+        _showErrorDialog('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        _showErrorDialog('An account already exists for that email.');
+      } else {
+        _showErrorDialog(e.message!);
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred. Please try again.');
+    }
+  }
+
+  // Function to show error messages
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override
@@ -97,6 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: proportionalHeight(40),
                       child: TextField(
+                        controller: _emailController, // Add controller
                         focusNode: _emailFocusNode,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -122,6 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: proportionalHeight(40),
                       child: TextField(
+                        controller: _passwordController, // Add controller
                         focusNode: _passwordFocusNode,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
@@ -263,16 +324,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {
-                            // Navigate to the ProfileScreen when tapped
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProfileScreen(fromSignup: true),
-                              ),
-                            );
-                          },
+                          onTap: _signUp, // Call the sign-up method
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
                             width: proportionalWidth(110),

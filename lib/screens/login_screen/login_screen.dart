@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../sign_up_screen/sign_up_screen.dart';
-import '../home_screen/home_screen.dart';
+import 'package:binarybandits/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _showPassword = false;
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -26,6 +29,41 @@ class _LoginScreenState extends State<LoginScreen> {
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
+  }
+
+  Future<void> _signIn() async {
+    // Validate email and password are not empty
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      // Show an error message (using Snackbar or AlertDialog)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both email and password'),
+        ),
+      );
+      return; // Do not proceed with sign-in
+    }
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // If successful, navigate to HomeScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      print('Error: $e');
+      // Handle Firebase sign-in errors (e.g., invalid email, wrong password)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Authentication failed'),
+        ),
+      );
+    }
   }
 
   @override
@@ -91,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: proportionalHeight(40),
                       child: TextField(
+                        controller: _emailController,
                         focusNode: _emailFocusNode,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -116,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: proportionalHeight(40),
                       child: TextField(
+                        controller: _passwordController,
                         focusNode: _passwordFocusNode,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
@@ -219,12 +259,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
+                            // Navigate to HomeScreen when the button is clicked
+                            _signIn();
                           },
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
