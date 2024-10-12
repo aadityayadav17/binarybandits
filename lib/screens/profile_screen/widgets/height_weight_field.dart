@@ -5,12 +5,15 @@ import 'package:flutter/services.dart';
 class HeightWeightField extends StatelessWidget {
   final String labelText;
   final String unit;
+  final TextEditingController
+      controller; // Add controller for height/weight input
   final Function(String) onChanged;
 
   const HeightWeightField({
     Key? key,
     required this.labelText,
     required this.unit,
+    required this.controller, // Add controller as a required parameter
     required this.onChanged,
   }) : super(key: key);
 
@@ -63,6 +66,7 @@ class HeightWeightField extends StatelessWidget {
                 width: proportionalWidth(
                     30), // Proportional width for the TextField
                 child: TextField(
+                  controller: controller, // Attach the controller here
                   onChanged: onChanged,
                   keyboardType: TextInputType.number,
                   inputFormatters: [

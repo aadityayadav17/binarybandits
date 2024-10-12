@@ -7,18 +7,34 @@ import 'dropdown_field.dart';
 import 'multi_select_dropdown_field.dart';
 
 class ProfileFormFields extends StatelessWidget {
+  final TextEditingController nameController; // Controller for name
   final TextEditingController
-      nameController; // Add this line to accept nameController
-  final Function(String?) onDietaryPreferenceChanged;
-  final Function(List<String>) onDietaryRestrictionsChanged;
-  final VoidCallback onAnyFieldChanged;
-  final String? dietaryPreference;
-  final List<String> dietaryRestrictions;
-  final Function(String?) onNameValidated;
+      phoneNumberController; // Controller for phone number
+  final TextEditingController budgetController; // Controller for budget
+  final TextEditingController heightController; // Controller for height
+  final TextEditingController weightController; // Controller for weight
+  final TextEditingController
+      expectedWeightController; // Controller for expected weight
+  final TextEditingController
+      homeDistrictController; // Controller for home district
+  final Function(String?)
+      onDietaryPreferenceChanged; // Callback for dietary preference
+  final Function(List<String>)
+      onDietaryRestrictionsChanged; // Callback for dietary restrictions
+  final VoidCallback onAnyFieldChanged; // Callback when any field changes
+  final String? dietaryPreference; // Current dietary preference
+  final List<String> dietaryRestrictions; // Current dietary restrictions
+  final Function(String?) onNameValidated; // Callback for name validation
 
   const ProfileFormFields({
     Key? key,
-    required this.nameController, // Add this line to the constructor
+    required this.nameController,
+    required this.phoneNumberController,
+    required this.budgetController,
+    required this.heightController,
+    required this.weightController,
+    required this.expectedWeightController,
+    required this.homeDistrictController,
     required this.onDietaryPreferenceChanged,
     required this.onDietaryRestrictionsChanged,
     required this.onAnyFieldChanged,
@@ -31,50 +47,71 @@ class ProfileFormFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Use the nameController in the name field
+        // Name Field
         CustomTextField(
           labelText: "Preferred Name*",
-          controller: nameController, // Pass the controller to the text field
+          controller: nameController, // Attach name controller
           onChanged: (String? value) {
             onAnyFieldChanged();
             onNameValidated(value);
           },
         ),
         const SizedBox(height: 16),
+
+        // Phone Number Field
         PhoneNumberField(
+          controller: phoneNumberController, // Attach phone number controller
           labelText: "Phone Number",
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Budget Field
         BudgetField(
+          controller: budgetController, // Attach budget controller
           labelText: "Budget/Week",
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Height Field
         HeightWeightField(
+          controller: heightController, // Attach height controller
           labelText: "Height",
           unit: "CM",
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Weight Field
         HeightWeightField(
+          controller: weightController, // Attach weight controller
           labelText: "Weight",
           unit: "KG",
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Expected Weight Field
         HeightWeightField(
+          controller:
+              expectedWeightController, // Attach expected weight controller
           labelText: "Expected Weight",
           unit: "KG",
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Home District Field
         CustomTextField(
           labelText: "Home District",
+          controller: homeDistrictController, // Attach home district controller
           isLocationField: true,
           onChanged: (_) => onAnyFieldChanged(),
         ),
         const SizedBox(height: 16),
+
+        // Dietary Preference Dropdown
         DropdownField(
           labelText: "Dietary Preference",
           currentValue: dietaryPreference,
@@ -85,6 +122,8 @@ class ProfileFormFields extends StatelessWidget {
           },
         ),
         const SizedBox(height: 16),
+
+        // Dietary Restrictions Multi-Select Dropdown
         MultiSelectDropdownField(
           labelText: "Dietary Restrictions",
           items: const ['Dairy', 'Eggs', 'Fish', 'Nuts', 'Shellfish', 'Soy'],

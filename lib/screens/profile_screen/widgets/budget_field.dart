@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 
 class BudgetField extends StatelessWidget {
   final String labelText;
+  final TextEditingController controller; // Add controller for budget input
   final Function(String) onChanged;
 
   const BudgetField({
     Key? key,
     required this.labelText,
+    required this.controller, // Add controller as required parameter
     required this.onChanged,
   }) : super(key: key);
 
@@ -68,6 +70,7 @@ class BudgetField extends StatelessWidget {
                 width: proportionalWidth(
                     50), // Proportional width for the underline
                 child: TextField(
+                  controller: controller, // Attach the controller here
                   onChanged: onChanged,
                   keyboardType: TextInputType.number,
                   inputFormatters: [

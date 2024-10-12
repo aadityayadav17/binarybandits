@@ -17,7 +17,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  // Controllers for each field
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
+  TextEditingController _budgetController = TextEditingController();
+  TextEditingController _heightController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _expectedWeightController = TextEditingController();
+  TextEditingController _homeDistrictController = TextEditingController();
+
   String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
   bool _isSaved = false;
@@ -44,7 +52,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (_isNameValid && user != null) {
       try {
         await databaseRef.child('users/${user!.uid}').set({
-          'name': _nameController.text, // Save name
+          'name': _nameController.text,
+          'phoneNumber': _phoneNumberController.text,
+          'budget': _budgetController.text,
+          'height': _heightController.text,
+          'weight': _weightController.text,
+          'expectedWeight': _expectedWeightController.text,
+          'homeDistrict': _homeDistrictController.text,
           'dietaryPreference': dietaryPreference,
           'dietaryRestrictions': dietaryRestrictions,
         });
@@ -61,6 +75,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       } catch (e) {
         print('Error saving profile: $e');
       }
+    } else {
+      // Show a dialog or alert if name is not valid
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Invalid Input'),
+          content: Text('Please enter a valid name to save your profile.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -73,7 +104,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Map<String, dynamic>.from(snapshot.value as Map);
 
         setState(() {
-          _nameController.text = data['name'] ?? ''; // Load name
+          _nameController.text = data['name'] ?? '';
+          _phoneNumberController.text = data['phoneNumber'] ?? '';
+          _budgetController.text = data['budget'] ?? '';
+          _heightController.text = data['height'] ?? '';
+          _weightController.text = data['weight'] ?? '';
+          _expectedWeightController.text = data['expectedWeight'] ?? '';
+          _homeDistrictController.text = data['homeDistrict'] ?? '';
           dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
           dietaryRestrictions = (data['dietaryRestrictions'] != null)
               ? List<String>.from(data['dietaryRestrictions'] as List)
@@ -95,7 +132,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => const LoginScreen()), // Redirect to login
+          builder: (context) => const LoginScreen(),
+        ), // Redirect to login
       );
     } catch (e) {
       print('Error logging out: $e');
@@ -190,8 +228,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileFormFields(
-                      nameController:
-                          _nameController, // Pass the controller to the form fields
+                      nameController: _nameController,
+                      phoneNumberController: _phoneNumberController,
+                      budgetController: _budgetController,
+                      heightController: _heightController,
+                      weightController: _weightController,
+                      expectedWeightController: _expectedWeightController,
+                      homeDistrictController: _homeDistrictController,
                       onNameValidated: _validateName,
                       onDietaryPreferenceChanged: (value) {
                         _updateSaveStatus(false);
@@ -210,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: proportionalHeight(24)),
                     SaveButton(
                       isSaved: _isSaved,
-                      onPressed: _saveProfile, // Save profile to Firebase
+                      onPressed: _saveProfile,
                     ),
                     SizedBox(height: proportionalHeight(24)),
 

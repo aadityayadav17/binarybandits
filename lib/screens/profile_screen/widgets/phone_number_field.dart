@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 
 class PhoneNumberField extends StatelessWidget {
   final String labelText;
+  final TextEditingController controller; // Controller to manage phone input
   final Function(String) onChanged;
 
   const PhoneNumberField({
     Key? key,
     required this.labelText,
+    required this.controller, // Pass the controller as a required parameter
     required this.onChanged,
   }) : super(key: key);
 
@@ -60,7 +62,7 @@ class PhoneNumberField extends StatelessWidget {
             children: [
               CountryCodePicker(
                 onChanged: (countryCode) {
-                  // Optional: Add logic if needed to handle country code changes
+                  // Optional: Handle country code changes
                 },
                 initialSelection: 'AU',
                 favorite: const ['+61', 'AU'],
@@ -76,6 +78,7 @@ class PhoneNumberField extends StatelessWidget {
               SizedBox(width: proportionalWidth(12)),
               Expanded(
                 child: TextField(
+                  controller: controller, // Attach the controller
                   onChanged: onChanged,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
