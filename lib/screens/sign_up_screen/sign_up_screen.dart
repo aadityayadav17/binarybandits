@@ -1,7 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../login_screen/login_screen.dart';
 import '../profile_screen/profile.dart';
 
@@ -17,14 +18,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
 
-  // Create TextEditingController for email and password
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -40,7 +40,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordFocusNode.unfocus();
   }
 
-  // Sign up method using Firebase Authentication
+  Future<void> _saveKeepMeSignedInPreference(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('keepMeSignedIn', value);
+  }
+
   Future<void> _signUp() async {
     if (!_agreeToPrivacyPolicy) {
       _showErrorDialog('Please agree to the privacy policy to continue.');
@@ -53,6 +57,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+
+      // Save the keep me signed in preference
+      await _saveKeepMeSignedInPreference(_keepMeSignedIn);
+
+      // If keep me signed in is false, set up a listener to sign out when the app is closed
+      if (!_keepMeSignedIn) {
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          if (user == null) {
+            // User has been signed out
+            _saveKeepMeSignedInPreference(false);
+          }
+        });
+      }
 
       // Navigate to ProfileScreen after successful sign-up
       Navigator.pushReplacement(
@@ -82,7 +99,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  // Function to show error messages
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
