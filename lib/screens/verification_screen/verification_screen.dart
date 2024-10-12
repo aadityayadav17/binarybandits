@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:binarybandits/screens/profile_screen/profile.dart'; // Ensure correct path
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen({Key? key}) : super(key: key);
@@ -23,16 +23,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
   }
 
   Future<void> _checkEmailVerified() async {
-    // Reload the user
     User? user = FirebaseAuth.instance.currentUser;
     await user?.reload();
     user = FirebaseAuth.instance.currentUser;
 
     if (user != null && user.emailVerified) {
       _timer?.cancel();
-      // Navigate to the HomeScreen or main part of the application
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => const ProfileScreen(fromSignup: true)));
     }
   }
 
@@ -45,21 +43,68 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        title: Text('Verify Email', style: GoogleFonts.roboto()),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Please verify your email address.',
-                style: GoogleFonts.roboto(fontSize: 20)),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             SizedBox(height: 20),
-            Text('Check your email and click on the verification link.',
-                style: GoogleFonts.roboto(fontSize: 16)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Image.asset(
+                'assets/images/app-logo.png',
+                width: MediaQuery.of(context).size.width * 0.43,
+                height: MediaQuery.of(context).size.width * 0.07,
+              ),
+            ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              child: Text('Sign Out'),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(48),
+                  topRight: Radius.circular(48),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Please verify your email address.',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Check your email and click on the verification link to proceed.',
+                    style: GoogleFonts.roboto(fontSize: 16),
+                  ),
+                  SizedBox(height: 40),
+                  ElevatedButton(
+                    onPressed: _checkEmailVerified,
+                    child: Text('Continue'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.blue, // Use theme color or define custom
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      textStyle: GoogleFonts.roboto(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

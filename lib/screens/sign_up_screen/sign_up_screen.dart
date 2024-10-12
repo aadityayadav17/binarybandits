@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../login_screen/login_screen.dart';
-import '../profile_screen/profile.dart';
 import 'package:binarybandits/screens/verification_screen/verification_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
