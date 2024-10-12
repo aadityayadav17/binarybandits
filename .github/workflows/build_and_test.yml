@@ -3,12 +3,9 @@
 name: Multi-Platform Build and Test
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-      - aadi
-      - gaga
-      - nidhi
 
 jobs:
   build_android:
