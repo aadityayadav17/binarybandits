@@ -14,7 +14,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? dietaryPreference = 'Classic';
+  String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
   bool _isSaved = false; // State to manage save status
 

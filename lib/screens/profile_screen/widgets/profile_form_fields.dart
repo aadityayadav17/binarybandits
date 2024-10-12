@@ -38,7 +38,8 @@ class ProfileFormFields extends StatelessWidget {
         const SizedBox(height: 16),
         Center(
             child: BudgetField(
-                labelText: "Budget", onChanged: (_) => onAnyFieldChanged())),
+                labelText: "Budget/Week",
+                onChanged: (_) => onAnyFieldChanged())),
         const SizedBox(height: 16),
         Center(
             child: HeightWeightField(
@@ -68,7 +69,7 @@ class ProfileFormFields extends StatelessWidget {
           child: DropdownField(
             labelText: "Dietary Preference",
             currentValue: dietaryPreference,
-            items: const ['Classic', 'Vegan', 'Vegetarian'],
+            items: const ['No Preference', 'Vegan', 'Vegetarian'],
             onChanged: (value) {
               onDietaryPreferenceChanged(value);
               onAnyFieldChanged();
