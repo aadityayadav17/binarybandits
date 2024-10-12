@@ -7,6 +7,8 @@ import 'dropdown_field.dart';
 import 'multi_select_dropdown_field.dart';
 
 class ProfileFormFields extends StatelessWidget {
+  final TextEditingController
+      nameController; // Add this line to accept nameController
   final Function(String?) onDietaryPreferenceChanged;
   final Function(List<String>) onDietaryRestrictionsChanged;
   final VoidCallback onAnyFieldChanged;
@@ -16,6 +18,7 @@ class ProfileFormFields extends StatelessWidget {
 
   const ProfileFormFields({
     Key? key,
+    required this.nameController, // Add this line to the constructor
     required this.onDietaryPreferenceChanged,
     required this.onDietaryRestrictionsChanged,
     required this.onAnyFieldChanged,
@@ -28,8 +31,10 @@ class ProfileFormFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Use the nameController in the name field
         CustomTextField(
           labelText: "Preferred Name*",
+          controller: nameController, // Pass the controller to the text field
           onChanged: (String? value) {
             onAnyFieldChanged();
             onNameValidated(value);

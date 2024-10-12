@@ -5,12 +5,14 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool isLocationField;
   final Function(String) onChanged;
+  final TextEditingController? controller; // Add controller parameter
 
   const CustomTextField({
     Key? key,
     required this.labelText,
     this.isLocationField = false,
     required this.onChanged,
+    this.controller, // Add controller to constructor
   }) : super(key: key);
 
   @override
@@ -56,6 +58,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           TextField(
+            controller: controller, // Use controller in TextField
             style: GoogleFonts.roboto(fontSize: proportionalFontSize(16)),
             onChanged: onChanged,
             decoration: InputDecoration(

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Authentication
-import 'package:firebase_database/firebase_database.dart'; // Import Firebase Realtime Database
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
+import 'package:firebase_database/firebase_database.dart'; // Firebase Realtime Database
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/profile_form_fields.dart';
 import 'widgets/save_button.dart';
 import '../home_screen/home_screen.dart';
+import '../login_screen/login_screen.dart'; // Login screen import
 
 class ProfileScreen extends StatefulWidget {
-  final bool fromSignup; // Track where the screen was launched from
+  final bool fromSignup;
 
   const ProfileScreen({super.key, required this.fromSignup});
 
@@ -16,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  TextEditingController _nameController = TextEditingController();
   String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
   bool _isSaved = false;
@@ -28,10 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Get the currently signed-in user
     user = FirebaseAuth.instance.currentUser;
 
-    // Load profile if the user is authenticated
     if (user != null) {
       _loadProfile(user!.uid); // Load user-specific profile data using UID
     } else {
@@ -39,12 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Function to save the profile data to Firebase Realtime Database
+  // Save profile data to Firebase Realtime Database
   void _saveProfile() async {
     if (_isNameValid && user != null) {
       try {
-        // Save profile data under the logged-in user's UID
         await databaseRef.child('users/${user!.uid}').set({
+          'name': _nameController.text, // Save name
           'dietaryPreference': dietaryPreference,
           'dietaryRestrictions': dietaryRestrictions,
         });
@@ -64,21 +64,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Function to load the profile data from Firebase Realtime Database
+  // Load profile data from Firebase Realtime Database
   void _loadProfile(String userId) async {
     try {
       DataSnapshot snapshot = await databaseRef.child('users/$userId').get();
       if (snapshot.exists) {
         Map<String, dynamic> data =
             Map<String, dynamic>.from(snapshot.value as Map);
+
         setState(() {
-          dietaryPreference = data['dietaryPreference'];
-          dietaryRestrictions = List<String>.from(data['dietaryRestrictions']);
+          _nameController.text = data['name'] ?? ''; // Load name
+          dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
+          dietaryRestrictions = (data['dietaryRestrictions'] != null)
+              ? List<String>.from(data['dietaryRestrictions'] as List)
+              : [];
         });
         print('Profile loaded successfully');
+      } else {
+        print('No profile data found for user: $userId');
       }
     } catch (e) {
       print('Error loading profile: $e');
+    }
+  }
+
+  // Log out the user
+  void _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Log out from Firebase
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const LoginScreen()), // Redirect to login
+      );
+    } catch (e) {
+      print('Error logging out: $e');
+    }
+  }
+
+  // Reset the user's account (delete user data from Firebase Realtime Database)
+  void _resetAccount() async {
+    if (user != null) {
+      try {
+        await databaseRef
+            .child('users/${user!.uid}')
+            .remove(); // Remove user data
+        print('Account reset successfully');
+        _logout(); // Log out after resetting the account
+      } catch (e) {
+        print('Error resetting account: $e');
+      }
     }
   }
 
@@ -155,6 +190,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ProfileFormFields(
+                      nameController:
+                          _nameController, // Pass the controller to the form fields
                       onNameValidated: _validateName,
                       onDietaryPreferenceChanged: (value) {
                         _updateSaveStatus(false);
@@ -173,8 +210,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: proportionalHeight(24)),
                     SaveButton(
                       isSaved: _isSaved,
-                      onPressed:
-                          _saveProfile, // Save profile to Firebase when button is pressed
+                      onPressed: _saveProfile, // Save profile to Firebase
+                    ),
+                    SizedBox(height: proportionalHeight(24)),
+
+                    // Logout and Reset buttons
+                    ElevatedButton(
+                      onPressed: _logout,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Red color for logout
+                      ),
+                      child: Text('Log Out'),
+                    ),
+                    SizedBox(height: proportionalHeight(16)),
+                    ElevatedButton(
+                      onPressed: _resetAccount,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.orange, // Orange color for reset
+                      ),
+                      child: Text('Reset Account'),
                     ),
                     SizedBox(height: proportionalHeight(40)),
                   ],
