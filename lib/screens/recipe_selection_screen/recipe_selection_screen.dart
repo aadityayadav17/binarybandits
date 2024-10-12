@@ -36,7 +36,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
-  int _selectedCount = 0;
+  int _selectedCount = 0; // This now reflects the accepted recipes count
   final ScrollController _scrollController = ScrollController();
   List<int> _recipeHistory = [];
   List<bool> _acceptedRecipes = [];
@@ -92,6 +92,11 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
             .where((recipe) => recipe['accepted'] == true)
             .map<String>((recipe) => recipe['id'].toString())
             .toList();
+
+        // Update the selected count to reflect the number of accepted recipes
+        setState(() {
+          _selectedCount = acceptedRecipeIds.length;
+        });
       }
 
       // Filter out recipes that have been accepted
@@ -153,7 +158,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           accepted: true);
 
       setState(() {
-        _selectedCount++;
+        _selectedCount++; // Increment the counter when a recipe is accepted
         _nextRecipe(accepted: true); // Move to the next recipe after saving
         _resetSwipe();
       });
