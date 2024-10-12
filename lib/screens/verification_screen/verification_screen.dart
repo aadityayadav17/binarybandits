@@ -103,7 +103,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: proportionalHeight(40)),
+                  SizedBox(height: proportionalHeight(160)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +130,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: proportionalHeight(40)),
+                  SizedBox(height: proportionalHeight(80)),
                   TextButton(
                     onPressed: () async {
                       User? user = FirebaseAuth.instance.currentUser;
@@ -155,7 +155,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: proportionalHeight(20)),
+                  SizedBox(height: proportionalHeight(10)),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -175,6 +175,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: proportionalHeight(60)),
                 ],
               ),
             ),
