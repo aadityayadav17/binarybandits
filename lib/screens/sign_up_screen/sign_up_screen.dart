@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../login_screen/login_screen.dart';
 import '../profile_screen/profile.dart';
+import 'package:binarybandits/screens/verification_screen/verification_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -43,14 +44,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
-    // Check if the email or password fields are empty
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
       _showSnackBar('Please enter both email and password.');
       return;
     }
 
-    // Check if the user agreed to the privacy policy
     if (!_agreeToPrivacyPolicy) {
       _showSnackBar('Please agree to the privacy policy to continue.');
       return;
@@ -58,21 +57,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     try {
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      await _saveKeepMeSignedInPreference(_keepMeSignedIn);
+      // Send an email verification to the user
+      if (userCredential.user != null && !userCredential.user!.emailVerified) {
+        await userCredential.user!.sendEmailVerification();
+        _showSnackBar(
+            'A verification email has been sent. Please check your email.');
 
-      // Navigate to the next screen after successful sign-up
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const ProfileScreen(fromSignup: true)),
-      );
+        // Navigate to the VerificationScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const VerificationScreen()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
-      // Handle specific FirebaseAuth errors
       String errorMessage;
       switch (e.code) {
         case 'email-already-in-use':
@@ -90,7 +92,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
       _showSnackBar(errorMessage);
     } catch (e) {
-      // Catch any other errors that may occur
       _showSnackBar('An unexpected error occurred. Please try again.');
     }
   }
