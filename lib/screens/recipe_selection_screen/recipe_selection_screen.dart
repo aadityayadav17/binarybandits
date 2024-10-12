@@ -95,29 +95,31 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   void _acceptRecipe() {
+    // Save the current recipe before moving to the next
     _swipeController.forward().then((_) async {
-      setState(() {
-        _selectedCount++;
-        _nextRecipe(accepted: true);
-        _resetSwipe();
-      });
-
-      // Save only the recipe title as accepted in Firebase
+      // Ensure the recipe is saved before moving forward
       await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
           accepted: true);
+
+      setState(() {
+        _selectedCount++;
+        _nextRecipe(accepted: true); // Move to the next recipe after saving
+        _resetSwipe();
+      });
     });
   }
 
   void _rejectRecipe() {
+    // Save the current recipe before moving to the next
     _swipeController.forward().then((_) async {
-      setState(() {
-        _nextRecipe(accepted: false);
-        _resetSwipe();
-      });
-
-      // Save only the recipe title as rejected in Firebase
+      // Ensure the recipe is saved before moving forward
       await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
           accepted: false);
+
+      setState(() {
+        _nextRecipe(accepted: false); // Move to the next recipe after saving
+        _resetSwipe();
+      });
     });
   }
 
