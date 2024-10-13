@@ -13,6 +13,16 @@ class SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define proportional sizes based on screen dimensions
+    double proportionalFontSize(double size) =>
+        size * screenWidth / 375; // Assuming base screen width is 375
+    double proportionalHeight(double size) =>
+        size * screenHeight / 812; // Assuming base screen height is 812
+    double proportionalWidth(double size) => size * screenWidth / 375;
+
     return Center(
       child: ElevatedButton(
         onPressed: onPressed,
@@ -21,14 +31,18 @@ class SaveButton extends StatelessWidget {
               ? Colors.grey
               : const Color.fromRGBO(73, 160, 120, 1), // Color based on state
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(
+                proportionalWidth(10)), // Proportional border radius
           ),
-          fixedSize: Size(315, 48), // Fixed size for the button
+          fixedSize: Size(
+            proportionalWidth(315), // Proportional button width
+            proportionalHeight(48), // Proportional button height
+          ),
         ),
         child: Text(
           isSaved ? 'Saved' : 'Save', // Text based on state
           style: GoogleFonts.robotoFlex(
-            fontSize: 18,
+            fontSize: proportionalFontSize(18), // Proportional font size
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),

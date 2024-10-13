@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../sign_up_screen/sign_up_screen.dart';
-import '../home_screen/home_screen.dart';
+import 'package:binarybandits/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -16,6 +17,14 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _showPassword = false;
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadKeepMeSignedInPreference();
+  }
 
   @override
   void dispose() {
@@ -29,9 +38,87 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordFocusNode.unfocus();
   }
 
+  Future<void> _loadKeepMeSignedInPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _keepMeSignedIn = prefs.getBool('keepMeSignedIn') ?? false;
+    });
+  }
+
+  Future<void> _saveKeepMeSignedInPreference(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('keepMeSignedIn', value);
+  }
+
+  Future<void> _signIn() async {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter both email and password'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      // Save the keep me signed in preference
+      await _saveKeepMeSignedInPreference(_keepMeSignedIn);
+
+      // If keep me signed in is false, set up a listener to sign out when the app is closed
+      if (!_keepMeSignedIn) {
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+          if (user == null) {
+            // User has been signed out
+            _saveKeepMeSignedInPreference(false);
+          }
+        });
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      if (e.code == 'user-not-found') {
+        errorMessage = 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Wrong password provided for that user.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'The email address is not valid.';
+      } else {
+        errorMessage = 'Authentication failed. Please check your credentials.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+        ),
+      );
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An unexpected error occurred. Please try again.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    double proportionalFontSize(double size) => size * screenWidth / 375;
+    double proportionalHeight(double size) => size * screenHeight / 812;
+    double proportionalWidth(double size) => size * screenWidth / 375;
 
     return GestureDetector(
       onTap: _clearFocus,
@@ -41,27 +128,27 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 120),
+              SizedBox(height: proportionalHeight(120)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/app-logo.png',
-                      width: 164,
-                      height: 26,
-                      alignment: Alignment.centerLeft,
-                    ),
-                  ],
+                padding:
+                    EdgeInsets.symmetric(horizontal: proportionalWidth(24)),
+                child: Image.asset(
+                  'assets/images/app-logo.png',
+                  width: proportionalWidth(164),
+                  height: proportionalHeight(26),
+                  alignment: Alignment.centerLeft,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: proportionalHeight(20)),
               Container(
                 width: screenWidth,
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(proportionalWidth(24)),
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(48)),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(48),
+                    topRight: Radius.circular(48),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,52 +156,58 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Welcome Back',
                       style: GoogleFonts.roboto(
-                        fontSize: 36,
+                        fontSize: proportionalFontSize(36),
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(16)),
                     Text(
                       'Email',
                       style: GoogleFonts.roboto(
-                        fontSize: 14,
+                        fontSize: proportionalFontSize(14),
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: proportionalHeight(5)),
                     SizedBox(
-                      height: 40,
+                      height: proportionalHeight(40),
                       child: TextField(
+                        controller: _emailController,
                         focusNode: _emailFocusNode,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: proportionalHeight(10),
+                            horizontal: proportionalWidth(10),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: proportionalHeight(20)),
                     Text(
                       'Password',
                       style: GoogleFonts.roboto(
-                        fontSize: 14,
+                        fontSize: proportionalFontSize(14),
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: proportionalHeight(5)),
                     SizedBox(
-                      height: 40,
+                      height: proportionalHeight(40),
                       child: TextField(
+                        controller: _passwordController,
                         focusNode: _passwordFocusNode,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: proportionalHeight(10),
+                            horizontal: proportionalWidth(10),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -125,111 +218,107 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                             },
                             child: Container(
-                              width:
-                                  40, // Adjust this value to control the tap area width
-                              height:
-                                  40, // Adjust this value to control the tap area height
+                              width: proportionalWidth(40),
+                              height: proportionalHeight(40),
                               alignment: Alignment.center,
                               child: Image.asset(
                                 _showPassword
                                     ? 'assets/icons/screens/log_screen/eye-open.png'
                                     : 'assets/icons/screens/log_screen/eye-closed.png',
-                                width:
-                                    20, // Adjust this value to control the icon width
-                                height:
-                                    20, // Adjust this value to control the icon height
+                                width: proportionalWidth(20),
+                                height: proportionalHeight(20),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: proportionalHeight(10)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: Checkbox(
-                                value: _keepMeSignedIn,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _keepMeSignedIn = value ?? false;
-                                    _clearFocus(); // Clear focus when checkbox is ticked
-                                  });
-                                },
+                        Expanded(
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: proportionalHeight(24),
+                                width: proportionalWidth(24),
+                                child: Checkbox(
+                                  value: _keepMeSignedIn,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _keepMeSignedIn = value ?? false;
+                                      _clearFocus();
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text('Keep me signed in',
-                                style: GoogleFonts.roboto(
+                              SizedBox(width: proportionalWidth(8)),
+                              Flexible(
+                                child: Text(
+                                  'Keep me signed in',
+                                  style: GoogleFonts.roboto(
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    color: Colors.black)),
-                          ],
+                                    fontSize: proportionalFontSize(14),
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: TextButton(
-                            onPressed: () {
-                              // Forgot password action
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Forgot Password?',
-                              style: GoogleFonts.roboto(
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Colors.black),
+                        TextButton(
+                          onPressed: () {
+                            // Forgot password action
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.roboto(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w400,
+                              fontSize: proportionalFontSize(14),
+                              color: Colors.black,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 43),
+                    SizedBox(height: proportionalHeight(43)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'Sign In',
-                          style: GoogleFonts.roboto(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            'Sign In',
+                            style: GoogleFonts.roboto(
+                              fontSize: proportionalFontSize(36),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
                             // Navigate to HomeScreen when the button is clicked
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
+                            _signIn();
                           },
                           child: Image.asset(
                             'assets/icons/screens/log_screen/log-rectangle.png',
-                            width: 110,
-                            height: 110,
-                            fit: BoxFit.fill,
+                            width: proportionalWidth(110),
+                            height: proportionalHeight(110),
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: proportionalHeight(100)),
                     TextButton(
                       onPressed: () {
-                        // Sign up action
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -247,12 +336,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.roboto(
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.w400,
-                          fontSize: 20,
+                          fontSize: proportionalFontSize(20),
                           color: Colors.black,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: proportionalHeight(100)),
                   ],
                 ),
               ),

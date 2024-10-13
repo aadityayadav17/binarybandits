@@ -7,6 +7,21 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
 
 class RecipeCollectionPage extends StatefulWidget {
   @override
@@ -14,22 +29,53 @@ class RecipeCollectionPage extends StatefulWidget {
 }
 
 class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
-  List<Recipe> recipes = [];
+  List<Recipe> savedRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    _loadRecipes();
+    _loadSavedRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+  Future<void> _loadSavedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-    });
+      // Fetch saved recipes from Firebase
+      DataSnapshot snapshot =
+          await userRef.once().then((event) => event.snapshot);
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        // Filter out recipes that have `saved == true`
+        List<dynamic> savedRecipeEntries = recipeMap.values
+            .where((recipe) => recipe['saved'] == true)
+            .toList();
+
+        // Load the full recipe details from the JSON and filter by saved IDs
+        final String response = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> data = json.decode(response);
+
+        List<Recipe> allRecipes =
+            data.map((json) => Recipe.fromJson(json)).toList();
+
+        // Filter the recipes that are saved
+        setState(() {
+          savedRecipes = allRecipes
+              .where((recipe) =>
+                  savedRecipeEntries.any((entry) => entry['id'] == recipe.id))
+              .toList();
+        });
+      }
+    }
   }
 
   @override
@@ -39,15 +85,15 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: proportionalHeight(context, 60),
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -59,13 +105,17 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 10.0, bottom: 16.0),
+            padding: EdgeInsets.only(
+              left: proportionalWidth(context, 16),
+              top: proportionalHeight(context, 10),
+              bottom: proportionalHeight(context, 16),
+            ),
             child: Text(
               "Recipe Collection",
               style: GoogleFonts.robotoFlex(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
-                fontSize: 32,
+                fontSize: proportionalFontSize(context, 32),
                 height: 0.9,
               ),
             ),
@@ -81,17 +131,21 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
 
   Widget _buildRecipeList() {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      itemCount: recipes.length,
+      padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
+      itemCount: savedRecipes.length,
       itemBuilder: (context, index) {
-        return _buildRecipeItem(recipes[index]);
+        return _buildRecipeItem(savedRecipes[index]);
       },
     );
   }
 
   Widget _buildRecipeItem(Recipe recipe) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      padding: EdgeInsets.only(
+        left: proportionalWidth(context, 16),
+        right: proportionalWidth(context, 16),
+        bottom: proportionalHeight(context, 16),
+      ),
       child: GestureDetector(
         onTap: () {
           // Navigate to the new recipe collection detail screen
@@ -104,10 +158,10 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
           );
         },
         child: Container(
-          height: 56,
+          height: proportionalHeight(context, 56),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(proportionalWidth(context, 10)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
@@ -118,12 +172,15 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: proportionalWidth(context, 16)),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 recipe.name,
-                style: GoogleFonts.robotoFlex(fontSize: 16),
+                style: GoogleFonts.robotoFlex(
+                  fontSize: proportionalFontSize(context, 16),
+                ),
               ),
             ),
           ),
@@ -172,32 +229,32 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/home-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/discover-recipe-off.png',
-            width: 22,
-            height: 22,
+            width: proportionalWidth(context, 22),
+            height: proportionalHeight(context, 22),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/grocery-list-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/weekly-menu-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),

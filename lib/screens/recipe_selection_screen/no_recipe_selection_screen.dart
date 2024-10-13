@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
-import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
 
-class NoWeeklyMenuScreen extends StatelessWidget {
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+class NoRecipeSelectionScreen extends StatelessWidget {
+  // Updated class name
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -39,7 +54,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "My Menu",
+                  "Discover\nRecipe",
                   style: GoogleFonts.robotoFlex(
                     textStyle: TextStyle(
                       color: Colors.black,
@@ -54,7 +69,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '0',
+                      'All',
                       style: GoogleFonts.robotoFlex(
                         textStyle: TextStyle(
                           color: Colors.black,
@@ -81,7 +96,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'You have no recipes in the Weekly Menu!',
+                    'You have added all the recipes!',
                     style: GoogleFonts.robotoFlex(
                       textStyle: TextStyle(
                         color: Colors.grey,
@@ -93,7 +108,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Text(
-                    'Go to Home to add recipes!',
+                    'Please wait until new recipes are added.',
                     style: GoogleFonts.robotoFlex(
                       textStyle: TextStyle(
                         color: Colors.grey,
@@ -104,6 +119,35 @@ class NoWeeklyMenuScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ],
+              ),
+            ),
+            SizedBox(
+                height: screenHeight * 0.235), // Adjust this value as needed
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RecipeOverviewScreen(),
+                  ));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(proportionalWidth(context, 10)),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: proportionalWidth(context, 70),
+                    vertical: proportionalHeight(context, 12),
+                  ),
+                ),
+                child: Text(
+                  'Done',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: proportionalFontSize(context, 16),
+                  ),
+                ),
               ),
             ),
           ],
@@ -122,17 +166,16 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               );
               break;
             case 1:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RecipeSelectionScreen()),
-              );
+              // Action for Discover Recipe button
               break;
             case 2:
               // Action for Grocery List button
               break;
             case 3:
-              // Already on Weekly Menu screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => WeeklyMenuScreen()),
+              );
               break;
           }
         },
@@ -147,9 +190,9 @@ class NoWeeklyMenuScreen extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/bottom_navigation/discover-recipe-off.png',
-              width: screenWidth * 0.055,
-              height: screenWidth * 0.055,
+              'assets/icons/bottom_navigation/discover-recipe-on.png',
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),
@@ -163,9 +206,9 @@ class NoWeeklyMenuScreen extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/bottom_navigation/weekly-menu-on.png',
-              width: screenWidth * 0.065,
-              height: screenWidth * 0.065,
+              'assets/icons/bottom_navigation/weekly-menu-off.png',
+              width: screenWidth * 0.06,
+              height: screenWidth * 0.06,
             ),
             label: '',
           ),

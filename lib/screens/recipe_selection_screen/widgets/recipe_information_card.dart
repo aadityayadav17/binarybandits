@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import GoogleFonts package
+import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 
 class RecipeInformationCard extends StatefulWidget {
@@ -7,7 +7,8 @@ class RecipeInformationCard extends StatefulWidget {
   final double topPosition;
   final double cardHeight;
   final ScrollController scrollController;
-  final double screenWidth; // Add screenWidth parameter
+  final double screenWidth;
+  final double screenHeight;
 
   RecipeInformationCard({
     Key? key,
@@ -15,8 +16,9 @@ class RecipeInformationCard extends StatefulWidget {
     required this.topPosition,
     required this.cardHeight,
     required this.scrollController,
-    required this.screenWidth, // Add screenWidth to the constructor
-  }) : super(key: ValueKey(recipe.id)); // Use recipe.id as the key
+    required this.screenWidth,
+    required this.screenHeight,
+  }) : super(key: ValueKey(recipe.id));
 
   @override
   _RecipeInformationCardState createState() => _RecipeInformationCardState();
@@ -26,17 +28,6 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
   bool showIngredients = true;
 
   @override
-  void didUpdateWidget(RecipeInformationCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.recipe.id != oldWidget.recipe.id) {
-      setState(() {
-        showIngredients =
-            true; // Reset to Ingredients when a new recipe is loaded
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Positioned(
       top: widget.topPosition,
@@ -44,20 +35,14 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
       right: 0,
       child: SizedBox(
         height: widget.cardHeight,
-        width: widget.screenWidth * 0.9, // Use screenWidth for card width
+        width: widget.screenWidth * 0.9, // Proportional width
         child: Card(
           margin: EdgeInsets.symmetric(
-              horizontal:
-                  widget.screenWidth * 0.05), // Adjust based on screen width
+              horizontal: widget.screenWidth * 0.05), // Consistent margin
           color: Colors.white,
           elevation: 4,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10),
-            ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(widget.screenWidth * 0.05),
           ),
           child: SingleChildScrollView(
             controller: widget.scrollController,
@@ -67,66 +52,137 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                          child: _buildIconText(
-                              'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${widget.recipe.difficulty.toLowerCase()}.png',
-                              capitalizeFirstLetter(widget.recipe.difficulty))),
-                      Expanded(
-                          child: _buildIconText(
-                              'assets/icons/screens/recipe_selection_screen/time-clock.png',
-                              '${widget.recipe.totalTime} min')),
-                      Expanded(
-                          child: _buildIconText(
-                              'assets/icons/screens/recipe_selection_screen/rating.png',
-                              '${widget.recipe.rating}')),
-                    ],
-                  ),
+                  _buildHeaderRow(),
                   const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                          child: _buildIconTextSideBySide(
-                              'assets/icons/screens/recipe_selection_screen/calories.png',
-                              '${widget.recipe.energyKcal} kcal')),
-                      Expanded(
-                          child: _buildIconTextSideBySide(
-                              'assets/icons/screens/recipe_selection_screen/protein.png',
-                              '${widget.recipe.protein}g Protein')),
-                    ],
-                  ),
+                  _buildNutritionRow(),
                   const SizedBox(height: 16),
-                  Text(
-                    widget.recipe.name,
-                    style: GoogleFonts.robotoFlex(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  _buildRecipeName(),
                   const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    children: _buildTags(widget.recipe),
-                  ),
+                  _buildTags(widget.recipe),
                   const SizedBox(height: 16),
                   _buildToggleButtons(),
                   const SizedBox(height: 16),
-                  if (showIngredients)
-                    _buildIngredientsList(widget.recipe)
-                  else
-                    _buildStepsList(widget.recipe),
+                  showIngredients
+                      ? _buildIngredientsList(widget.recipe)
+                      : _buildStepsList(widget.recipe),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeaderRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: _buildIconText(
+            'assets/icons/screens/recipe_selection_screen/cooking-difficulty-${widget.recipe.difficulty.toLowerCase()}.png',
+            capitalizeFirstLetter(widget.recipe.difficulty),
+          ),
+        ),
+        Expanded(
+          child: _buildIconText(
+            'assets/icons/screens/recipe_selection_screen/time-clock.png',
+            '${widget.recipe.totalTime} min',
+          ),
+        ),
+        Expanded(
+          child: _buildIconText(
+            'assets/icons/screens/recipe_selection_screen/rating.png',
+            '${widget.recipe.rating}',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNutritionRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: _buildIconTextSideBySide(
+            'assets/icons/screens/recipe_selection_screen/calories.png',
+            '${widget.recipe.energyKcal} kcal',
+          ),
+        ),
+        Expanded(
+          child: _buildIconTextSideBySide(
+            'assets/icons/screens/recipe_selection_screen/protein.png',
+            '${widget.recipe.protein}g Protein',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecipeName() {
+    return Text(
+      widget.recipe.name,
+      style: GoogleFonts.robotoFlex(
+        textStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTags(Recipe recipe) {
+    List<Widget> tags = [];
+    if (recipe.classification != null && recipe.classification!.isNotEmpty) {
+      tags.add(_buildTag(
+        capitalizeFirstLetter(recipe.classification!),
+        const Color.fromRGBO(73, 160, 120, 1), // Example: Vegetarian/Vegan
+      ));
+    }
+    if (recipe.allergens != null) {
+      tags.addAll(
+        recipe.allergens!
+            .where((allergen) => allergen.toLowerCase() != 'none')
+            .map(
+              (allergen) =>
+                  _buildTag(capitalizeFirstLetter(allergen), Colors.red),
+            ),
+      );
+    }
+    return Wrap(spacing: 8.0, runSpacing: 4.0, children: tags);
+  }
+
+  Widget _buildIconText(String iconPath, String text) {
+    return Column(
+      children: [
+        Image.asset(iconPath, width: 24, height: 24),
+        const SizedBox(height: 8),
+        Text(text, style: GoogleFonts.robotoFlex(fontSize: 14)),
+      ],
+    );
+  }
+
+  Widget _buildIconTextSideBySide(String iconPath, String text) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(iconPath, width: 24, height: 24),
+        const SizedBox(width: 8),
+        Text(text, style: GoogleFonts.robotoFlex(fontSize: 14)),
+      ],
+    );
+  }
+
+  Widget _buildTag(String text, Color backgroundColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(text,
+          style: GoogleFonts.robotoFlex(color: Colors.black, fontSize: 14)),
     );
   }
 
@@ -152,11 +208,9 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
           Text(
             text,
             style: GoogleFonts.robotoFlex(
-              textStyle: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? Colors.black : Colors.grey,
-              ),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.black : Colors.grey,
             ),
           ),
           const SizedBox(height: 4),
@@ -177,126 +231,51 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
       return {'name': parts[0], 'quantity': parts[1]};
     }).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: ingredients.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: Text(ingredients[index]['name'] ?? '',
-                          style: GoogleFonts.robotoFlex(
-                            textStyle: const TextStyle(fontSize: 16),
-                          ))),
-                  Text(ingredients[index]['quantity'] ?? '',
-                      style: GoogleFonts.robotoFlex(
-                        textStyle: const TextStyle(fontSize: 16),
-                      )),
-                ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: ingredients.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(ingredients[index]['name'] ?? '',
+                    style: GoogleFonts.robotoFlex(fontSize: 16)),
               ),
-            );
-          },
-        ),
-      ],
+              Text(ingredients[index]['quantity'] ?? '',
+                  style: GoogleFonts.robotoFlex(fontSize: 16)),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _buildStepsList(Recipe recipe) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: recipe.steps.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${index + 1}.',
-                      style: GoogleFonts.robotoFlex(
-                        textStyle: const TextStyle(fontSize: 16),
-                      )),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: Text(recipe.steps[index],
-                          style: GoogleFonts.robotoFlex(
-                            textStyle: const TextStyle(fontSize: 16),
-                          ))),
-                ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: recipe.steps.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${index + 1}.',
+                  style: GoogleFonts.robotoFlex(fontSize: 16)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(recipe.steps[index],
+                    style: GoogleFonts.robotoFlex(fontSize: 16)),
               ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIconText(String iconPath, String text) {
-    return Column(
-      children: [
-        Image.asset(iconPath, width: 24, height: 24),
-        const SizedBox(height: 8),
-        Text(text,
-            style: GoogleFonts.robotoFlex(
-                textStyle: const TextStyle(fontSize: 14))),
-      ],
-    );
-  }
-
-  Widget _buildIconTextSideBySide(String iconPath, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(iconPath, width: 24, height: 24),
-        const SizedBox(width: 8),
-        Text(text,
-            style: GoogleFonts.robotoFlex(
-                textStyle: const TextStyle(fontSize: 14))),
-      ],
-    );
-  }
-
-  List<Widget> _buildTags(Recipe recipe) {
-    List<Widget> tags = [];
-    if (recipe.classification != null && recipe.classification!.isNotEmpty) {
-      tags.add(_buildTag(
-        capitalizeFirstLetter(recipe.classification!),
-        const Color.fromRGBO(73, 160, 120, 1), // Example: Vegetarian/Vegan
-      ));
-    }
-    if (recipe.allergens != null) {
-      tags.addAll(
-        recipe.allergens!
-            .where((allergen) => allergen.toLowerCase() != 'none')
-            .map(
-              (allergen) =>
-                  _buildTag(capitalizeFirstLetter(allergen), Colors.red),
-            ),
-      );
-    }
-    return tags;
-  }
-
-  Widget _buildTag(String text, Color backgroundColor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(text,
-          style: GoogleFonts.robotoFlex(
-              textStyle: const TextStyle(color: Colors.black, fontSize: 14))),
+            ],
+          ),
+        );
+      },
     );
   }
 
