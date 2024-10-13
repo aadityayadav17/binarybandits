@@ -60,15 +60,28 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   void _removeRecipe(int index) {
     setState(() {
       _recipes.removeAt(index);
+      _savedRecipes.removeAt(index);
       if (_currentIndex >= _recipes.length) {
         _currentIndex = _recipes.length - 1;
       }
+      if (_recipes.isEmpty) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
+        );
+      }
+    });
+  }
+
+  void _toggleSavedRecipe(int index) {
+    setState(() {
+      _savedRecipes[index] = !_savedRecipes[index];
     });
   }
 
   void _clearAllRecipes() {
     setState(() {
       _recipes.clear();
+      _savedRecipes.clear();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
       );
@@ -324,18 +337,38 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                   children: [
                     RecipeCardStack(
                       recipe: _recipes[_currentIndex],
-                      isSaved: _savedRecipes[_currentIndex],
-                      onSave: () {
-                        setState(() {
-                          _savedRecipes[_currentIndex] =
-                              !_savedRecipes[_currentIndex];
-                        });
-                      },
-                      onRemove: () => _removeRecipe(_currentIndex),
                       screenWidth: screenWidth * 0.9,
                       cardTopPosition: cardTopPosition,
                       cardHeight: cardHeight,
                       scrollController: _scrollController,
+                    ),
+                    // Cross button
+                    Positioned(
+                      top: cardTopPosition * 0.05,
+                      left: screenWidth * 0.05,
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/screens/recipe_overview_screen/cross.png',
+                          width: screenWidth * 0.05,
+                          height: screenWidth * 0.05,
+                        ),
+                        onPressed: () => _removeRecipe(_currentIndex),
+                      ),
+                    ),
+                    // Save button
+                    Positioned(
+                      top: cardTopPosition * 0.05,
+                      right: screenWidth * 0.05,
+                      child: IconButton(
+                        icon: Image.asset(
+                          _savedRecipes[_currentIndex]
+                              ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
+                              : 'assets/icons/screens/recipe_selection_screen/save.png',
+                          width: screenWidth * 0.05,
+                          height: screenWidth * 0.05,
+                        ),
+                        onPressed: () => _toggleSavedRecipe(_currentIndex),
+                      ),
                     ),
                   ],
                 ),

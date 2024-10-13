@@ -17,17 +17,11 @@ double proportionalFontSize(BuildContext context, double size) {
 
 class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;
-  final bool isSaved;
-  final VoidCallback onSave;
-  final VoidCallback onRemove;
   final double screenWidth;
 
   const RecipeImageCard({
     Key? key,
     required this.recipe,
-    required this.isSaved,
-    required this.onSave,
-    required this.onRemove,
     required this.screenWidth,
   }) : super(key: key);
 
@@ -58,32 +52,6 @@ class RecipeImageCard extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          top: 20,
-          left: screenWidth * 0.05,
-          child: IconButton(
-            icon: Image.asset(
-              'assets/icons/screens/recipe_overview_screen/cross.png',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: onRemove,
-          ),
-        ),
-        Positioned(
-          top: 20,
-          right: screenWidth * 0.05,
-          child: IconButton(
-            icon: Image.asset(
-              isSaved
-                  ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
-                  : 'assets/icons/screens/recipe_selection_screen/save.png',
-              width: 20,
-              height: 20,
-            ),
-            onPressed: onSave,
-          ),
-        ),
       ],
     );
   }
@@ -91,9 +59,6 @@ class RecipeImageCard extends StatelessWidget {
 
 class RecipeCardStack extends StatelessWidget {
   final Recipe recipe;
-  final bool isSaved;
-  final VoidCallback onSave;
-  final VoidCallback onRemove;
   final double screenWidth;
   final double cardTopPosition;
   final double cardHeight;
@@ -102,9 +67,6 @@ class RecipeCardStack extends StatelessWidget {
   const RecipeCardStack({
     Key? key,
     required this.recipe,
-    required this.isSaved,
-    required this.onSave,
-    required this.onRemove,
     required this.screenWidth,
     required this.cardTopPosition,
     required this.cardHeight,
@@ -121,9 +83,6 @@ class RecipeCardStack extends StatelessWidget {
               height: cardTopPosition,
               child: RecipeImageCard(
                 recipe: recipe,
-                isSaved: isSaved,
-                onSave: onSave,
-                onRemove: onRemove,
                 screenWidth: screenWidth,
               ),
             ),
