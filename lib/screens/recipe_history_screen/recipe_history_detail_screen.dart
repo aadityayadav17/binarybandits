@@ -126,7 +126,7 @@ class RecipeHistoryDetailScreen extends StatelessWidget {
                               proportionalWidth(context, 10)),
                         ),
                         padding: EdgeInsets.symmetric(
-                          horizontal: proportionalWidth(context, 120),
+                          horizontal: proportionalWidth(context, 100),
                           vertical: proportionalHeight(context, 12),
                         ),
                       ),
