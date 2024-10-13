@@ -203,6 +203,28 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  Future<void> _saveRecipeToCollection(Recipe recipe) async {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Reference to the user's recipe collection in Firebase
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      // Create a Map for the recipe data to store in the recipeCollection
+      Map<String, dynamic> recipeData = {
+        'id': recipe.id,
+        'name': recipe.name,
+      };
+
+      // Push the recipe to the recipeCollection in Firebase
+      await userRef.push().set(recipeData);
+    }
+  }
+
   void _undoRecipe() {
     if (_recipeHistory.isNotEmpty) {
       setState(() {
@@ -375,6 +397,10 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           _savedRecipes[_currentRecipeIndex] =
                               !_savedRecipes[_currentRecipeIndex];
                         });
+                        if (_savedRecipes[_currentRecipeIndex]) {
+                          // Save the recipe to the collection when it's marked as saved
+                          _saveRecipeToCollection(recipe);
+                        }
                       },
                       onUndo: _undoRecipe,
                       screenWidth: screenWidth,
