@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
-import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
+
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
 
 class NoRecipeSelectionScreen extends StatelessWidget {
   // Updated class name
@@ -111,7 +125,11 @@ class NoRecipeSelectionScreen extends StatelessWidget {
                 height: screenHeight * 0.235), // Adjust this value as needed
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RecipeOverviewScreen(),
+                  ));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                   shape: RoundedRectangleBorder(
@@ -148,17 +166,16 @@ class NoRecipeSelectionScreen extends StatelessWidget {
               );
               break;
             case 1:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RecipeSelectionScreen()),
-              );
+              // Action for Discover Recipe button
               break;
             case 2:
               // Action for Grocery List button
               break;
             case 3:
-              // Already on Weekly Menu screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => WeeklyMenuScreen()),
+              );
               break;
           }
         },
