@@ -25,7 +25,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _weightController = TextEditingController();
   TextEditingController _expectedWeightController = TextEditingController();
   TextEditingController _homeDistrictController = TextEditingController();
-
+ 
+  double calories = 0;
   String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
   bool _isSaved = false;
@@ -48,9 +49,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // Save profile data to Firebase Realtime Database
-  void _saveProfile() async {
-    _validateName(
-        _nameController.text); // Ensure validation is called before checking
+void _saveProfile() async {
+  _validateName(
+      _nameController.text); // Ensure validation is called before checking
+
+  double weight = double.tryParse(_weightController.text) ?? 0;
+  double height = double.tryParse(_heightController.text) ?? 0;
+
+  if (weight == 0 || height == 0) {
+    print("Invalid inputs for calorie calculation");
+    return;
+  }
+
+  // Using a general estimation formula for women
+  calories = ((10 * weight) + (6.25 * height)) * 1.55;
+
+  // Adjust calories based on dietary preference
+  if (dietaryPreference == 'Vegetarian') {
+    calories *= 0.9;
+  } else if (dietaryPreference == 'Vegan') {
+    calories *= 0.85;
+  }
 
     if (_isNameValid && user != null) {
       try {
@@ -64,6 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'homeDistrict': _homeDistrictController.text,
           'dietaryPreference': dietaryPreference,
           'dietaryRestrictions': dietaryRestrictions,
+          'calorieRequirement': calories,
         });
         _updateSaveStatus(true);
         if (widget.fromSignup) {
@@ -101,34 +121,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // Load profile data from Firebase Realtime Database
-  void _loadProfile(String userId) async {
-    try {
-      DataSnapshot snapshot = await databaseRef.child('users/$userId').get();
-      if (snapshot.exists) {
-        Map<String, dynamic> data =
-            Map<String, dynamic>.from(snapshot.value as Map);
+void _loadProfile(String userId) async {
+  try {
+    DataSnapshot snapshot = await databaseRef.child('users/$userId').get();
+    if (snapshot.exists) {
+      Map<String, dynamic> data =
+          Map<String, dynamic>.from(snapshot.value as Map);
 
-        setState(() {
-          _nameController.text = data['name'] ?? '';
-          _phoneNumberController.text = data['phoneNumber'] ?? '';
-          _budgetController.text = data['budget'] ?? '';
-          _heightController.text = data['height'] ?? '';
-          _weightController.text = data['weight'] ?? '';
-          _expectedWeightController.text = data['expectedWeight'] ?? '';
-          _homeDistrictController.text = data['homeDistrict'] ?? '';
-          dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
-          dietaryRestrictions = (data['dietaryRestrictions'] != null)
-              ? List<String>.from(data['dietaryRestrictions'] as List)
-              : [];
-        });
-        print('Profile loaded successfully');
-      } else {
-        print('No profile data found for user: $userId');
-      }
-    } catch (e) {
-      print('Error loading profile: $e');
+      setState(() {
+        _nameController.text = data['name'] ?? '';
+        _phoneNumberController.text = data['phoneNumber'] ?? '';
+        _budgetController.text = data['budget'] ?? '';
+        _heightController.text = data['height'] ?? '';
+        _weightController.text = data['weight'] ?? '';
+        _expectedWeightController.text = data['expectedWeight'] ?? '';
+        _homeDistrictController.text = data['homeDistrict'] ?? '';
+        dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
+        dietaryRestrictions = (data['dietaryRestrictions'] != null)
+            ? List<String>.from(data['dietaryRestrictions'] as List)
+            : [];
+      });
+      print('Profile loaded successfully');
+    } else {
+      print('No profile data found for user: $userId');
     }
+  } catch (e) {
+    print('Error loading profile: $e');
   }
+}
 
   // Log out the user
   void _logout() async {
