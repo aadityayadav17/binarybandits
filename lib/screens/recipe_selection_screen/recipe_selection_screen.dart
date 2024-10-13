@@ -156,6 +156,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       // Ensure the recipe is saved before moving forward
       await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
           accepted: true);
+      await _saveRecipeToCollection(_recipes[_currentRecipeIndex],
+          saved: true); // Add to collection as saved
 
       setState(() {
         _selectedCount++; // Increment the counter when a recipe is accepted
@@ -171,6 +173,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       // Ensure the recipe is saved before moving forward
       await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
           accepted: false);
+      await _saveRecipeToCollection(_recipes[_currentRecipeIndex],
+          saved: false); // Add to collection as unsaved
 
       setState(() {
         _nextRecipe(accepted: false); // Move to the next recipe after saving
@@ -181,47 +185,74 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _saveRecipeToFirebase(Recipe recipe,
       {required bool accepted}) async {
-    // Get current user
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Prepare a reference to the user's recipe collection in the database
       DatabaseReference userRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeHistory');
 
-      // Create a Map for the recipe data to store
-      Map<String, dynamic> recipeData = {
-        'id': recipe.id, // Save the recipe ID
-        'name': recipe.name, // Save the recipe name
-        'accepted': accepted, // true if accepted, false if rejected
-      };
+      // Query to check if this recipe already exists in Firebase
+      Query query = userRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
 
-      // Push the recipe data to Firebase
-      await userRef.push().set(recipeData);
+      if (event.snapshot.value != null) {
+        // If the recipe exists in Firebase, update the "accepted" status
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+
+        // Update the existing entry in Firebase
+        await userRef
+            .child(key)
+            .update({'accepted': accepted, 'name': recipe.name});
+      } else {
+        // If the recipe does not exist, create a new entry
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+        };
+        await userRef.push().set(recipeData);
+      }
     }
   }
 
-  Future<void> _saveRecipeToCollection(Recipe recipe) async {
-    // Get the current user
+  Future<void> _saveRecipeToCollection(Recipe recipe,
+      {required bool saved}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Reference to the user's recipe collection in Firebase
       DatabaseReference userRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeCollection');
 
-      // Create a Map for the recipe data to store in the recipeCollection
-      Map<String, dynamic> recipeData = {
-        'id': recipe.id,
-        'name': recipe.name,
-      };
+      // Query to check if this recipe already exists in Firebase
+      Query query = userRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
 
-      // Push the recipe to the recipeCollection in Firebase
-      await userRef.push().set(recipeData);
+      if (event.snapshot.value != null) {
+        // If the recipe exists, update its saved status
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+
+        // Update the saved status of the existing entry
+        await userRef.child(key).update({
+          'saved': saved, // Update the saved status (true/false)
+          'name': recipe.name, // Update the recipe name if needed
+        });
+      } else {
+        // If the recipe does not exist, add it to the collection with the saved flag
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'saved': saved, // Add the saved status (true/false)
+        };
+        await userRef.push().set(recipeData);
+      }
     }
   }
 
@@ -232,21 +263,22 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         _currentRecipeIndex = previousIndex;
         _scrollController.jumpTo(0);
 
-        // Check if the previous recipe was saved and update the status in Firebase
-        if (_savedRecipes[previousIndex]) {
-          _savedRecipes[previousIndex] = false;
-          _updateRecipeInFirebase(_recipes[previousIndex],
-              isSaved: false); // Update Firebase
-        } else {
-          _savedRecipes[previousIndex] = true;
-          _updateRecipeInFirebase(_recipes[previousIndex],
-              isSaved: true); // Update Firebase
-        }
+        // Toggle the saved status and update Firebase accordingly
+        bool wasAccepted = _acceptedRecipes[previousIndex];
+        _acceptedRecipes[previousIndex] = !wasAccepted;
+        _savedRecipes[previousIndex] = !wasAccepted;
 
-        // Adjust the counter if the previous action was a save
-        if (_acceptedRecipes[previousIndex]) {
+        // Update the database with the undo action
+        _saveRecipeToFirebase(_recipes[previousIndex],
+            accepted: _acceptedRecipes[previousIndex]);
+        _saveRecipeToCollection(_recipes[previousIndex],
+            saved: _savedRecipes[previousIndex]); // Update saved status
+
+        // Adjust the selected count
+        if (wasAccepted) {
           _selectedCount--;
-          _acceptedRecipes[previousIndex] = false;
+        } else {
+          _selectedCount++;
         }
       });
     }
@@ -304,6 +336,10 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       // Update Firebase with the new saved status
       _updateRecipeInFirebase(_recipes[_currentRecipeIndex],
           isSaved: _savedRecipes[_currentRecipeIndex]);
+
+      // Save the recipe to the collection when it's marked as saved
+      _saveRecipeToCollection(_recipes[_currentRecipeIndex],
+          saved: _savedRecipes[_currentRecipeIndex]);
     });
   }
 
@@ -423,10 +459,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           _savedRecipes[_currentRecipeIndex] =
                               !_savedRecipes[_currentRecipeIndex];
                         });
-                        if (_savedRecipes[_currentRecipeIndex]) {
-                          // Save the recipe to the collection when it's marked as saved
-                          _saveRecipeToCollection(recipe);
-                        }
+                        // Save or update the recipe in the collection based on the current save status
+                        _saveRecipeToCollection(recipe,
+                            saved: _savedRecipes[_currentRecipeIndex]);
                       },
                       onUndo: _undoRecipe,
                       screenWidth: screenWidth,
