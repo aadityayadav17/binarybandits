@@ -40,6 +40,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
   List<int> _recipeHistory = [];
+  Map<String, String> _recipeHistoryKeys = {};
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
@@ -61,6 +62,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   Future<void> _loadRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
 
+    // Load recipes from JSON
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
@@ -73,67 +75,118 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .child('users')
           .child(user.uid)
           .child('recipeHistory');
+
+      DataSnapshot historySnapshot =
+          await historyRef.once().then((event) => event.snapshot);
+
+      if (historySnapshot.value != null) {
+        Map<dynamic, dynamic> historyMap =
+            historySnapshot.value as Map<dynamic, dynamic>;
+
+        _recipeHistoryKeys.clear();
+        Set<String> acceptedRecipeIds = {};
+
+        historyMap.forEach((key, value) {
+          String recipeId = value['id'].toString();
+          _recipeHistoryKeys[recipeId] = key;
+          if (value['accepted'] == true) {
+            acceptedRecipeIds.add(recipeId);
+          }
+        });
+
+        setState(() {
+          _recipes = allRecipes
+              .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
+              .toList();
+          _acceptedRecipes = List.generate(_recipes.length, (index) => false);
+          _savedRecipes = List.generate(_recipes.length, (index) => false);
+          _selectedCount = acceptedRecipeIds.length;
+        });
+      } else {
+        setState(() {
+          _recipes = allRecipes;
+          _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+          _savedRecipes = List.generate(_recipes.length, (_) => false);
+        });
+      }
+
+      // Load saved recipes
+      await _loadSavedRecipes();
+    } else {
+      setState(() {
+        _recipes = allRecipes;
+        _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+        _savedRecipes = List.generate(_recipes.length, (_) => false);
+      });
+    }
+
+    if (_recipes.isEmpty) {
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    }
+  }
+
+  Future<void> _loadSavedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
       DatabaseReference collectionRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeCollection');
 
-      DataSnapshot historySnapshot =
-          await historyRef.once().then((event) => event.snapshot);
       DataSnapshot collectionSnapshot =
           await collectionRef.once().then((event) => event.snapshot);
-
-      Set<String> acceptedRecipeIds = {};
-      Set<String> savedRecipeIds = {};
-
-      if (historySnapshot.value != null) {
-        Map<dynamic, dynamic> historyMap =
-            historySnapshot.value as Map<dynamic, dynamic>;
-        acceptedRecipeIds = historyMap.values
-            .where((recipe) => recipe['accepted'] == true)
-            .map<String>((recipe) => recipe['id'].toString())
-            .toSet();
-      }
 
       if (collectionSnapshot.value != null) {
         Map<dynamic, dynamic> collectionMap =
             collectionSnapshot.value as Map<dynamic, dynamic>;
-        savedRecipeIds = collectionMap.values
+        Set<String> savedRecipeIds = collectionMap.values
             .where((recipe) => recipe['saved'] == true)
             .map<String>((recipe) => recipe['id'].toString())
             .toSet();
-      }
 
-      List<Recipe> remainingRecipes = allRecipes
-          .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
-          .toList();
-
-      if (remainingRecipes.isEmpty) {
-        Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
-      } else {
         setState(() {
-          _recipes = remainingRecipes;
-          _savedRecipes = remainingRecipes
-              .map((recipe) => savedRecipeIds.contains(recipe.id))
-              .toList();
-          _acceptedRecipes =
-              List.generate(remainingRecipes.length, (_) => false);
-          _selectedCount = acceptedRecipeIds.length;
+          for (int i = 0; i < _recipes.length; i++) {
+            _savedRecipes[i] = savedRecipeIds.contains(_recipes[i].id);
+          }
         });
       }
-    } else {
-      setState(() {
-        _recipes = allRecipes;
-        _savedRecipes = List.generate(allRecipes.length, (_) => false);
-        _acceptedRecipes = List.generate(allRecipes.length, (_) => false);
-      });
+    }
+  }
+
+  Future<void> _updateRecipeHistory(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
+
+      if (_recipeHistoryKeys.containsKey(recipe.id)) {
+        // Update existing entry
+        await historyRef.child(_recipeHistoryKeys[recipe.id]!).update({
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Create new entry
+        DatabaseReference newRef = await historyRef.push();
+        await newRef.set({
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+        _recipeHistoryKeys[recipe.id] = newRef.key!;
+      }
     }
   }
 
   Future<void> _acceptRecipe() async {
     try {
-      await _addRecipeToHistory(_recipes[_currentRecipeIndex], accepted: true);
+      await _updateRecipeHistory(_recipes[_currentRecipeIndex], accepted: true);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = true;
@@ -148,7 +201,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _rejectRecipe() async {
     try {
-      await _addRecipeToHistory(_recipes[_currentRecipeIndex], accepted: false);
+      await _updateRecipeHistory(_recipes[_currentRecipeIndex],
+          accepted: false);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = false;
@@ -167,7 +221,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       nextIndex = (nextIndex + 1) % _recipes.length;
     }
     _currentRecipeIndex = nextIndex;
-    _scrollController.jumpTo(0);
     _checkAllRecipesAccepted();
   }
 
@@ -284,6 +337,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
             _selectedCount--;
           }
           _acceptedRecipes[previousIndex] = false;
+          _recipeHistoryKeys.remove(recipeToUndo.id);
         });
       } catch (e) {
         _showErrorDialog("Error undoing action: $e");
@@ -293,24 +347,31 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _removeRecipeFromHistory(Recipe recipe) async {
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+    if (user != null && _recipeHistoryKeys.containsKey(recipe.id)) {
       DatabaseReference historyRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeHistory');
 
-      // Find and remove the recipe entry
-      Query query = historyRef.orderByChild('id').equalTo(recipe.id);
-      DatabaseEvent event = await query.once();
-
-      if (event.snapshot.value != null) {
-        Map<dynamic, dynamic> recipeMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        String key = recipeMap.keys.first;
-        await historyRef.child(key).remove();
-      }
+      await historyRef.child(_recipeHistoryKeys[recipe.id]!).remove();
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _addRecipeToHistory(Recipe recipe,
@@ -332,22 +393,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
       await historyRef.push().set(recipeData);
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            child: Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
