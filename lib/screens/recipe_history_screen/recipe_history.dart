@@ -7,6 +7,21 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/recipe_history_screen/recipe_history_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
 
 class RecipeHistoryPage extends StatefulWidget {
   @override
@@ -14,22 +29,52 @@ class RecipeHistoryPage extends StatefulWidget {
 }
 
 class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
-  List<Recipe> recipes = [];
+  List<Recipe> acceptedRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    _loadRecipes();
+    _loadAcceptedRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+  Future<void> _loadAcceptedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-    });
+      // Fetch accepted recipes from Firebase
+      DataSnapshot snapshot =
+          await userRef.once().then((event) => event.snapshot);
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        // Filter recipes where 'accepted' is true
+        List<dynamic> acceptedRecipeIds = recipeMap.values
+            .where((recipe) => recipe['accepted'] == true)
+            .map((recipe) => recipe['id'].toString())
+            .toList();
+
+        // Load the full recipe details from the JSON and filter by accepted IDs
+        final String response = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> data = json.decode(response);
+
+        List<Recipe> allRecipes =
+            data.map((json) => Recipe.fromJson(json)).toList();
+
+        setState(() {
+          acceptedRecipes = allRecipes
+              .where((recipe) => acceptedRecipeIds.contains(recipe.id))
+              .toList();
+        });
+      }
+    }
   }
 
   @override
@@ -39,15 +84,15 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: proportionalHeight(context, 60),
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -59,42 +104,49 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 10.0, bottom: 16.0),
+            padding: EdgeInsets.only(
+              left: proportionalWidth(context, 16),
+              top: proportionalHeight(context, 10),
+              bottom: proportionalHeight(context, 16),
+            ),
             child: Text(
               "Recipe History",
               style: GoogleFonts.robotoFlex(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
-                fontSize: 32,
+                fontSize: proportionalFontSize(context, 32),
                 height: 0.9,
               ),
             ),
           ),
           Expanded(
-            child: _buildRecipeList(),
+            child: _buildRecipeList(context),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 
-  Widget _buildRecipeList() {
+  Widget _buildRecipeList(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      itemCount: recipes.length,
+      padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
+      itemCount: acceptedRecipes.length,
       itemBuilder: (context, index) {
-        return _buildRecipeItem(recipes[index]);
+        return _buildRecipeItem(context, acceptedRecipes[index]);
       },
     );
   }
 
-  Widget _buildRecipeItem(Recipe recipe) {
+  Widget _buildRecipeItem(BuildContext context, Recipe recipe) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      padding: EdgeInsets.only(
+        left: proportionalWidth(context, 16),
+        right: proportionalWidth(context, 16),
+        bottom: proportionalHeight(context, 16),
+      ),
       child: GestureDetector(
         onTap: () {
-          // Navigate to the new recipe collection detail screen
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -103,26 +155,28 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
           );
         },
         child: Container(
-          height: 56,
+          height: proportionalHeight(context, 56),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(proportionalWidth(context, 10)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 3,
-                offset: Offset(0, 1),
+                offset: const Offset(0, 1),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: proportionalWidth(context, 16)),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 recipe.name,
-                style: GoogleFonts.robotoFlex(fontSize: 16),
+                style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 16)),
               ),
             ),
           ),
@@ -131,7 +185,7 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
@@ -171,32 +225,32 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/home-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/discover-recipe-off.png',
-            width: 22,
-            height: 22,
+            width: proportionalWidth(context, 22),
+            height: proportionalHeight(context, 22),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/grocery-list-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/icons/bottom_navigation/weekly-menu-off.png',
-            width: 24,
-            height: 24,
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
           ),
           label: '',
         ),

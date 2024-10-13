@@ -6,6 +6,19 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/ingredient_list_screen/ingredient_list_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
 class RecipeOverviewScreen extends StatefulWidget {
   const RecipeOverviewScreen({Key? key}) : super(key: key);
 
@@ -31,8 +44,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     final List<dynamic> jsonData = json.decode(jsonString);
     setState(() {
       _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _servings = List<int>.filled(_recipes.length, 1,
-          growable: true); // Use growable list
+      _servings = List<int>.filled(_recipes.length, 1, growable: true);
       _pageController = PageController(
         initialPage: _currentRecipeIndex,
         viewportFraction: 0.8,
@@ -61,15 +73,15 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: proportionalHeight(context, 60),
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
           child: IconButton(
             icon: Image.asset(
               'assets/icons/screens/common/back-key.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -79,20 +91,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(proportionalWidth(context, 16)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'You successfully added ${_recipes.length} recipes to the My Menu!',
-                      style: const TextStyle(
-                        fontSize: 20,
+                      style: TextStyle(
+                        fontSize: proportionalFontSize(context, 20),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(context, 16)),
                     SizedBox(
-                      height: 300,
+                      height: proportionalHeight(context, 300),
                       child: PageView.builder(
                         controller: _pageController,
                         onPageChanged: (index) {
@@ -108,9 +120,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                             builder: (context, child) {
                               return Center(
                                 child: SizedBox(
-                                  height: 300,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
+                                  height: proportionalHeight(context, 300),
+                                  width: proportionalWidth(context, 300),
                                   child: child,
                                 ),
                               );
@@ -120,17 +131,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                 Card(
                                   elevation: 4,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(
+                                        proportionalWidth(context, 15)),
                                   ),
                                   child: Column(
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(
+                                            proportionalWidth(context, 15)),
                                         child: Image.asset(
                                           recipe.image,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
-                                          height: 260,
+                                          height:
+                                              proportionalHeight(context, 260),
                                         ),
                                       ),
                                       Expanded(
@@ -138,20 +152,27 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(15),
-                                              bottomRight: Radius.circular(15),
+                                              bottomLeft: Radius.circular(
+                                                  proportionalWidth(
+                                                      context, 15)),
+                                              bottomRight: Radius.circular(
+                                                  proportionalWidth(
+                                                      context, 15)),
                                             ),
                                           ),
                                           child: Center(
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4.0),
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: proportionalWidth(
+                                                    context, 4),
+                                              ),
                                               child: Text(
                                                 recipe.name,
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  fontSize: 16,
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      proportionalFontSize(
+                                                          context, 16),
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -163,43 +184,38 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 10,
-                                  right: 10,
+                                  top: proportionalHeight(context, 10),
+                                  right: proportionalWidth(context, 10),
                                   child: IconButton(
                                     icon: Image.asset(
                                       'assets/icons/screens/recipe_overview_screen/cross.png',
-                                      width: 16,
-                                      height: 16,
+                                      width: proportionalWidth(context, 16),
+                                      height: proportionalHeight(context, 16),
                                     ),
                                     onPressed: () {
                                       setState(() {
-                                        // If it's the last recipe and there are multiple recipes, set index to the first one (index 0)
+                                        // Remove logic for recipes and servings
                                         if (index == _recipes.length - 1 &&
                                             _recipes.length > 1) {
-                                          _currentRecipeIndex =
-                                              0; // Set to the first recipe
+                                          _currentRecipeIndex = 0;
                                         } else if (_recipes.length > 1) {
                                           _currentRecipeIndex =
                                               (_currentRecipeIndex + 1) %
                                                   _recipes.length;
                                         }
 
-                                        _recipes
-                                            .removeAt(index); // Remove recipe
-                                        _servings.removeAt(
-                                            index); // Remove associated servings
+                                        _recipes.removeAt(index);
+                                        _servings.removeAt(index);
 
-                                        // Ensure the _currentRecipeIndex stays within bounds
                                         if (_currentRecipeIndex >=
                                             _recipes.length) {
-                                          _currentRecipeIndex = _recipes
-                                                  .length -
-                                              1; // Adjust the index if out of bounds
+                                          _currentRecipeIndex =
+                                              _recipes.length - 1;
                                         }
 
                                         if (_recipes.isNotEmpty) {
-                                          _pageController?.jumpToPage(
-                                              _currentRecipeIndex); // Update the view
+                                          _pageController
+                                              ?.jumpToPage(_currentRecipeIndex);
                                         }
                                       });
                                     },
@@ -211,7 +227,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(context, 16)),
                     Slider(
                       value: _currentRecipeIndex.toDouble(),
                       min: 0,
@@ -228,22 +244,23 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         _pageController?.jumpToPage(_currentRecipeIndex);
                       },
                     ),
-                    const SizedBox(height: 16),
-                    const Center(
+                    SizedBox(height: proportionalHeight(context, 16)),
+                    Center(
                       child: Text(
                         'How many servings for this recipe?',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: proportionalFontSize(context, 18),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(context, 16)),
                     Center(
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(
+                              proportionalWidth(context, 24)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.3),
@@ -254,23 +271,22 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                           ],
                         ),
                         constraints: BoxConstraints(
-                          minWidth: 150,
-                          maxWidth: 180,
+                          minWidth: proportionalWidth(context, 150),
+                          maxWidth: proportionalWidth(context, 180),
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .spaceBetween, // Ensure buttons are spaced
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16.0), // Adjust padding for alignment
+                              padding: EdgeInsets.only(
+                                  left: proportionalWidth(context, 16)),
                               child: IconButton(
                                 icon: Image.asset(
                                   _servings[_currentRecipeIndex] > 1
                                       ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
                                       : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
-                                  width: 12,
-                                  height: 12,
+                                  width: proportionalWidth(context, 12),
+                                  height: proportionalHeight(context, 12),
                                 ),
                                 onPressed: _servings[_currentRecipeIndex] > 1
                                     ? () {
@@ -278,23 +294,23 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                           _servings[_currentRecipeIndex]--;
                                         });
                                       }
-                                    : null, // Disable the button when servings are 1
+                                    : null,
                               ),
                             ),
                             Text(
                               '${_servings[_currentRecipeIndex]}',
-                              style: const TextStyle(
-                                fontSize: 24,
+                              style: TextStyle(
+                                fontSize: proportionalFontSize(context, 24),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 16.0), // Adjust padding for alignment
+                              padding: EdgeInsets.only(
+                                  right: proportionalWidth(context, 16)),
                               child: IconButton(
                                 icon: Image.asset(
                                   'assets/icons/screens/recipe_overview_screen/add.png',
-                                  width: 12,
-                                  height: 12,
+                                  width: proportionalWidth(context, 12),
+                                  height: proportionalHeight(context, 12),
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -307,7 +323,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: proportionalHeight(context, 16)),
                     Row(
                       children: [
                         Expanded(
@@ -321,17 +337,19 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
-                                    8), // Keep original radius
+                                    proportionalWidth(context, 8)),
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Apply All',
                               style: TextStyle(
-                                  color: Color.fromRGBO(73, 160, 120, 1)),
+                                color: const Color.fromRGBO(73, 160, 120, 1),
+                                fontSize: proportionalFontSize(context, 16),
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: proportionalWidth(context, 16)),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
@@ -344,17 +362,20 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   const Color.fromRGBO(73, 160, 120, 1),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
-                                    8), // Keep original radius
+                                    proportionalWidth(context, 8)),
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Next',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: proportionalFontSize(context, 16),
+                              ),
                             ),
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -395,32 +416,32 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/home-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/discover-recipe-on.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/grocery-list-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/icons/bottom_navigation/weekly-menu-off.png',
-              width: 24,
-              height: 24,
+              width: proportionalWidth(context, 24),
+              height: proportionalHeight(context, 24),
             ),
             label: '',
           ),

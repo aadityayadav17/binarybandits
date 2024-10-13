@@ -1,13 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+// Proportional helper functions
+double proportionalWidth(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
+
+double proportionalHeight(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.height / 812;
+}
+
+double proportionalFontSize(BuildContext context, double size) {
+  return size * MediaQuery.of(context).size.width / 375;
+}
 
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
@@ -21,15 +36,16 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
+  List<bool> _acceptedRecipes = [];
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
+  List<int> _recipeWeeklyMenu = [];
+  Map<String, String> _recipeWeeklyMenuKeys = {};
   List<int> _recipeHistory = [];
-  List<bool> _acceptedRecipes = [];
+  Map<String, String> _recipeHistoryKeys = {};
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
-  late double _dragStartX;
-  bool _isDragging = false;
 
   @override
   void initState() {
@@ -46,95 +62,441 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   Future<void> _loadRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    // Load recipes from JSON
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
-    setState(() {
-      _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _savedRecipes = List.generate(_recipes.length, (_) => false);
-      _acceptedRecipes = List.generate(_recipes.length, (_) => false);
-    });
-  }
+    List<Recipe> allRecipes =
+        jsonData.map((data) => Recipe.fromJson(data)).toList();
 
-  void _nextRecipe({bool accepted = false}) {
-    setState(() {
-      _acceptedRecipes[_currentRecipeIndex] = accepted;
-      _recipeHistory.add(_currentRecipeIndex);
-      _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
-      _scrollController.jumpTo(0);
-    });
-  }
+    if (user != null) {
+      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu');
 
-  void _undoRecipe() {
-    if (_recipeHistory.isNotEmpty) {
-      setState(() {
-        int previousIndex = _recipeHistory.removeLast();
-        if (_acceptedRecipes[previousIndex]) {
-          _selectedCount--;
-          _acceptedRecipes[previousIndex] = false;
-        }
-        _currentRecipeIndex = previousIndex;
-        _scrollController.jumpTo(0);
-      });
-    }
-  }
+      DataSnapshot weeklyMenuSnapshot =
+          await weeklyMenuRef.once().then((event) => event.snapshot);
 
-  void _onDragStart(DragStartDetails details) {
-    _dragStartX = details.localPosition.dx;
-    _isDragging = true;
-  }
+      if (weeklyMenuSnapshot.value != null) {
+        Map<dynamic, dynamic> weeklyMenuMap =
+            weeklyMenuSnapshot.value as Map<dynamic, dynamic>;
 
-  void _onDragUpdate(DragUpdateDetails details) {
-    if (!_isDragging) return;
+        _recipeWeeklyMenuKeys.clear();
+        Set<String> acceptedRecipeIds = {};
 
-    final dragDistance = details.localPosition.dx - _dragStartX;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final swipePercentage = dragDistance / screenWidth;
+        weeklyMenuMap.forEach((key, value) {
+          String recipeId = value['id'].toString();
+          _recipeWeeklyMenuKeys[recipeId] = key;
+          if (value['accepted'] == true) {
+            acceptedRecipeIds.add(recipeId);
+          }
+        });
 
-    setState(() {
-      _swipeAnimation = Tween<Offset>(
-        begin: Offset.zero,
-        end: Offset(swipePercentage, 0),
-      ).animate(_swipeController);
-    });
-
-    _swipeController.value = swipePercentage.abs();
-  }
-
-  void _onDragEnd(DragEndDetails details) {
-    _isDragging = false;
-    if (_swipeController.value > 0.2) {
-      if (_swipeAnimation.value.dx > 0) {
-        _acceptRecipe();
+        setState(() {
+          _recipes = allRecipes
+              .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
+              .toList();
+          _acceptedRecipes = List.generate(_recipes.length, (index) => false);
+          _savedRecipes = List.generate(_recipes.length, (index) => false);
+          _selectedCount = acceptedRecipeIds.length;
+        });
       } else {
-        _rejectRecipe();
+        setState(() {
+          _recipes = allRecipes;
+          _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+          _savedRecipes = List.generate(_recipes.length, (_) => false);
+        });
       }
+
+      // Load saved recipes
+      await _loadSavedRecipes();
     } else {
-      _resetSwipe();
+      setState(() {
+        _recipes = allRecipes;
+        _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+        _savedRecipes = List.generate(_recipes.length, (_) => false);
+      });
+    }
+
+    if (_recipes.isEmpty) {
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
     }
   }
 
-  void _acceptRecipe() {
-    _swipeController.forward().then((_) {
+  Future<void> _loadSavedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference collectionRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      DataSnapshot collectionSnapshot =
+          await collectionRef.once().then((event) => event.snapshot);
+
+      if (collectionSnapshot.value != null) {
+        Map<dynamic, dynamic> collectionMap =
+            collectionSnapshot.value as Map<dynamic, dynamic>;
+        Set<String> savedRecipeIds = collectionMap.values
+            .where((recipe) => recipe['saved'] == true)
+            .map<String>((recipe) => recipe['id'].toString())
+            .toSet();
+
+        setState(() {
+          for (int i = 0; i < _recipes.length; i++) {
+            _savedRecipes[i] = savedRecipeIds.contains(_recipes[i].id);
+          }
+        });
+      }
+    }
+  }
+
+  Future<void> _loadWeeklyMenu(User user) async {
+    DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child('recipeWeeklyMenu');
+
+    DataSnapshot weeklyMenuSnapshot =
+        await weeklyMenuRef.once().then((event) => event.snapshot);
+
+    if (weeklyMenuSnapshot.value != null) {
+      Map<dynamic, dynamic> weeklyMenuMap =
+          weeklyMenuSnapshot.value as Map<dynamic, dynamic>;
+
+      _recipeWeeklyMenuKeys.clear();
+      Set<String> acceptedRecipeIds = {};
+
+      weeklyMenuMap.forEach((key, value) {
+        String recipeId = value['id'].toString();
+        _recipeWeeklyMenuKeys[recipeId] = key;
+        if (value['accepted'] == true) {
+          acceptedRecipeIds.add(recipeId);
+        }
+      });
+
       setState(() {
+        _recipes = _recipes
+            .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
+            .toList();
+        _acceptedRecipes = List.generate(_recipes.length, (index) => false);
+        _savedRecipes = List.generate(_recipes.length, (index) => false);
+        _selectedCount = acceptedRecipeIds.length;
+      });
+    }
+  }
+
+  Future<void> _loadRecipeHistory(User user) async {
+    DatabaseReference historyRef = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child('recipeHistory');
+
+    DataSnapshot historySnapshot =
+        await historyRef.once().then((event) => event.snapshot);
+
+    if (historySnapshot.value != null) {
+      Map<dynamic, dynamic> historyMap =
+          historySnapshot.value as Map<dynamic, dynamic>;
+
+      _recipeHistoryKeys.clear();
+
+      historyMap.forEach((key, value) {
+        String recipeId = value['id'].toString();
+        _recipeHistoryKeys[recipeId] = key;
+      });
+    }
+  }
+
+  Future<void> _updateRecipeWeeklyMenu(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await _updateRecipeInDatabase(user, 'recipeWeeklyMenu', recipe, accepted);
+    }
+  }
+
+  Future<void> _updateRecipeHistory(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await _updateRecipeInDatabase(user, 'recipeHistory', recipe, accepted);
+    }
+  }
+
+  Future<void> _updateRecipeInDatabase(
+      User user, String databaseName, Recipe recipe, bool accepted) async {
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child(databaseName);
+
+    Map<String, String> keysMap = databaseName == 'recipeWeeklyMenu'
+        ? _recipeWeeklyMenuKeys
+        : _recipeHistoryKeys;
+
+    if (keysMap.containsKey(recipe.id)) {
+      // Update existing entry
+      await ref.child(keysMap[recipe.id]!).update({
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      });
+    } else {
+      // Create new entry
+      DatabaseReference newRef = await ref.push();
+      await newRef.set({
+        'id': recipe.id,
+        'name': recipe.name,
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      });
+      keysMap[recipe.id] = newRef.key!;
+    }
+  }
+
+  Future<void> _acceptRecipe() async {
+    try {
+      await _updateRecipeWeeklyMenu(_recipes[_currentRecipeIndex],
+          accepted: true);
+      await _updateRecipeHistory(_recipes[_currentRecipeIndex], accepted: true);
+
+      setState(() {
+        _acceptedRecipes[_currentRecipeIndex] = true;
         _selectedCount++;
-        _nextRecipe(accepted: true);
-        _resetSwipe();
+        _recipeWeeklyMenu.add(_currentRecipeIndex);
+        _nextRecipe();
       });
-    });
+    } catch (e) {
+      _showErrorDialog("Error accepting recipe: $e");
+    }
   }
 
-  void _rejectRecipe() {
-    _swipeController.forward().then((_) {
+  Future<void> _rejectRecipe() async {
+    try {
+      await _updateRecipeWeeklyMenu(_recipes[_currentRecipeIndex],
+          accepted: false);
+      await _updateRecipeHistory(_recipes[_currentRecipeIndex],
+          accepted: false);
+
       setState(() {
-        _nextRecipe(accepted: false);
-        _resetSwipe();
+        _acceptedRecipes[_currentRecipeIndex] = false;
+        _recipeWeeklyMenu.add(_currentRecipeIndex);
+        _nextRecipe();
       });
-    });
+    } catch (e) {
+      _showErrorDialog("Error rejecting recipe: $e");
+    }
   }
 
-  void _resetSwipe() {
-    _swipeController.reverse();
+  void _nextRecipe() {
+    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
+    while (_acceptedRecipes[nextIndex] &&
+        _recipeWeeklyMenu.length < _recipes.length) {
+      nextIndex = (nextIndex + 1) % _recipes.length;
+    }
+    _currentRecipeIndex = nextIndex;
+    _checkAllRecipesAccepted();
+  }
+
+  void _checkAllRecipesAccepted() {
+    if (_acceptedRecipes.every((isAccepted) => isAccepted)) {
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    }
+  }
+
+  Future<void> _onSaveRecipe() async {
+    try {
+      bool newSavedState = !_savedRecipes[_currentRecipeIndex];
+      await _updateRecipeInCollection(_recipes[_currentRecipeIndex],
+          saved: newSavedState);
+
+      setState(() {
+        _savedRecipes[_currentRecipeIndex] = newSavedState;
+      });
+    } catch (e) {
+      _showErrorDialog("Error saving recipe: $e");
+    }
+  }
+
+  Future<void> _saveRecipeToFirebase(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu');
+
+      // Check if the recipe already exists in the weeklyMenu
+      Query query = weeklyMenuRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
+
+      if (event.snapshot.value != null) {
+        // Recipe exists, update it
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+        await weeklyMenuRef.child(key).update({
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Recipe doesn't exist, create a new entry
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        };
+        await weeklyMenuRef.push().set(recipeData);
+      }
+    }
+  }
+
+  Future<void> _updateRecipeInCollection(Recipe recipe,
+      {required bool saved}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference collectionRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      // Check if the recipe already exists in the collection
+      Query query = collectionRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
+
+      if (event.snapshot.value != null) {
+        // Recipe exists, update it
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+        if (saved) {
+          await collectionRef.child(key).update({
+            'saved': true,
+            'name': recipe.name,
+            'timestamp': ServerValue.timestamp,
+          });
+        } else {
+          // If unsaving, remove the entry
+          await collectionRef.child(key).remove();
+        }
+      } else if (saved) {
+        // Recipe doesn't exist and we're saving it, create a new entry
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'saved': true,
+          'timestamp': ServerValue.timestamp,
+        };
+        await collectionRef.push().set(recipeData);
+      }
+    }
+  }
+
+  Future<void> _undoRecipe() async {
+    if (_recipeWeeklyMenu.isNotEmpty) {
+      try {
+        int previousIndex = _recipeWeeklyMenu.removeLast();
+        Recipe recipeToUndo = _recipes[previousIndex];
+
+        // Remove the recipe from Firebase weeklyMenu and history
+        await _removeRecipeFromDatabase(recipeToUndo, 'recipeWeeklyMenu');
+        await _removeRecipeFromDatabase(recipeToUndo, 'recipeHistory');
+
+        setState(() {
+          _currentRecipeIndex = previousIndex;
+          if (_acceptedRecipes[previousIndex]) {
+            _selectedCount--;
+          }
+          _acceptedRecipes[previousIndex] = false;
+          _recipeWeeklyMenuKeys.remove(recipeToUndo.id);
+          _recipeHistoryKeys.remove(recipeToUndo.id);
+        });
+      } catch (e) {
+        _showErrorDialog("Error undoing action: $e");
+      }
+    }
+  }
+
+  Future<void> _removeRecipeFromDatabase(
+      Recipe recipe, String databaseName) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child(databaseName);
+
+      Map<String, String> keysMap = databaseName == 'recipeWeeklyMenu'
+          ? _recipeWeeklyMenuKeys
+          : _recipeHistoryKeys;
+
+      if (keysMap.containsKey(recipe.id)) {
+        await ref.child(keysMap[recipe.id]!).remove();
+      }
+    }
+  }
+
+  Future<void> _removeRecipeFromWeeklyMenu(Recipe recipe) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenuKeys.containsKey(recipe.id)) {
+      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu');
+
+      await weeklyMenuRef.child(_recipeWeeklyMenuKeys[recipe.id]!).remove();
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _addRecipeToWeeklyMenu(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu');
+
+      Map<String, dynamic> recipeData = {
+        'id': recipe.id,
+        'name': recipe.name,
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      };
+
+      await weeklyMenuRef.push().set(recipeData);
+    }
   }
 
   @override
@@ -143,6 +505,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     _swipeController.dispose();
     super.dispose();
   }
+
+  // The build method and other UI-related methods remain largely unchanged
+  // but should be updated to use the new state variables and methods
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +520,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     final recipe = _recipes[_currentRecipeIndex];
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardTopPosition = screenHeight * 0.35;
-    final cardHeight = screenHeight * 0.24;
 
     return MaterialApp(
       theme: ThemeData(
@@ -167,15 +530,15 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
           elevation: 0,
-          toolbarHeight: 60,
+          toolbarHeight: proportionalHeight(context, 60),
           automaticallyImplyLeading: false,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: EdgeInsets.only(left: proportionalWidth(context, 8)),
             child: IconButton(
               icon: Image.asset(
                 'assets/icons/screens/common/back-key.png',
-                width: 24,
-                height: 24,
+                width: proportionalWidth(context, 24),
+                height: proportionalHeight(context, 24),
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -185,20 +548,21 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         ),
         body: SingleChildScrollView(
           child: SizedBox(
-            height: screenHeight - 60,
+            height: screenHeight - proportionalHeight(context, 60),
             child: Stack(
               children: [
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: proportionalWidth(context, 16)),
                       child: Column(
                         children: [
-                          const SizedBox(height: 1),
+                          SizedBox(height: proportionalHeight(context, 1)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -206,7 +570,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
-                                      fontSize: 32,
+                                      fontSize: proportionalFontSize(context,
+                                          32), // Proportional font size
                                       letterSpacing: 0,
                                       height: 0.9,
                                     ),
@@ -218,54 +583,82 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                 children: [
                                   Text(
                                     '$_selectedCount',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 32,
+                                      fontSize: proportionalFontSize(context,
+                                          32), // Proportional font size
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     "Selected",
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: proportionalFontSize(context,
+                                          16), // Proportional font size
                                     ),
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: proportionalHeight(context, 16)),
                         ],
                       ),
                     ),
-                    RecipeCardStack(
-                      recipe: recipe,
-                      isSaved: _savedRecipes[_currentRecipeIndex],
-                      onSave: () {
-                        setState(() {
-                          _savedRecipes[_currentRecipeIndex] =
-                              !_savedRecipes[_currentRecipeIndex];
-                        });
-                      },
-                      onUndo: _undoRecipe,
-                      screenWidth: screenWidth,
-                      cardTopPosition: cardTopPosition,
-                      cardHeight: cardHeight,
-                      scrollController: _scrollController,
+                    Stack(
+                      children: [
+                        RecipeCardStack(
+                          recipe: recipe,
+                          screenWidth: screenWidth,
+                          cardTopPosition: proportionalHeight(context, 280),
+                          cardHeight: proportionalHeight(context, 196),
+                          scrollController: _scrollController,
+                        ),
+                        Positioned(
+                          top: 20,
+                          left: screenWidth * 0.05,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/icons/screens/recipe_selection_screen/undo.png',
+                              width: proportionalWidth(context, 20),
+                              height: proportionalHeight(context, 20),
+                            ),
+                            onPressed: _undoRecipe,
+                          ),
+                        ),
+                        Positioned(
+                          top: 20,
+                          right: screenWidth * 0.05,
+                          child: IconButton(
+                            icon: Image.asset(
+                              _savedRecipes[_currentRecipeIndex]
+                                  ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
+                                  : 'assets/icons/screens/recipe_selection_screen/save.png',
+                              width: proportionalWidth(context, 20),
+                              height: proportionalHeight(context, 20),
+                            ),
+                            onPressed: _onSaveRecipe,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 RecipeInformationCard(
-                  key: ValueKey(recipe.id), // Add this line
+                  key: ValueKey(recipe.id),
                   recipe: recipe,
-                  topPosition: cardTopPosition + 30,
-                  cardHeight: cardHeight,
+                  topPosition: proportionalHeight(
+                      context, 310), // Adjusted proportionally
+                  cardHeight: proportionalHeight(context, 196),
                   scrollController: _scrollController,
                   screenWidth: screenWidth,
+                  screenHeight: screenHeight, // Added screenHeight argument
                 ),
                 Positioned(
-                  top: cardTopPosition + 260,
+                  // Position the action buttons (including Done) below the RecipeInformationCard
+                  top: proportionalHeight(context, 530),
+                  // Adjust 'top' to be below the recipe information card
                   left: 0,
                   right: 0,
                   child: Row(
@@ -275,8 +668,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-rejected.png',
                         _rejectRecipe,
+                        screenWidth, // Pass screen width for proportional size
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: proportionalWidth(context, 16)),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -287,21 +681,28 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           backgroundColor:
                               const Color.fromRGBO(73, 160, 120, 1),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(
+                                proportionalWidth(context, 10)),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 70, vertical: 12),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: proportionalWidth(context, 70),
+                            vertical: proportionalHeight(context, 12),
+                          ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Done',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: proportionalFontSize(context, 16),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: proportionalWidth(context, 16)),
                       _buildActionButton(
                         'assets/icons/screens/recipe_selection_screen/recipe-reject-accept-rectangle.png',
                         'assets/icons/screens/recipe_selection_screen/recipe-accepted.png',
                         _acceptRecipe,
+                        screenWidth, // Pass screen width for proportional size
                       ),
                     ],
                   ),
@@ -310,88 +711,20 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
             ),
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: 0,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
-                  ),
-                );
-                break;
-              case 1:
-                // Action for Grocery List button
-                break;
-              case 2:
-                // Action for Discover Recipe button
-                break;
-              case 3:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WeeklyMenuScreen(),
-                  ),
-                );
-                break;
-              default:
-                break;
-            }
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/home-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/discover-recipe-on.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/grocery-list-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/bottom_navigation/weekly-menu-off.png',
-                width: 24,
-                height: 24,
-              ),
-              label: '',
-            ),
-          ],
-          selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-        ),
+        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
 
-  Widget _buildActionButton(
-      String backgroundPath, String iconPath, VoidCallback onPressed) {
+  Widget _buildActionButton(String backgroundPath, String iconPath,
+      VoidCallback onPressed, double screenWidth) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(proportionalWidth(context, 10))),
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
@@ -399,14 +732,92 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       ),
       child: Stack(
         children: [
-          Image.asset(backgroundPath, width: 62, height: 62),
+          Image.asset(backgroundPath,
+              width: proportionalWidth(context, 62),
+              height: proportionalHeight(context, 62)),
           Positioned(
-            top: 18,
-            left: 18,
-            child: Image.asset(iconPath, width: 20, height: 20),
+            top: proportionalHeight(context, 18),
+            left: proportionalWidth(context, 18),
+            child: Image.asset(iconPath,
+                width: proportionalWidth(context, 20),
+                height: proportionalHeight(context, 20)),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Colors.white,
+      type: BottomNavigationBarType.fixed,
+      currentIndex: 0,
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+            break;
+          case 1:
+            // Action for Discover Recipe button
+            break;
+          case 2:
+            // Action for Grocery List button
+            break;
+          case 3:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WeeklyMenuScreen(),
+              ),
+            );
+            break;
+          default:
+            break;
+        }
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/home-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/discover-recipe-on.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/grocery-list-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/weekly-menu-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
+          label: '',
+        ),
+      ],
+      selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     );
   }
 }

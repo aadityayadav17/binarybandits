@@ -1,34 +1,78 @@
 import 'package:binarybandits/screens/login_screen/login_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/no_recipe_selection_screen.dart';
+import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart'; // Assuming you have this screen
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // Import your Firebase options
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions
-        .currentPlatform, // Use the correct platform options
-  );
-  runApp(MyApp());
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    if (e is FirebaseException && e.code == 'duplicate-app') {
+      Firebase.app(); // if already initialized, use that one
+    } else {
+      rethrow;
+    }
+  }
+
+  runApp(MyApp(auth: FirebaseAuth.instance));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final FirebaseAuth auth;
+
+  const MyApp({Key? key, required this.auth}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  User? _user;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.authStateChanges().listen((User? user) {
+      setState(() {
+        _user = user;
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // For now, we assume the user is NOT signed in
-    bool isLoggedIn = false; // This will be replaced with Firebase auth logic
+    if (_isLoading) {
+      return MaterialApp(
+        home: const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Binary Bandits',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // If user is not logged in, go to LoginScreen, otherwise HomeScreen
-      home: isLoggedIn ? const HomeScreen() : const LoginScreen(),
+      home: _user != null ? const HomeScreen() : const LoginScreen(),
+      routes: {
+        '/recipe_selection_screen': (context) =>
+            const RecipeSelectionScreen(), // Assuming you have this screen
+        '/no_recipe_selection_screen': (context) => NoRecipeSelectionScreen(),
+      },
     );
   }
 }

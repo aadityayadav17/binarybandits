@@ -4,16 +4,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -47,6 +37,8 @@ class DefaultFirebaseOptions {
     projectId: 'eat-easy-binban',
     authDomain: 'eat-easy-binban.firebaseapp.com',
     storageBucket: 'eat-easy-binban.appspot.com',
+    databaseURL:
+        'https://eat-easy-binban-default-rtdb.firebaseio.com/', // Correct URL
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -55,6 +47,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '75413264619',
     projectId: 'eat-easy-binban',
     storageBucket: 'eat-easy-binban.appspot.com',
+    databaseURL:
+        'https://eat-easy-binban-default-rtdb.firebaseio.com/', // Correct URL
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -64,6 +58,8 @@ class DefaultFirebaseOptions {
     projectId: 'eat-easy-binban',
     storageBucket: 'eat-easy-binban.appspot.com',
     iosBundleId: 'com.example.binarybandits',
+    databaseURL:
+        'https://eat-easy-binban-default-rtdb.firebaseio.com/', // Correct URL
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,6 +69,8 @@ class DefaultFirebaseOptions {
     projectId: 'eat-easy-binban',
     storageBucket: 'eat-easy-binban.appspot.com',
     iosBundleId: 'com.example.binarybandits',
+    databaseURL:
+        'https://eat-easy-binban-default-rtdb.firebaseio.com/', // Correct URL
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -82,5 +80,7 @@ class DefaultFirebaseOptions {
     projectId: 'eat-easy-binban',
     authDomain: 'eat-easy-binban.firebaseapp.com',
     storageBucket: 'eat-easy-binban.appspot.com',
+    databaseURL:
+        'https://eat-easy-binban-default-rtdb.firebaseio.com/', // Correct URL
   );
 }
