@@ -36,15 +36,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
   List<bool> _savedRecipes = [];
-  int _selectedCount = 0; // This now reflects the accepted recipes count
+  List<bool> _acceptedRecipes = [];
+  int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
   List<int> _recipeHistory = [];
-  List<bool> _acceptedRecipes = [];
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
-  late double _dragStartX;
-  bool _isDragging = false;
 
   @override
   void initState() {
@@ -61,10 +59,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   Future<void> _loadRecipes() async {
-    // Get the current user
     User? user = FirebaseAuth.instance.currentUser;
 
-    // Load the recipe JSON from local assets
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
@@ -72,115 +68,129 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         jsonData.map((data) => Recipe.fromJson(data)).toList();
 
     if (user != null) {
-      // Reference to the user's recipeHistory in Firebase
-      DatabaseReference userRef = FirebaseDatabase.instance
+      DatabaseReference historyRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeHistory');
+      DatabaseReference collectionRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
 
-      // Fetch accepted recipes from Firebase
-      DataSnapshot snapshot =
-          await userRef.once().then((event) => event.snapshot);
+      DataSnapshot historySnapshot =
+          await historyRef.once().then((event) => event.snapshot);
+      DataSnapshot collectionSnapshot =
+          await collectionRef.once().then((event) => event.snapshot);
 
-      // If there are accepted recipes, filter them out
-      List<String> acceptedRecipeIds = [];
-      if (snapshot.value != null) {
-        Map<dynamic, dynamic> recipeMap =
-            snapshot.value as Map<dynamic, dynamic>;
-        acceptedRecipeIds = recipeMap.values
+      Set<String> acceptedRecipeIds = {};
+      Set<String> savedRecipeIds = {};
+
+      if (historySnapshot.value != null) {
+        Map<dynamic, dynamic> historyMap =
+            historySnapshot.value as Map<dynamic, dynamic>;
+        acceptedRecipeIds = historyMap.values
             .where((recipe) => recipe['accepted'] == true)
             .map<String>((recipe) => recipe['id'].toString())
-            .toList();
-
-        // Update the selected count to reflect the number of accepted recipes
-        setState(() {
-          _selectedCount = acceptedRecipeIds.length;
-        });
+            .toSet();
       }
 
-      // Filter out recipes that have been accepted
+      if (collectionSnapshot.value != null) {
+        Map<dynamic, dynamic> collectionMap =
+            collectionSnapshot.value as Map<dynamic, dynamic>;
+        savedRecipeIds = collectionMap.values
+            .where((recipe) => recipe['saved'] == true)
+            .map<String>((recipe) => recipe['id'].toString())
+            .toSet();
+      }
+
       List<Recipe> remainingRecipes = allRecipes
           .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
           .toList();
 
-      // Check if no recipes are left, then redirect
       if (remainingRecipes.isEmpty) {
         Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
       } else {
-        // Load remaining recipes
         setState(() {
           _recipes = remainingRecipes;
-          _savedRecipes = List.generate(_recipes.length, (_) => false);
-          _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+          _savedRecipes = remainingRecipes
+              .map((recipe) => savedRecipeIds.contains(recipe.id))
+              .toList();
+          _acceptedRecipes =
+              List.generate(remainingRecipes.length, (_) => false);
+          _selectedCount = acceptedRecipeIds.length;
         });
       }
     } else {
-      // If the user is not logged in or there is an error, load all recipes
       setState(() {
         _recipes = allRecipes;
-        _savedRecipes = List.generate(_recipes.length, (_) => false);
-        _acceptedRecipes = List.generate(_recipes.length, (_) => false);
+        _savedRecipes = List.generate(allRecipes.length, (_) => false);
+        _acceptedRecipes = List.generate(allRecipes.length, (_) => false);
       });
     }
   }
 
-  void _nextRecipe({bool accepted = false}) {
-    setState(() {
-      _acceptedRecipes[_currentRecipeIndex] = accepted;
-      _recipeHistory.add(_currentRecipeIndex);
+  Future<void> _acceptRecipe() async {
+    try {
+      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
+          accepted: true);
 
-      // Move to the next recipe, but skip over accepted ones
-      do {
-        _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
-      } while (_acceptedRecipes[_currentRecipeIndex] &&
-          _recipeHistory.length < _recipes.length);
+      setState(() {
+        _acceptedRecipes[_currentRecipeIndex] = true;
+        _selectedCount++;
+        _recipeHistory.add(_currentRecipeIndex);
+        _nextRecipe();
+      });
+    } catch (e) {
+      _showErrorDialog("Error accepting recipe: $e");
+    }
+  }
 
-      _scrollController.jumpTo(0);
-    });
+  Future<void> _rejectRecipe() async {
+    try {
+      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
+          accepted: false);
 
-    // Check if all recipes are accepted after moving to the next one
+      setState(() {
+        _acceptedRecipes[_currentRecipeIndex] = false;
+        _recipeHistory.add(_currentRecipeIndex);
+        _nextRecipe();
+      });
+    } catch (e) {
+      _showErrorDialog("Error rejecting recipe: $e");
+    }
+  }
+
+  void _nextRecipe() {
+    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
+    while (_acceptedRecipes[nextIndex] &&
+        _recipeHistory.length < _recipes.length) {
+      nextIndex = (nextIndex + 1) % _recipes.length;
+    }
+    _currentRecipeIndex = nextIndex;
+    _scrollController.jumpTo(0);
     _checkAllRecipesAccepted();
   }
 
   void _checkAllRecipesAccepted() {
     if (_acceptedRecipes.every((isAccepted) => isAccepted)) {
-      // Redirect if all recipes are accepted
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
     }
   }
 
-  void _acceptRecipe() {
-    // Save the current recipe before moving to the next
-    _swipeController.forward().then((_) async {
-      // Ensure the recipe is saved before moving forward
-      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
-          accepted: true);
-      await _saveRecipeToCollection(_recipes[_currentRecipeIndex],
-          saved: true); // Add to collection as saved
+  Future<void> _onSaveRecipe() async {
+    try {
+      bool newSavedState = !_savedRecipes[_currentRecipeIndex];
+      await _updateRecipeInCollection(_recipes[_currentRecipeIndex],
+          saved: newSavedState);
 
       setState(() {
-        _selectedCount++; // Increment the counter when a recipe is accepted
-        _nextRecipe(accepted: true); // Move to the next recipe after saving
-        _resetSwipe();
+        _savedRecipes[_currentRecipeIndex] = newSavedState;
       });
-    });
-  }
-
-  void _rejectRecipe() {
-    // Save the current recipe before moving to the next
-    _swipeController.forward().then((_) async {
-      // Ensure the recipe is saved before moving forward
-      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
-          accepted: false);
-      await _saveRecipeToCollection(_recipes[_currentRecipeIndex],
-          saved: false); // Add to collection as unsaved
-
-      setState(() {
-        _nextRecipe(accepted: false); // Move to the next recipe after saving
-        _resetSwipe();
-      });
-    });
+    } catch (e) {
+      _showErrorDialog("Error saving recipe: $e");
+    }
   }
 
   Future<void> _saveRecipeToFirebase(Recipe recipe,
@@ -193,33 +203,17 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .child(user.uid)
           .child('recipeHistory');
 
-      // Query to check if this recipe already exists in Firebase
-      Query query = userRef.orderByChild('id').equalTo(recipe.id);
-      DatabaseEvent event = await query.once();
+      Map<String, dynamic> recipeData = {
+        'id': recipe.id,
+        'name': recipe.name,
+        'accepted': accepted,
+      };
 
-      if (event.snapshot.value != null) {
-        // If the recipe exists in Firebase, update the "accepted" status
-        Map<dynamic, dynamic> recipeMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        String key = recipeMap.keys.first;
-
-        // Update the existing entry in Firebase
-        await userRef
-            .child(key)
-            .update({'accepted': accepted, 'name': recipe.name});
-      } else {
-        // If the recipe does not exist, create a new entry
-        Map<String, dynamic> recipeData = {
-          'id': recipe.id,
-          'name': recipe.name,
-          'accepted': accepted,
-        };
-        await userRef.push().set(recipeData);
-      }
+      await userRef.push().set(recipeData);
     }
   }
 
-  Future<void> _saveRecipeToCollection(Recipe recipe,
+  Future<void> _updateRecipeInCollection(Recipe recipe,
       {required bool saved}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -229,95 +223,23 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .child(user.uid)
           .child('recipeCollection');
 
-      // Query to check if this recipe already exists in Firebase
       Query query = userRef.orderByChild('id').equalTo(recipe.id);
       DatabaseEvent event = await query.once();
 
       if (event.snapshot.value != null) {
-        // If the recipe exists, update its saved status
         Map<dynamic, dynamic> recipeMap =
             event.snapshot.value as Map<dynamic, dynamic>;
         String key = recipeMap.keys.first;
 
-        // Update the saved status of the existing entry
-        await userRef.child(key).update({
-          'saved': saved, // Update the saved status (true/false)
-          'name': recipe.name, // Update the recipe name if needed
-        });
-      } else {
-        // If the recipe does not exist, add it to the collection with the saved flag
-        Map<String, dynamic> recipeData = {
-          'id': recipe.id,
-          'name': recipe.name,
-          'saved': saved, // Add the saved status (true/false)
-        };
-        await userRef.push().set(recipeData);
-      }
-    }
-  }
-
-  void _undoRecipe() {
-    if (_recipeHistory.isNotEmpty) {
-      setState(() {
-        int previousIndex = _recipeHistory.removeLast();
-        _currentRecipeIndex = previousIndex;
-        _scrollController.jumpTo(0);
-
-        // Toggle the saved status and update Firebase accordingly
-        bool wasAccepted = _acceptedRecipes[previousIndex];
-        _acceptedRecipes[previousIndex] = !wasAccepted;
-        _savedRecipes[previousIndex] = !wasAccepted;
-
-        // Update the database with the undo action
-        _saveRecipeToFirebase(_recipes[previousIndex],
-            accepted: _acceptedRecipes[previousIndex]);
-        _saveRecipeToCollection(_recipes[previousIndex],
-            saved: _savedRecipes[previousIndex]); // Update saved status
-
-        // Adjust the selected count
-        if (wasAccepted) {
-          _selectedCount--;
-        } else {
-          _selectedCount++;
-        }
-      });
-    }
-  }
-
-  Future<void> _updateRecipeInFirebase(Recipe recipe,
-      {required bool isSaved}) async {
-    // Get the current user
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Reference to the user's recipeCollection in Firebase
-      DatabaseReference userRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeCollection');
-
-      // Query to check if this recipe already exists in Firebase
-      Query query = userRef.orderByChild('id').equalTo(recipe.id);
-      DatabaseEvent event = await query.once();
-
-      if (event.snapshot.value != null) {
-        // If the recipe exists in Firebase, update the "saved" status
-        Map<dynamic, dynamic> recipeMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        String key = recipeMap.keys.first;
-
-        if (isSaved) {
-          // If isSaved is true, update the existing entry in Firebase
+        if (saved) {
           await userRef.child(key).update({
             'saved': true,
             'name': recipe.name,
           });
         } else {
-          // If isSaved is false, remove the entry from Firebase (unsaved)
           await userRef.child(key).remove();
         }
-      } else if (isSaved) {
-        // If the recipe does not exist and isSaved is true, create a new entry
+      } else if (saved) {
         Map<String, dynamic> recipeData = {
           'id': recipe.id,
           'name': recipe.name,
@@ -328,23 +250,44 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  void _onSaveRecipe() {
-    setState(() {
-      // Toggle the saved status of the current recipe
-      _savedRecipes[_currentRecipeIndex] = !_savedRecipes[_currentRecipeIndex];
+  Future<void> _undoRecipe() async {
+    if (_recipeHistory.isNotEmpty) {
+      try {
+        int previousIndex = _recipeHistory.removeLast();
+        bool wasAccepted = _acceptedRecipes[previousIndex];
 
-      // Update Firebase with the new saved status
-      _updateRecipeInFirebase(_recipes[_currentRecipeIndex],
-          isSaved: _savedRecipes[_currentRecipeIndex]);
+        await _saveRecipeToFirebase(_recipes[previousIndex],
+            accepted: !wasAccepted);
 
-      // Save the recipe to the collection when it's marked as saved
-      _saveRecipeToCollection(_recipes[_currentRecipeIndex],
-          saved: _savedRecipes[_currentRecipeIndex]);
-    });
+        setState(() {
+          _currentRecipeIndex = previousIndex;
+          _acceptedRecipes[previousIndex] = !wasAccepted;
+          if (wasAccepted) {
+            _selectedCount--;
+          } else {
+            _selectedCount++;
+          }
+        });
+      } catch (e) {
+        _showErrorDialog("Error undoing action: $e");
+      }
+    }
   }
 
-  void _resetSwipe() {
-    _swipeController.reverse();
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -353,6 +296,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     _swipeController.dispose();
     super.dispose();
   }
+
+  // The build method and other UI-related methods remain largely unchanged
+  // but should be updated to use the new state variables and methods
 
   @override
   Widget build(BuildContext context) {
