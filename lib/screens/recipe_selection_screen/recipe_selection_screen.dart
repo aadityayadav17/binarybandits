@@ -133,8 +133,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _acceptRecipe() async {
     try {
-      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
-          accepted: true);
+      await _addRecipeToHistory(_recipes[_currentRecipeIndex], accepted: true);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = true;
@@ -149,8 +148,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _rejectRecipe() async {
     try {
-      await _saveRecipeToFirebase(_recipes[_currentRecipeIndex],
-          accepted: false);
+      await _addRecipeToHistory(_recipes[_currentRecipeIndex], accepted: false);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = false;
@@ -275,23 +273,64 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     if (_recipeHistory.isNotEmpty) {
       try {
         int previousIndex = _recipeHistory.removeLast();
-        bool wasAccepted = _acceptedRecipes[previousIndex];
+        Recipe recipeToUndo = _recipes[previousIndex];
 
-        await _saveRecipeToFirebase(_recipes[previousIndex],
-            accepted: !wasAccepted);
+        // Remove the recipe from Firebase history
+        await _removeRecipeFromHistory(recipeToUndo);
 
         setState(() {
           _currentRecipeIndex = previousIndex;
-          _acceptedRecipes[previousIndex] = !wasAccepted;
-          if (wasAccepted) {
+          if (_acceptedRecipes[previousIndex]) {
             _selectedCount--;
-          } else {
-            _selectedCount++;
           }
+          _acceptedRecipes[previousIndex] = false;
         });
       } catch (e) {
         _showErrorDialog("Error undoing action: $e");
       }
+    }
+  }
+
+  Future<void> _removeRecipeFromHistory(Recipe recipe) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
+
+      // Find and remove the recipe entry
+      Query query = historyRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
+
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+        await historyRef.child(key).remove();
+      }
+    }
+  }
+
+  Future<void> _addRecipeToHistory(Recipe recipe,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
+
+      Map<String, dynamic> recipeData = {
+        'id': recipe.id,
+        'name': recipe.name,
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      };
+
+      await historyRef.push().set(recipeData);
     }
   }
 
