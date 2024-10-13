@@ -197,19 +197,35 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       {required bool accepted}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DatabaseReference userRef = FirebaseDatabase.instance
+      DatabaseReference historyRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeHistory');
 
-      Map<String, dynamic> recipeData = {
-        'id': recipe.id,
-        'name': recipe.name,
-        'accepted': accepted,
-      };
+      // Check if the recipe already exists in the history
+      Query query = historyRef.orderByChild('id').equalTo(recipe.id);
+      DatabaseEvent event = await query.once();
 
-      await userRef.push().set(recipeData);
+      if (event.snapshot.value != null) {
+        // Recipe exists, update it
+        Map<dynamic, dynamic> recipeMap =
+            event.snapshot.value as Map<dynamic, dynamic>;
+        String key = recipeMap.keys.first;
+        await historyRef.child(key).update({
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Recipe doesn't exist, create a new entry
+        Map<String, dynamic> recipeData = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        };
+        await historyRef.push().set(recipeData);
+      }
     }
   }
 
@@ -217,35 +233,40 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       {required bool saved}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DatabaseReference userRef = FirebaseDatabase.instance
+      DatabaseReference collectionRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
           .child('recipeCollection');
 
-      Query query = userRef.orderByChild('id').equalTo(recipe.id);
+      // Check if the recipe already exists in the collection
+      Query query = collectionRef.orderByChild('id').equalTo(recipe.id);
       DatabaseEvent event = await query.once();
 
       if (event.snapshot.value != null) {
+        // Recipe exists, update it
         Map<dynamic, dynamic> recipeMap =
             event.snapshot.value as Map<dynamic, dynamic>;
         String key = recipeMap.keys.first;
-
         if (saved) {
-          await userRef.child(key).update({
+          await collectionRef.child(key).update({
             'saved': true,
             'name': recipe.name,
+            'timestamp': ServerValue.timestamp,
           });
         } else {
-          await userRef.child(key).remove();
+          // If unsaving, remove the entry
+          await collectionRef.child(key).remove();
         }
       } else if (saved) {
+        // Recipe doesn't exist and we're saving it, create a new entry
         Map<String, dynamic> recipeData = {
           'id': recipe.id,
           'name': recipe.name,
           'saved': true,
+          'timestamp': ServerValue.timestamp,
         };
-        await userRef.push().set(recipeData);
+        await collectionRef.push().set(recipeData);
       }
     }
   }
