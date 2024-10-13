@@ -5,6 +5,7 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_card_component.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -19,12 +20,22 @@ double proportionalFontSize(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
 }
 
-class RecipeCollectionDetailScreen extends StatelessWidget {
+class RecipeCollectionDetailScreen extends StatefulWidget {
   final Recipe recipe;
-  final ScrollController _scrollController = ScrollController();
 
-  RecipeCollectionDetailScreen({Key? key, required this.recipe})
+  const RecipeCollectionDetailScreen({Key? key, required this.recipe})
       : super(key: key);
+
+  @override
+  _RecipeCollectionDetailScreenState createState() =>
+      _RecipeCollectionDetailScreenState();
+}
+
+class _RecipeCollectionDetailScreenState
+    extends State<RecipeCollectionDetailScreen> {
+  bool addedToMenu = false; // Initially false
+
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +103,7 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                     ),
                   ),
                   RecipeCardStack(
-                    recipe: recipe,
+                    recipe: widget.recipe,
                     screenWidth: screenWidth,
                     cardTopPosition: cardTopPosition,
                     cardHeight: cardHeight,
@@ -101,8 +112,8 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                 ],
               ),
               RecipeInformationCard(
-                key: ValueKey(recipe.id),
-                recipe: recipe,
+                key: ValueKey(widget.recipe.id),
+                recipe: widget.recipe,
                 topPosition: cardTopPosition + proportionalHeight(context, 30),
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
@@ -117,25 +128,38 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        // Action for Add to My Menu button
-                      },
+                      onPressed: addedToMenu
+                          ? null // Disable button if already added to menu
+                          : () {
+                              setState(() {
+                                addedToMenu = true; // Set to true when clicked
+                                print(
+                                    'Button clicked: addedToMenu = $addedToMenu'); // Debug log
+                              });
+                            },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
+                        backgroundColor: addedToMenu
+                            ? Colors.grey // Change to grey if added
+                            : const Color.fromRGBO(
+                                73, 160, 120, 1), // Default color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               proportionalWidth(context, 10)),
                         ),
                         padding: EdgeInsets.symmetric(
-                          horizontal: proportionalWidth(context, 100),
                           vertical: proportionalHeight(context, 12),
                         ),
                       ),
-                      child: Text(
-                        'Add to My Menu',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: proportionalFontSize(context, 16),
+                      child: SizedBox(
+                        width: proportionalWidth(
+                            context, 320), // Fixed width for button
+                        child: Text(
+                          addedToMenu ? 'Added to My Menu' : 'Add to My Menu',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: proportionalFontSize(context, 16),
+                          ),
                         ),
                       ),
                     ),
@@ -172,7 +196,12 @@ class RecipeCollectionDetailScreen extends StatelessWidget {
               // Action for Discover Recipe button
               break;
             case 3:
-              // Action for Weekly Menu button
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeklyMenuScreen(),
+                ),
+              );
               break;
             default:
               break;
