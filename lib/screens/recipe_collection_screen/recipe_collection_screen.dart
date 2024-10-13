@@ -7,6 +7,8 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -27,22 +29,53 @@ class RecipeCollectionPage extends StatefulWidget {
 }
 
 class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
-  List<Recipe> recipes = [];
+  List<Recipe> savedRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    _loadRecipes();
+    _loadSavedRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+  Future<void> _loadSavedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-    });
+      // Fetch saved recipes from Firebase
+      DataSnapshot snapshot =
+          await userRef.once().then((event) => event.snapshot);
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        // Filter out recipes that have `saved == true`
+        List<dynamic> savedRecipeEntries = recipeMap.values
+            .where((recipe) => recipe['saved'] == true)
+            .toList();
+
+        // Load the full recipe details from the JSON and filter by saved IDs
+        final String response = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> data = json.decode(response);
+
+        List<Recipe> allRecipes =
+            data.map((json) => Recipe.fromJson(json)).toList();
+
+        // Filter the recipes that are saved
+        setState(() {
+          savedRecipes = allRecipes
+              .where((recipe) =>
+                  savedRecipeEntries.any((entry) => entry['id'] == recipe.id))
+              .toList();
+        });
+      }
+    }
   }
 
   @override
@@ -99,9 +132,9 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
   Widget _buildRecipeList() {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
-      itemCount: recipes.length,
+      itemCount: savedRecipes.length,
       itemBuilder: (context, index) {
-        return _buildRecipeItem(recipes[index]);
+        return _buildRecipeItem(savedRecipes[index]);
       },
     );
   }
