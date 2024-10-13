@@ -232,53 +232,79 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         _currentRecipeIndex = previousIndex;
         _scrollController.jumpTo(0);
 
-        // Check if the previous recipe was accepted and update the count
+        // Check if the previous recipe was saved and update the status in Firebase
+        if (_savedRecipes[previousIndex]) {
+          _savedRecipes[previousIndex] = false;
+          _updateRecipeInFirebase(_recipes[previousIndex],
+              isSaved: false); // Update Firebase
+        } else {
+          _savedRecipes[previousIndex] = true;
+          _updateRecipeInFirebase(_recipes[previousIndex],
+              isSaved: true); // Update Firebase
+        }
+
+        // Adjust the counter if the previous action was a save
         if (_acceptedRecipes[previousIndex]) {
           _selectedCount--;
           _acceptedRecipes[previousIndex] = false;
         }
-
-        // Update Firebase to remove the previous decision
-        _updateRecipeInFirebase(_recipes[previousIndex], accepted: null);
       });
     }
   }
 
-  Future<void> _updateRecipeInFirebase(Recipe recipe, {bool? accepted}) async {
+  Future<void> _updateRecipeInFirebase(Recipe recipe,
+      {required bool isSaved}) async {
+    // Get the current user
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      // Reference to the user's recipeCollection in Firebase
       DatabaseReference userRef = FirebaseDatabase.instance
           .ref()
           .child('users')
           .child(user.uid)
-          .child('recipeHistory');
+          .child('recipeCollection');
 
-      // Query to find the existing entry for this recipe
+      // Query to check if this recipe already exists in Firebase
       Query query = userRef.orderByChild('id').equalTo(recipe.id);
       DatabaseEvent event = await query.once();
 
       if (event.snapshot.value != null) {
-        // If the recipe exists, update it
+        // If the recipe exists in Firebase, update the "saved" status
         Map<dynamic, dynamic> recipeMap =
             event.snapshot.value as Map<dynamic, dynamic>;
         String key = recipeMap.keys.first;
-        if (accepted == null) {
-          // If accepted is null, remove the entry
-          await userRef.child(key).remove();
+
+        if (isSaved) {
+          // If isSaved is true, update the existing entry in Firebase
+          await userRef.child(key).update({
+            'saved': true,
+            'name': recipe.name,
+          });
         } else {
-          // Update the accepted status
-          await userRef.child(key).update({'accepted': accepted});
+          // If isSaved is false, remove the entry from Firebase (unsaved)
+          await userRef.child(key).remove();
         }
-      } else if (accepted != null) {
-        // If the recipe doesn't exist and we have a decision, add it
+      } else if (isSaved) {
+        // If the recipe does not exist and isSaved is true, create a new entry
         Map<String, dynamic> recipeData = {
           'id': recipe.id,
           'name': recipe.name,
-          'accepted': accepted,
+          'saved': true,
         };
         await userRef.push().set(recipeData);
       }
     }
+  }
+
+  void _onSaveRecipe() {
+    setState(() {
+      // Toggle the saved status of the current recipe
+      _savedRecipes[_currentRecipeIndex] = !_savedRecipes[_currentRecipeIndex];
+
+      // Update Firebase with the new saved status
+      _updateRecipeInFirebase(_recipes[_currentRecipeIndex],
+          isSaved: _savedRecipes[_currentRecipeIndex]);
+    });
   }
 
   void _resetSwipe() {
