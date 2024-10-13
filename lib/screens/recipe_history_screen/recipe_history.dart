@@ -7,6 +7,8 @@ import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/recipe_history_screen/recipe_history_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -27,22 +29,52 @@ class RecipeHistoryPage extends StatefulWidget {
 }
 
 class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
-  List<Recipe> recipes = [];
+  List<Recipe> acceptedRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    _loadRecipes();
+    _loadAcceptedRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+  Future<void> _loadAcceptedRecipes() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeHistory');
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-    });
+      // Fetch accepted recipes from Firebase
+      DataSnapshot snapshot =
+          await userRef.once().then((event) => event.snapshot);
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> recipeMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        // Filter recipes where 'accepted' is true
+        List<dynamic> acceptedRecipeIds = recipeMap.values
+            .where((recipe) => recipe['accepted'] == true)
+            .map((recipe) => recipe['id'].toString())
+            .toList();
+
+        // Load the full recipe details from the JSON and filter by accepted IDs
+        final String response = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> data = json.decode(response);
+
+        List<Recipe> allRecipes =
+            data.map((json) => Recipe.fromJson(json)).toList();
+
+        setState(() {
+          acceptedRecipes = allRecipes
+              .where((recipe) => acceptedRecipeIds.contains(recipe.id))
+              .toList();
+        });
+      }
+    }
   }
 
   @override
@@ -99,9 +131,9 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
   Widget _buildRecipeList(BuildContext context) {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
-      itemCount: recipes.length,
+      itemCount: acceptedRecipes.length,
       itemBuilder: (context, index) {
-        return _buildRecipeItem(context, recipes[index]);
+        return _buildRecipeItem(context, acceptedRecipes[index]);
       },
     );
   }
