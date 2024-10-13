@@ -451,23 +451,42 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                         ],
                       ),
                     ),
-                    RecipeCardStack(
-                      recipe: recipe,
-                      isSaved: _savedRecipes[_currentRecipeIndex],
-                      onSave: () {
-                        setState(() {
-                          _savedRecipes[_currentRecipeIndex] =
-                              !_savedRecipes[_currentRecipeIndex];
-                        });
-                        // Save or update the recipe in the collection based on the current save status
-                        _saveRecipeToCollection(recipe,
-                            saved: _savedRecipes[_currentRecipeIndex]);
-                      },
-                      onUndo: _undoRecipe,
-                      screenWidth: screenWidth,
-                      cardTopPosition: proportionalHeight(context, 280),
-                      cardHeight: proportionalHeight(context, 196),
-                      scrollController: _scrollController,
+                    Stack(
+                      children: [
+                        RecipeCardStack(
+                          recipe: recipe,
+                          screenWidth: screenWidth,
+                          cardTopPosition: proportionalHeight(context, 280),
+                          cardHeight: proportionalHeight(context, 196),
+                          scrollController: _scrollController,
+                        ),
+                        Positioned(
+                          top: 20,
+                          left: screenWidth * 0.05,
+                          child: IconButton(
+                            icon: Image.asset(
+                              'assets/icons/screens/recipe_selection_screen/undo.png',
+                              width: proportionalWidth(context, 20),
+                              height: proportionalHeight(context, 20),
+                            ),
+                            onPressed: _undoRecipe,
+                          ),
+                        ),
+                        Positioned(
+                          top: 20,
+                          right: screenWidth * 0.05,
+                          child: IconButton(
+                            icon: Image.asset(
+                              _savedRecipes[_currentRecipeIndex]
+                                  ? 'assets/icons/screens/recipe_selection_screen/save-on.png'
+                                  : 'assets/icons/screens/recipe_selection_screen/save.png',
+                              width: proportionalWidth(context, 20),
+                              height: proportionalHeight(context, 20),
+                            ),
+                            onPressed: _onSaveRecipe,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
