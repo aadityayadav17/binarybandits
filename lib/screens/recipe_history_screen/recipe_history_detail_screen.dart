@@ -80,6 +80,75 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
     }
   }
 
+  Future<void> _addToMenu() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    final userId = user.uid;
+    final weeklyMenuRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final historyRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeHistory");
+
+    try {
+      // Check if the recipe already exists in the weekly menu
+      final weeklyMenuSnapshot = await weeklyMenuRef
+          .orderByChild('id')
+          .equalTo(widget.recipe.id)
+          .once();
+      if (weeklyMenuSnapshot.snapshot.value != null) {
+        // Update existing entry
+        final existingEntries =
+            weeklyMenuSnapshot.snapshot.value as Map<dynamic, dynamic>;
+        final existingKey = existingEntries.keys.first;
+        await weeklyMenuRef.child(existingKey).update({
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Add new entry
+        await weeklyMenuRef.push().set({
+          'id': widget.recipe.id,
+          'name': widget.recipe.name,
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      // Check if the recipe already exists in the history
+      final historySnapshot =
+          await historyRef.orderByChild('id').equalTo(widget.recipe.id).once();
+      if (historySnapshot.snapshot.value != null) {
+        // Update existing entry
+        final existingEntries =
+            historySnapshot.snapshot.value as Map<dynamic, dynamic>;
+        final existingKey = existingEntries.keys.first;
+        await historyRef.child(existingKey).update({
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Add new entry
+        await historyRef.push().set({
+          'id': widget.recipe.id,
+          'name': widget.recipe.name,
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      setState(() {
+        addedToMenu = true;
+      });
+      print('Recipe added to menu and history successfully');
+    } catch (e) {
+      print('Error adding recipe to menu and history: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -171,20 +240,11 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: addedToMenu
-                          ? null // Disable button if already added to menu
-                          : () {
-                              setState(() {
-                                addedToMenu = true; // Set to true when clicked
-                                print(
-                                    'Button clicked: addedToMenu = $addedToMenu'); // Debug log
-                              });
-                            },
+                      onPressed: addedToMenu ? null : _addToMenu,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: addedToMenu
-                            ? Colors.grey // Change to grey if added
-                            : const Color.fromRGBO(
-                                73, 160, 120, 1), // Default color
+                            ? Colors.grey
+                            : const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               proportionalWidth(context, 10)),
@@ -194,8 +254,7 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
                         ),
                       ),
                       child: SizedBox(
-                        width: proportionalWidth(
-                            context, 320), // Fixed width for button
+                        width: proportionalWidth(context, 320),
                         child: Text(
                           addedToMenu ? 'Added to My Menu' : 'Add to My Menu',
                           textAlign: TextAlign.center,
