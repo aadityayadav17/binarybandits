@@ -5,6 +5,8 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/ingredient_list_screen/ingredient_list_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -39,17 +41,53 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   }
 
   Future<void> _loadRecipes() async {
-    final jsonString = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
-    setState(() {
-      _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _servings = List<int>.filled(_recipes.length, 1, growable: true);
-      _pageController = PageController(
-        initialPage: _currentRecipeIndex,
-        viewportFraction: 0.8,
-      );
-    });
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Ensure the user is authenticated
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    // Fetch the user's weekly menu from Firebase using dynamic user ID
+    final userId = user.uid; // Dynamic user ID
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    // Check if there is data in the snapshot
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+
+      // Filter recipes that are accepted
+      final acceptedRecipes = weeklyMenuData.values
+          .where((recipe) => recipe['accepted'] == true)
+          .map((recipe) => recipe['id']) // Recipe ID in Firebase
+          .toList();
+
+      // Load recipes from JSON
+      final jsonString = await rootBundle
+          .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+      final List<dynamic> jsonData = json.decode(jsonString);
+
+      // Filter JSON data based on accepted recipe IDs (Firebase ID is 'id', JSON ID is 'recipe_id')
+      final matchedRecipes = jsonData.where((recipeData) {
+        return acceptedRecipes
+            .contains(recipeData['recipe_id']); // JSON recipe_id
+      }).toList();
+
+      setState(() {
+        _recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
+        _servings = List<int>.filled(_recipes.length, 1, growable: true);
+        _pageController = PageController(
+          initialPage: _currentRecipeIndex,
+          viewportFraction: 0.8,
+        );
+      });
+    } else {
+      print('No weekly menu data available.');
+    }
   }
 
   @override
