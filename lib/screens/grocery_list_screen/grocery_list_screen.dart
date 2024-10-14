@@ -255,30 +255,23 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
+                  children: const [
                     Text(
                       '\$XX',
-                      style: TextStyle(
-                          color: isSelected
-                              ? Colors.grey
-                              : Colors.black), // Price text color
+                      style:
+                          TextStyle(color: Colors.grey), // Price is always grey
                     ), // Placeholder for pricing
                     SizedBox(width: 10),
                     Text(
                       'None',
                       style: TextStyle(
-                          color: isSelected
-                              ? Colors.grey
-                              : Colors.black), // Additional text color
+                          color: Colors.grey), // Additional text color
                     ),
                     SizedBox(width: 10),
                     Text(
                       '\$XX',
-                      style: TextStyle(
-                          color: isSelected
-                              ? Colors.grey
-                              : Colors
-                                  .black), // Another placeholder for pricing
+                      style:
+                          TextStyle(color: Colors.grey), // Price is always grey
                     ), // Another placeholder for pricing
                   ],
                 ),
