@@ -24,6 +24,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late List<Recipe> _recipes = [];
   late List<bool> _savedRecipes;
   bool _isLoading = true;
+  Map<String, dynamic> _recipeCollection = {};
 
   @override
   void initState() {
@@ -35,7 +36,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   // Load recipes from Firebase and match with JSON data
   Future<void> _loadRecipes() async {
     try {
-      // Get the current user ID from FirebaseAuth
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         setState(() {
@@ -46,7 +46,10 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       }
       String userId = user.uid;
 
-      // Fetch the recipeWeeklyMenu from Firebase where accepted is true
+      // Load recipe collection
+      await _loadRecipeCollection(user);
+
+      // Fetch the recipeWeeklyMenu from Firebase
       final DatabaseReference ref =
           FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
       final DataSnapshot snapshot = await ref.get();
@@ -55,17 +58,14 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         final Map<String, dynamic> weeklyMenu =
             Map<String, dynamic>.from(snapshot.value as Map);
 
-        // Filter recipes where "accepted" is true
         final acceptedRecipes = weeklyMenu.values
             .where((recipe) => recipe['accepted'] == true)
             .toList();
 
-        // Load the recipes from the JSON file
         final String jsonResponse = await rootBundle
             .loadString('assets/recipes/D3801 Recipes - Recipes.json');
         final List<dynamic> jsonRecipes = json.decode(jsonResponse);
 
-        // Match the recipes from the Firebase weeklyMenu with the JSON file based on ID
         List<Recipe> matchedRecipes = [];
         for (var menuRecipe in acceptedRecipes) {
           var matchingRecipe = jsonRecipes.firstWhere(
@@ -78,7 +78,11 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
 
         setState(() {
           _recipes = matchedRecipes;
-          _savedRecipes = List.generate(_recipes.length, (index) => false);
+          _savedRecipes = List.generate(
+              _recipes.length,
+              (index) =>
+                  _recipeCollection.containsKey(_recipes[index].id) &&
+                  _recipeCollection[_recipes[index].id]['saved'] == true);
           _isLoading = false;
         });
       } else {
@@ -88,8 +92,84 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         });
       }
     } catch (e) {
+      print('Error loading recipes: $e');
       setState(() {
         _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadRecipeCollection(User user) async {
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child('recipeCollection');
+
+    DataSnapshot snapshot = await ref.once().then((event) => event.snapshot);
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> collectionMap =
+          snapshot.value as Map<dynamic, dynamic>;
+      Map<String, dynamic> processedMap = {};
+
+      collectionMap.forEach((key, value) {
+        String recipeId = value['id'].toString();
+        processedMap[recipeId] = {
+          'key': key,
+          'name': value['name'],
+          'saved': value['saved'] ?? false,
+          'timestamp': value['timestamp'],
+        };
+      });
+
+      _recipeCollection = processedMap;
+    }
+  }
+
+  Future<void> _updateRecipeInCollection(Recipe recipe,
+      {required bool saved}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference collectionRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      String? newRefKey;
+
+      if (_recipeCollection.containsKey(recipe.id)) {
+        // Update existing entry
+        await collectionRef.child(_recipeCollection[recipe.id]['key']).update({
+          'saved': saved,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else if (saved) {
+        // Create new entry only if saving
+        DatabaseReference newRef = collectionRef.push();
+        newRefKey = newRef.key;
+        await newRef.set({
+          'id': recipe.id,
+          'name': recipe.name,
+          'saved': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      // Update local state
+      setState(() {
+        if (!saved) {
+          _recipeCollection[recipe.id]?['saved'] = false;
+        } else {
+          _recipeCollection[recipe.id] = {
+            'key': _recipeCollection[recipe.id]?['key'] ?? newRefKey,
+            'name': recipe.name,
+            'saved': true,
+            'timestamp': ServerValue.timestamp,
+          };
+        }
+        _savedRecipes[_currentIndex] = saved;
       });
     }
   }
@@ -125,10 +205,16 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     });
   }
 
-  void _toggleSavedRecipe(int index) {
-    setState(() {
-      _savedRecipes[index] = !_savedRecipes[index];
-    });
+  void _toggleSavedRecipe(int index) async {
+    Recipe currentRecipe = _recipes[index];
+    bool newSavedState = !_savedRecipes[index];
+
+    try {
+      await _updateRecipeInCollection(currentRecipe, saved: newSavedState);
+    } catch (e) {
+      print('Error toggling saved recipe: $e');
+      // Optionally show an error message to the user
+    }
   }
 
   void _clearAllRecipes() {
