@@ -227,7 +227,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         },
                       ),
                     ),
-                    SizedBox(height: proportionalHeight(context, 16)),
+                    SizedBox(height: proportionalHeight(context, 0)),
                     Slider(
                       value: _currentRecipeIndex.toDouble(),
                       min: 0,
@@ -244,7 +244,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         _pageController?.jumpToPage(_currentRecipeIndex);
                       },
                     ),
-                    SizedBox(height: proportionalHeight(context, 16)),
+                    SizedBox(height: proportionalHeight(context, 0)),
                     Center(
                       child: Text(
                         'How many servings for this recipe?',
