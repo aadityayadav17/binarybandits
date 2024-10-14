@@ -30,7 +30,7 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
-  List<int> _servings = []; // Growable list for servings
+  Map<String, int> _servings = {}; // Map for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
   Map<String, dynamic> _recipeWeeklyMenu = {};
@@ -56,12 +56,14 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
     if (snapshot.exists) {
       final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
       _recipeWeeklyMenu.clear();
+      _servings.clear();
 
       final acceptedRecipes = weeklyMenuData.entries
           .where((entry) => entry.value['accepted'] == true)
           .map((entry) => {
                 'id': entry.value['id'],
                 'key': entry.key,
+                'servings': entry.value['servings'] ?? 1,
               })
           .toList();
 
@@ -76,18 +78,46 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
 
       setState(() {
         _recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
-        _servings = List<int>.filled(_recipes.length, 1, growable: true);
         _pageController = PageController(
             initialPage: _currentRecipeIndex, viewportFraction: 0.8);
 
-        // Populate _recipeWeeklyMenu
+        // Populate _recipeWeeklyMenu and _servings
         for (var recipe in acceptedRecipes) {
           _recipeWeeklyMenu[recipe['id']] = recipe['key'];
+          _servings[recipe['id']] = recipe['servings'];
         }
       });
     } else {
       print('No weekly menu data available.');
     }
+  }
+
+  Future<void> _updateServingsInDatabase(String recipeId, int servings) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu')
+          .child(_recipeWeeklyMenu[recipeId]);
+
+      await ref.update({
+        'servings': servings,
+        'timestamp': ServerValue.timestamp,
+      });
+    }
+  }
+
+  void _adjustServings(String recipeId, bool increase) {
+    setState(() {
+      if (increase) {
+        _servings[recipeId] = (_servings[recipeId] ?? 1) + 1;
+      } else if ((_servings[recipeId] ?? 1) > 1) {
+        _servings[recipeId] = (_servings[recipeId] ?? 1) - 1;
+      }
+    });
+    _updateServingsInDatabase(recipeId, _servings[recipeId] ?? 1);
   }
 
   Future<void> _updateRecipeInWeeklyMenu(String recipeId,
@@ -115,28 +145,22 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
 
       setState(() {
         _recipes.removeAt(index);
-        _servings.removeAt(index);
+        _servings.remove(recipeToRemove.id);
         _recipeWeeklyMenu.remove(recipeToRemove.id);
 
-        // Adjust the current index
         if (_recipes.isEmpty) {
           _currentRecipeIndex = 0;
         } else if (index <= _currentRecipeIndex) {
-          // If we removed a recipe before or at the current index,
-          // we need to decrease the current index
           _currentRecipeIndex =
               (_currentRecipeIndex - 1).clamp(0, _recipes.length - 1);
         }
-        // If we removed a recipe after the current index, we don't need to change it
 
-        // Update the page controller
         if (_recipes.isNotEmpty) {
           _pageController?.jumpToPage(_currentRecipeIndex);
         }
       });
     } catch (e) {
       print('Error removing recipe: $e');
-      // Optionally show an error message to the user
     }
   }
 
@@ -147,10 +171,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   }
 
   void _applyAllServings() {
-    int currentServing = _servings[_currentRecipeIndex];
+    final currentServings = _servings[_recipes[_currentRecipeIndex].id] ?? 1;
     setState(() {
-      _servings =
-          List<int>.filled(_recipes.length, currentServing, growable: true);
+      for (var recipe in _recipes) {
+        _servings[recipe.id] = currentServings;
+        _updateServingsInDatabase(recipe.id, currentServings);
+      }
     });
   }
 
@@ -344,26 +370,29 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   left: proportionalWidth(context, 16)),
                               child: IconButton(
                                 icon: Image.asset(
-                                  _servings[_currentRecipeIndex] > 1
+                                  (_servings[_recipes[_currentRecipeIndex]
+                                                  .id] ??
+                                              1) >
+                                          1
                                       ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
                                       : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
                                   width: proportionalWidth(context, 12),
                                   height: proportionalHeight(context, 12),
                                 ),
-                                onPressed: _servings[_currentRecipeIndex] > 1
-                                    ? () {
-                                        setState(() {
-                                          _servings[_currentRecipeIndex]--;
-                                        });
-                                      }
+                                onPressed: (_servings[
+                                                _recipes[_currentRecipeIndex]
+                                                    .id] ??
+                                            1) >
+                                        1
+                                    ? () => _adjustServings(
+                                        _recipes[_currentRecipeIndex].id, false)
                                     : null,
                               ),
                             ),
                             Text(
-                              '${_servings[_currentRecipeIndex]}',
+                              '${_servings[_recipes[_currentRecipeIndex].id] ?? 1}',
                               style: TextStyle(
-                                fontSize: proportionalFontSize(context, 24),
-                              ),
+                                  fontSize: proportionalFontSize(context, 24)),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
@@ -374,11 +403,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   width: proportionalWidth(context, 12),
                                   height: proportionalHeight(context, 12),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _servings[_currentRecipeIndex]++;
-                                  });
-                                },
+                                onPressed: () => _adjustServings(
+                                    _recipes[_currentRecipeIndex].id, true),
                               ),
                             ),
                           ],
