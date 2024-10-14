@@ -55,6 +55,7 @@ void _saveProfile() async {
 
   double weight = double.tryParse(_weightController.text) ?? 0;
   double height = double.tryParse(_heightController.text) ?? 0;
+  double expectedWeight = double.tryParse(_expectedWeightController.text) ?? 0;
 
   if (weight == 0 || height == 0) {
     print("Invalid inputs for calorie calculation");
@@ -63,6 +64,12 @@ void _saveProfile() async {
 
   // Using a general estimation formula for women
   calories = ((10 * weight) + (6.25 * height)) * 1.55;
+
+  if (weight < expectedWeight) {
+    calories += 500;
+  } else if (weight > expectedWeight) {
+    calories -= 500;
+  }
 
   // Adjust calories based on dietary preference
   if (dietaryPreference == 'Vegetarian') {
