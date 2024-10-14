@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
-import 'package:firebase_database/firebase_database.dart'; // Firebase Realtime Database
-import 'package:google_fonts/google_fonts.dart';
-import 'widgets/profile_form_fields.dart';
-import 'widgets/save_button.dart';
-import '../home_screen/home_screen.dart';
-import '../login_screen/login_screen.dart'; // Login screen import
+import 'package:flutter/material.dart';  // Flutter framework for UI components
+import 'package:firebase_auth/firebase_auth.dart';  // Firebase Authentication
+import 'package:firebase_database/firebase_database.dart';  // Firebase Realtime Database
+import 'package:google_fonts/google_fonts.dart';  // Google Fonts for text styling
+import 'package:flutter/services.dart';  // For loading assets (like JSON files)
+import 'dart:convert';  // For JSON encoding and decoding
+import 'widgets/profile_form_fields.dart';  // Custom widget for profile form fields
+import 'widgets/save_button.dart';  // Custom widget for save button
+import '../home_screen/home_screen.dart';  // Home screen navigation after saving profile
+import '../login_screen/login_screen.dart';  // Login screen for log out functionality
+import 'package:binarybandits/models/recipe.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool fromSignup;
@@ -62,7 +65,7 @@ void _saveProfile() async {
     return;
   }
 
-  // Using a general estimation formula for women
+  // Using a general estimation formula 
   calories = ((10 * weight) + (6.25 * height)) * 1.55;
 
   if (weight < expectedWeight) {
@@ -92,6 +95,34 @@ void _saveProfile() async {
           'dietaryRestrictions': dietaryRestrictions,
           'calorieRequirement': calories,
         });
+
+      // Load recipes from the JSON file
+      final String response = await rootBundle.loadString('assets/recipes/D3801 Recipes - Recipes.json');
+      final List<dynamic> recipeData = json.decode(response);
+
+      List<Map<String, dynamic>> possibleRecipes = [];
+
+      // Filter the recipes based on user's preferences and requirements
+      for (var recipeJson in recipeData) {
+        Recipe recipe = Recipe.fromJson(recipeJson);
+
+        bool meetsCalorieRequirement = recipe.energyKcal <= (calories / 4);
+        bool matchesDietaryPreference = dietaryPreference == 'No Preference' || 
+            recipe.classification?.toLowerCase() == dietaryPreference?.toLowerCase();
+        bool noAllergenConflict = dietaryRestrictions.every((restriction) =>
+            recipe.allergens == null || !recipe.allergens!.map((allergen) => allergen.toLowerCase()).contains(restriction.toLowerCase()));
+
+        // Add to possible recipes if all conditions are met
+        if (meetsCalorieRequirement && matchesDietaryPreference && noAllergenConflict) {
+          possibleRecipes.add({
+            'recipe_id': recipe.id,
+            'recipe_name': recipe.name,
+          });
+        }
+      }
+
+      // Upload possible recipes to Firebase under the node 'PossibleRecipes'
+      await databaseRef.child('users/${user!.uid}/PossibleRecipes').set(possibleRecipes);
         _updateSaveStatus(true);
         if (widget.fromSignup) {
           Navigator.pushReplacement(
