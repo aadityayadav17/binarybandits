@@ -8,6 +8,8 @@ import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_card_com
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/no_weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
   WeeklyMenuScreen({Key? key}) : super(key: key);
@@ -30,15 +32,77 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     _loadRecipes();
   }
 
+  // Load recipes from Firebase and match with JSON data
   Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final data = await json.decode(response) as List;
-    setState(() {
-      _recipes = data.map((json) => Recipe.fromJson(json)).toList();
-      _savedRecipes = List.generate(_recipes.length, (index) => false);
-      _isLoading = false;
-    });
+    try {
+      // Get the current user ID from FirebaseAuth
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        print("No user is logged in.");
+        setState(() {
+          _recipes = [];
+          _isLoading = false;
+        });
+        return;
+      }
+      String userId = user.uid;
+
+      // Fetch the recipeWeeklyMenu from Firebase where accepted is true
+      final DatabaseReference ref =
+          FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+      final DataSnapshot snapshot = await ref.get();
+
+      if (snapshot.exists) {
+        final Map<String, dynamic> weeklyMenu =
+            Map<String, dynamic>.from(snapshot.value as Map);
+
+        // Filter recipes where "accepted" is true
+        final acceptedRecipes = weeklyMenu.values
+            .where((recipe) => recipe['accepted'] == true)
+            .toList();
+
+        print("Accepted recipes from Firebase: $acceptedRecipes");
+
+        // Load the recipes from the JSON file
+        final String jsonResponse = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> jsonRecipes = json.decode(jsonResponse);
+
+        print("Recipes from JSON: ${jsonRecipes.length}");
+
+        // Match the recipes from the Firebase weeklyMenu with the JSON file based on ID
+        List<Recipe> matchedRecipes = [];
+        for (var menuRecipe in acceptedRecipes) {
+          var matchingRecipe = jsonRecipes.firstWhere(
+              (jsonRecipe) => jsonRecipe['recipe_id'] == menuRecipe['id'],
+              orElse: () => null);
+          if (matchingRecipe != null) {
+            matchedRecipes.add(Recipe.fromJson(matchingRecipe));
+          } else {
+            print("No matching recipe found for ID: ${menuRecipe['id']}");
+          }
+        }
+
+        setState(() {
+          _recipes = matchedRecipes;
+          _savedRecipes = List.generate(_recipes.length, (index) => false);
+          _isLoading = false;
+        });
+
+        print("Loaded recipes: ${_recipes.length}");
+      } else {
+        print("No recipes found in Firebase.");
+        setState(() {
+          _recipes = [];
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error loading recipes: $e");
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _nextRecipe() {
