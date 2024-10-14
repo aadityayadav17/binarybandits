@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class NoWeeklyMenuScreen extends StatelessWidget {
   @override
@@ -129,7 +130,10 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               );
               break;
             case 2:
-              // Action for Grocery List button
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => GroceryListScreen()),
+              );
               break;
             case 3:
               // Already on Weekly Menu screen

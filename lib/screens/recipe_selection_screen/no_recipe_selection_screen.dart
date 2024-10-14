@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -169,7 +170,10 @@ class NoRecipeSelectionScreen extends StatelessWidget {
               // Action for Discover Recipe button
               break;
             case 2:
-              // Action for Grocery List button
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => GroceryListScreen()),
+              );
               break;
             case 3:
               Navigator.pushReplacement(

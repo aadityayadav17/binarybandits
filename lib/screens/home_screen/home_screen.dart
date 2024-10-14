@@ -460,6 +460,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: (index) {
         switch (index) {
           case 0:
+            // Action for Home button
             break;
           case 1:
             Navigator.push(
@@ -470,6 +471,12 @@ class _HomeScreenState extends State<HomeScreen> {
             );
             break;
           case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroceryListScreen(),
+              ),
+            );
             break;
           case 3:
             Navigator.push(

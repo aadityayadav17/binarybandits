@@ -5,6 +5,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/ingredient_list_screen/ingredient_list_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -483,10 +484,15 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
               );
               break;
             case 1:
-              // Action for Grocery List button
+              // Action for Discover Recipe button
               break;
             case 2:
-              // Action for Discover Recipe button
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GroceryListScreen(),
+                ),
+              );
               break;
             case 3:
               Navigator.push(
