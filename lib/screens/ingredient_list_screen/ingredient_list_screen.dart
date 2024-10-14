@@ -156,8 +156,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
           await recipeRef.update(updateData);
         }
       }
-
-      print("Selected ingredients updated successfully");
     } catch (error) {
       print("Error updating ingredients: $error");
     }
