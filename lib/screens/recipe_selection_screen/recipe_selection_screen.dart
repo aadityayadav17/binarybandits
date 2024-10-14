@@ -120,6 +120,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           'name': value['name'],
           'accepted': value['accepted'],
           'timestamp': value['timestamp'],
+          'servings':
+              value['servings'] ?? 1, // Add servings field with default value 1
         };
       });
 
@@ -255,21 +257,37 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           'accepted': accepted,
           'timestamp': ServerValue.timestamp,
         });
+        if (databaseName == 'recipeWeeklyMenu') {
+          // Ensure servings field exists and is not overwritten
+          if (!targetMap[recipe.id].containsKey('servings')) {
+            await ref
+                .child(targetMap[recipe.id]['key'])
+                .update({'servings': 1});
+          }
+        }
       } else {
         // Create new entry
         DatabaseReference newRef = ref.push();
-        await newRef.set({
+        Map<String, dynamic> newEntry = {
           'id': recipe.id,
           'name': recipe.name,
           'accepted': accepted,
           'timestamp': ServerValue.timestamp,
-        });
+        };
+        if (databaseName == 'recipeWeeklyMenu') {
+          newEntry['servings'] =
+              1; // Add servings for new entries in weekly menu
+        }
+        await newRef.set(newEntry);
         targetMap[recipe.id] = {
           'key': newRef.key,
           'name': recipe.name,
           'accepted': accepted,
           'timestamp': ServerValue.timestamp,
         };
+        if (databaseName == 'recipeWeeklyMenu') {
+          targetMap[recipe.id]['servings'] = 1;
+        }
       }
 
       // Update local state
@@ -279,6 +297,24 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         } else {
           _recipeHistory = Map.from(targetMap);
         }
+      });
+    }
+  }
+
+  Future<void> _updateServings(String recipeId, int newServings) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu')
+          .child(_recipeWeeklyMenu[recipeId]['key']);
+
+      await ref.update({'servings': newServings});
+
+      setState(() {
+        _recipeWeeklyMenu[recipeId]['servings'] = newServings;
       });
     }
   }
