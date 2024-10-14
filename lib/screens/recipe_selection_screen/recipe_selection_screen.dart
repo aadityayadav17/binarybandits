@@ -39,9 +39,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   List<bool> _acceptedRecipes = [];
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
-  List<int> _recipeWeeklyMenu = [];
+  Map<String, dynamic> _recipeWeeklyMenu = {};
   Map<String, String> _recipeWeeklyMenuKeys = {};
-  List<int> _recipeHistory = [];
+  Map<String, dynamic> _recipeHistory = {};
   Map<String, String> _recipeHistoryKeys = {};
 
   late AnimationController _swipeController;
@@ -72,48 +72,21 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
         jsonData.map((data) => Recipe.fromJson(data)).toList();
 
     if (user != null) {
-      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeWeeklyMenu');
+      await _loadDatabaseRecipes(user, 'recipeWeeklyMenu');
+      await _loadDatabaseRecipes(user, 'recipeHistory');
 
-      DataSnapshot weeklyMenuSnapshot =
-          await weeklyMenuRef.once().then((event) => event.snapshot);
-
-      if (weeklyMenuSnapshot.value != null) {
-        Map<dynamic, dynamic> weeklyMenuMap =
-            weeklyMenuSnapshot.value as Map<dynamic, dynamic>;
-
-        _recipeWeeklyMenuKeys.clear();
-        Set<String> acceptedRecipeIds = {};
-
-        weeklyMenuMap.forEach((key, value) {
-          String recipeId = value['id'].toString();
-          _recipeWeeklyMenuKeys[recipeId] = key;
-          if (value['accepted'] == true) {
-            acceptedRecipeIds.add(recipeId);
-          }
-        });
-
-        setState(() {
-          _recipes = allRecipes
-              .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
-              .toList();
-          _acceptedRecipes = List.generate(_recipes.length, (index) => false);
-          _savedRecipes = List.generate(_recipes.length, (index) => false);
-          _selectedCount = acceptedRecipeIds.length;
-        });
-      } else {
-        setState(() {
-          _recipes = allRecipes;
-          _acceptedRecipes = List.generate(_recipes.length, (_) => false);
-          _savedRecipes = List.generate(_recipes.length, (_) => false);
-        });
-      }
-
-      // Load saved recipes
-      await _loadSavedRecipes();
+      setState(() {
+        _recipes = allRecipes
+            .where((recipe) =>
+                !_recipeWeeklyMenu.containsKey(recipe.id) ||
+                _recipeWeeklyMenu[recipe.id]['accepted'] == false)
+            .toList();
+        _acceptedRecipes = List.generate(_recipes.length, (index) => false);
+        _savedRecipes = List.generate(_recipes.length, (index) => false);
+        _selectedCount = _recipeWeeklyMenu.values
+            .where((recipe) => recipe['accepted'] == true)
+            .length;
+      });
     } else {
       setState(() {
         _recipes = allRecipes;
@@ -124,6 +97,37 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
     if (_recipes.isEmpty) {
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    }
+  }
+
+  Future<void> _loadDatabaseRecipes(User user, String databaseName) async {
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child(databaseName);
+
+    DataSnapshot snapshot = await ref.once().then((event) => event.snapshot);
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> recipeMap = snapshot.value as Map<dynamic, dynamic>;
+      Map<String, dynamic> processedMap = {};
+
+      recipeMap.forEach((key, value) {
+        String recipeId = value['id'].toString();
+        processedMap[recipeId] = {
+          'key': key,
+          'name': value['name'],
+          'accepted': value['accepted'],
+          'timestamp': value['timestamp'],
+        };
+      });
+
+      if (databaseName == 'recipeWeeklyMenu') {
+        _recipeWeeklyMenu = processedMap;
+      } else {
+        _recipeHistory = processedMap;
+      }
     }
   }
 
@@ -219,7 +223,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       {required bool accepted}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await _updateRecipeInDatabase(user, 'recipeWeeklyMenu', recipe, accepted);
+      await _updateRecipeInDatabase('recipeWeeklyMenu', recipe, accepted);
     }
   }
 
@@ -227,51 +231,67 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       {required bool accepted}) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await _updateRecipeInDatabase(user, 'recipeHistory', recipe, accepted);
+      await _updateRecipeInDatabase('recipeHistory', recipe, accepted);
     }
   }
 
   Future<void> _updateRecipeInDatabase(
-      User user, String databaseName, Recipe recipe, bool accepted) async {
-    DatabaseReference ref = FirebaseDatabase.instance
-        .ref()
-        .child('users')
-        .child(user.uid)
-        .child(databaseName);
+      String databaseName, Recipe recipe, bool accepted) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child(databaseName);
 
-    Map<String, String> keysMap = databaseName == 'recipeWeeklyMenu'
-        ? _recipeWeeklyMenuKeys
-        : _recipeHistoryKeys;
+      Map<String, dynamic> targetMap = databaseName == 'recipeWeeklyMenu'
+          ? _recipeWeeklyMenu
+          : _recipeHistory;
 
-    if (keysMap.containsKey(recipe.id)) {
-      // Update existing entry
-      await ref.child(keysMap[recipe.id]!).update({
-        'accepted': accepted,
-        'timestamp': ServerValue.timestamp,
+      if (targetMap.containsKey(recipe.id)) {
+        // Update existing entry
+        await ref.child(targetMap[recipe.id]['key']).update({
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Create new entry
+        DatabaseReference newRef = ref.push();
+        await newRef.set({
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+        targetMap[recipe.id] = {
+          'key': newRef.key,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        };
+      }
+
+      // Update local state
+      setState(() {
+        if (databaseName == 'recipeWeeklyMenu') {
+          _recipeWeeklyMenu = Map.from(targetMap);
+        } else {
+          _recipeHistory = Map.from(targetMap);
+        }
       });
-    } else {
-      // Create new entry
-      DatabaseReference newRef = await ref.push();
-      await newRef.set({
-        'id': recipe.id,
-        'name': recipe.name,
-        'accepted': accepted,
-        'timestamp': ServerValue.timestamp,
-      });
-      keysMap[recipe.id] = newRef.key!;
     }
   }
 
   Future<void> _acceptRecipe() async {
     try {
-      await _updateRecipeWeeklyMenu(_recipes[_currentRecipeIndex],
-          accepted: true);
-      await _updateRecipeHistory(_recipes[_currentRecipeIndex], accepted: true);
+      Recipe currentRecipe = _recipes[_currentRecipeIndex];
+      await _updateRecipeInDatabase('recipeWeeklyMenu', currentRecipe, true);
+      await _updateRecipeInDatabase('recipeHistory', currentRecipe, true);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = true;
         _selectedCount++;
-        _recipeWeeklyMenu.add(_currentRecipeIndex);
         _nextRecipe();
       });
     } catch (e) {
@@ -281,14 +301,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _rejectRecipe() async {
     try {
-      await _updateRecipeWeeklyMenu(_recipes[_currentRecipeIndex],
-          accepted: false);
-      await _updateRecipeHistory(_recipes[_currentRecipeIndex],
-          accepted: false);
+      Recipe currentRecipe = _recipes[_currentRecipeIndex];
+      await _updateRecipeInDatabase('recipeWeeklyMenu', currentRecipe, false);
+      await _updateRecipeInDatabase('recipeHistory', currentRecipe, false);
 
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = false;
-        _recipeWeeklyMenu.add(_currentRecipeIndex);
         _nextRecipe();
       });
     } catch (e) {
@@ -407,21 +425,20 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   Future<void> _undoRecipe() async {
     if (_recipeWeeklyMenu.isNotEmpty) {
       try {
-        int previousIndex = _recipeWeeklyMenu.removeLast();
-        Recipe recipeToUndo = _recipes[previousIndex];
+        String lastRecipeId = _recipeWeeklyMenu.keys.last;
+        Recipe recipeToUndo =
+            _recipes.firstWhere((recipe) => recipe.id == lastRecipeId);
 
-        // Remove the recipe from Firebase weeklyMenu and history
-        await _removeRecipeFromDatabase(recipeToUndo, 'recipeWeeklyMenu');
-        await _removeRecipeFromDatabase(recipeToUndo, 'recipeHistory');
+        await _removeRecipeFromDatabase('recipeWeeklyMenu', recipeToUndo);
+        await _removeRecipeFromDatabase('recipeHistory', recipeToUndo);
 
         setState(() {
-          _currentRecipeIndex = previousIndex;
-          if (_acceptedRecipes[previousIndex]) {
+          _currentRecipeIndex =
+              _recipes.indexWhere((recipe) => recipe.id == lastRecipeId);
+          if (_acceptedRecipes[_currentRecipeIndex]) {
             _selectedCount--;
           }
-          _acceptedRecipes[previousIndex] = false;
-          _recipeWeeklyMenuKeys.remove(recipeToUndo.id);
-          _recipeHistoryKeys.remove(recipeToUndo.id);
+          _acceptedRecipes[_currentRecipeIndex] = false;
         });
       } catch (e) {
         _showErrorDialog("Error undoing action: $e");
@@ -430,7 +447,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   Future<void> _removeRecipeFromDatabase(
-      Recipe recipe, String databaseName) async {
+      String databaseName, Recipe recipe) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       DatabaseReference ref = FirebaseDatabase.instance
@@ -439,12 +456,22 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           .child(user.uid)
           .child(databaseName);
 
-      Map<String, String> keysMap = databaseName == 'recipeWeeklyMenu'
-          ? _recipeWeeklyMenuKeys
-          : _recipeHistoryKeys;
+      Map<String, dynamic> targetMap = databaseName == 'recipeWeeklyMenu'
+          ? _recipeWeeklyMenu
+          : _recipeHistory;
 
-      if (keysMap.containsKey(recipe.id)) {
-        await ref.child(keysMap[recipe.id]!).remove();
+      if (targetMap.containsKey(recipe.id)) {
+        await ref.child(targetMap[recipe.id]['key']).remove();
+        targetMap.remove(recipe.id);
+
+        // Update local state
+        setState(() {
+          if (databaseName == 'recipeWeeklyMenu') {
+            _recipeWeeklyMenu = Map.from(targetMap);
+          } else {
+            _recipeHistory = Map.from(targetMap);
+          }
+        });
       }
     }
   }
