@@ -227,7 +227,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
       type: BottomNavigationBarType.fixed,
-      currentIndex: 2,
+      currentIndex: 0,
       onTap: (index) {
         switch (index) {
           case 0:
@@ -239,9 +239,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             );
             break;
           case 1:
-            // Add action for second tab
+            // Action for Discover Recipe button
             break;
           case 2:
+            // Action for Grocery List button
             break;
           case 3:
             Navigator.push(
@@ -255,24 +256,44 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             break;
         }
       },
-      items: [
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/home-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.restaurant_outlined),
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/discover-recipe-on.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart_outlined),
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/grocery-list-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book_outlined),
+          icon: Image.asset(
+            'assets/icons/bottom_navigation/weekly-menu-off.png',
+            width: proportionalWidth(context, 24),
+            height: proportionalHeight(context, 24),
+          ),
           label: '',
         ),
       ],
+      selectedItemColor: const Color.fromRGBO(73, 160, 120, 1),
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     );
   }
 }
