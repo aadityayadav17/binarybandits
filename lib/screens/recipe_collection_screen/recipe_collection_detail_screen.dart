@@ -6,6 +6,8 @@ import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_ca
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -34,8 +36,48 @@ class RecipeCollectionDetailScreen extends StatefulWidget {
 class _RecipeCollectionDetailScreenState
     extends State<RecipeCollectionDetailScreen> {
   bool addedToMenu = false; // Initially false
-
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkRecipeInWeeklyMenu(); // Check if the recipe is in the menu
+  }
+
+  Future<void> _checkRecipeInWeeklyMenu() async {
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Ensure the user is authenticated
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    // Fetch the user's weekly menu from Firebase using dynamic user ID
+    final userId = user.uid;
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    // Check if the snapshot exists
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+
+      // Check if the current recipe is in the weekly menu and if it's accepted
+      for (var entry in weeklyMenuData.values) {
+        if (entry['id'] == widget.recipe.id && entry['accepted'] == true) {
+          setState(() {
+            addedToMenu =
+                true; // Set addedToMenu to true if recipe is found and accepted
+          });
+          break;
+        }
+      }
+    } else {
+      print('No weekly menu data available.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
