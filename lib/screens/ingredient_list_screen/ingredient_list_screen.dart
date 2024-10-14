@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class IngredientListPage extends StatefulWidget {
   @override
@@ -24,14 +26,49 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-      _updateAllIngredients();
-    });
+    // Ensure the user is authenticated
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    // Fetch the user's weekly menu from Firebase using dynamic user ID
+    final userId = user.uid; // Dynamic user ID
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    // Check if there is data in the snapshot
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+
+      // Filter recipes that are accepted
+      final acceptedRecipes = weeklyMenuData.values
+          .where((recipe) => recipe['accepted'] == true)
+          .map((recipe) => recipe['id']) // Recipe ID in Firebase
+          .toList();
+
+      // Load recipes from JSON
+      final String jsonString = await rootBundle
+          .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+      final List<dynamic> jsonData = json.decode(jsonString);
+
+      // Filter JSON data based on accepted recipe IDs (Firebase ID is 'id', JSON ID is 'recipe_id')
+      final matchedRecipes = jsonData.where((recipeData) {
+        return acceptedRecipes
+            .contains(recipeData['recipe_id']); // JSON recipe_id
+      }).toList();
+
+      setState(() {
+        recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
+        _updateAllIngredients();
+      });
+    } else {
+      print('No weekly menu data available.');
+    }
   }
 
   void _updateAllIngredients() {
