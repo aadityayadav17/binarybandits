@@ -24,6 +24,16 @@ class GroceryListScreen extends StatefulWidget {
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
   bool cheapestOption = false;
+  Map<int, bool> _selectedIngredients = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the selection map with false (unchecked) for each ingredient
+    for (int i = 0; i < 10; i++) {
+      _selectedIngredients[i] = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,27 +208,90 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   Widget _buildGroceryList() {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: 10, // Replace with your actual list count
       itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
-              child: Icon(Icons.check_circle, color: Colors.white),
+        bool isSelected = _selectedIngredients[index] ?? false;
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: 4.0), // Reduce vertical padding between items
+              child: ListTile(
+                leading: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIngredients[index] = !isSelected;
+                    });
+                  },
+                  child: Icon(
+                    isSelected
+                        ? Icons.check_circle
+                        : Icons
+                            .radio_button_unchecked, // Checkmark or empty circle
+                    color: isSelected
+                        ? const Color.fromRGBO(
+                            73, 160, 120, 1) // Active color for checkmark
+                        : Colors.grey,
+                    size: proportionalFontSize(context, 24),
+                  ),
+                ),
+                title: Text(
+                  'Ingredient name $index', // Replace with actual ingredient name
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(
+                        context, 14), // Smaller font size for ingredients
+                    color: isSelected
+                        ? Colors.grey
+                        : Colors.black, // Grey out text when checked
+                    decoration: isSelected
+                        ? TextDecoration.lineThrough
+                        : null, // Strikethrough when checked
+                  ),
+                  maxLines:
+                      null, // Allows text to wrap to a new line if necessary
+                  overflow: TextOverflow
+                      .visible, // Ensures text is visible when wrapped
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '\$XX',
+                      style: TextStyle(
+                          color: isSelected
+                              ? Colors.grey
+                              : Colors.black), // Price text color
+                    ), // Placeholder for pricing
+                    SizedBox(width: 10),
+                    Text(
+                      'None',
+                      style: TextStyle(
+                          color: isSelected
+                              ? Colors.grey
+                              : Colors.black), // Additional text color
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      '\$XX',
+                      style: TextStyle(
+                          color: isSelected
+                              ? Colors.grey
+                              : Colors
+                                  .black), // Another placeholder for pricing
+                    ), // Another placeholder for pricing
+                  ],
+                ),
+              ),
             ),
-            title: Text('Ingredient name'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('\$XX'),
-                SizedBox(width: 10),
-                Text('None'),
-                SizedBox(width: 10),
-                Text('\$XX'),
-              ],
+            Divider(
+              color: Colors.grey.shade400, // Blunt line between items
+              thickness: 1, // Thickness of the divider
+              height: 1, // Reduce the gap around the divider
+              indent: 16, // Padding on the left side of the divider
+              endIndent: 16, // Padding on the right side of the divider
             ),
-          ),
+          ],
         );
       },
     );
