@@ -33,6 +33,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<int> _servings = []; // Growable list for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
+  Map<String, dynamic> _recipeWeeklyMenu = {};
 
   @override
   void initState() {
@@ -41,52 +42,99 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   }
 
   Future<void> _loadRecipes() async {
-    // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
-
-    // Ensure the user is authenticated
     if (user == null) {
       print('User is not authenticated');
       return;
     }
 
-    // Fetch the user's weekly menu from Firebase using dynamic user ID
-    final userId = user.uid; // Dynamic user ID
+    final userId = user.uid;
     final databaseRef =
         FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
     final snapshot = await databaseRef.get();
 
-    // Check if there is data in the snapshot
     if (snapshot.exists) {
       final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+      _recipeWeeklyMenu.clear();
 
-      // Filter recipes that are accepted
-      final acceptedRecipes = weeklyMenuData.values
-          .where((recipe) => recipe['accepted'] == true)
-          .map((recipe) => recipe['id']) // Recipe ID in Firebase
+      final acceptedRecipes = weeklyMenuData.entries
+          .where((entry) => entry.value['accepted'] == true)
+          .map((entry) => {
+                'id': entry.value['id'],
+                'key': entry.key,
+              })
           .toList();
 
-      // Load recipes from JSON
       final jsonString = await rootBundle
           .loadString('assets/recipes/D3801 Recipes - Recipes.json');
       final List<dynamic> jsonData = json.decode(jsonString);
 
-      // Filter JSON data based on accepted recipe IDs (Firebase ID is 'id', JSON ID is 'recipe_id')
       final matchedRecipes = jsonData.where((recipeData) {
-        return acceptedRecipes
-            .contains(recipeData['recipe_id']); // JSON recipe_id
+        return acceptedRecipes.any((acceptedRecipe) =>
+            acceptedRecipe['id'] == recipeData['recipe_id']);
       }).toList();
 
       setState(() {
         _recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
         _servings = List<int>.filled(_recipes.length, 1, growable: true);
         _pageController = PageController(
-          initialPage: _currentRecipeIndex,
-          viewportFraction: 0.8,
-        );
+            initialPage: _currentRecipeIndex, viewportFraction: 0.8);
+
+        // Populate _recipeWeeklyMenu
+        for (var recipe in acceptedRecipes) {
+          _recipeWeeklyMenu[recipe['id']] = recipe['key'];
+        }
       });
     } else {
       print('No weekly menu data available.');
+    }
+  }
+
+  Future<void> _updateRecipeInWeeklyMenu(String recipeId,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu')
+          .child(_recipeWeeklyMenu[recipeId]);
+
+      await ref.update({
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      });
+    }
+  }
+
+  Future<void> _removeRecipe(int index) async {
+    Recipe recipeToRemove = _recipes[index];
+    try {
+      await _updateRecipeInWeeklyMenu(recipeToRemove.id, accepted: false);
+
+      setState(() {
+        if (index == _recipes.length - 1 && _recipes.length > 1) {
+          _currentRecipeIndex = 0;
+        } else if (_recipes.length > 1) {
+          _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
+        }
+
+        _recipes.removeAt(index);
+        _servings.removeAt(index);
+        _recipeWeeklyMenu.remove(recipeToRemove.id);
+
+        if (_currentRecipeIndex >= _recipes.length) {
+          _currentRecipeIndex = _recipes.length - 1;
+        }
+
+        if (_recipes.isNotEmpty) {
+          _pageController?.jumpToPage(_currentRecipeIndex);
+        }
+      });
+    } catch (e) {
+      print('Error removing recipe: $e');
+      // Optionally show an error message to the user
     }
   }
 
@@ -230,33 +278,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                       width: proportionalWidth(context, 16),
                                       height: proportionalHeight(context, 16),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        // Remove logic for recipes and servings
-                                        if (index == _recipes.length - 1 &&
-                                            _recipes.length > 1) {
-                                          _currentRecipeIndex = 0;
-                                        } else if (_recipes.length > 1) {
-                                          _currentRecipeIndex =
-                                              (_currentRecipeIndex + 1) %
-                                                  _recipes.length;
-                                        }
-
-                                        _recipes.removeAt(index);
-                                        _servings.removeAt(index);
-
-                                        if (_currentRecipeIndex >=
-                                            _recipes.length) {
-                                          _currentRecipeIndex =
-                                              _recipes.length - 1;
-                                        }
-
-                                        if (_recipes.isNotEmpty) {
-                                          _pageController
-                                              ?.jumpToPage(_currentRecipeIndex);
-                                        }
-                                      });
-                                    },
+                                    onPressed: () => _removeRecipe(index),
                                   ),
                                 ),
                               ],
