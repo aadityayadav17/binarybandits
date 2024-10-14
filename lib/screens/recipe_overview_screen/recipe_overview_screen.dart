@@ -114,20 +114,22 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
       await _updateRecipeInWeeklyMenu(recipeToRemove.id, accepted: false);
 
       setState(() {
-        if (index == _recipes.length - 1 && _recipes.length > 1) {
-          _currentRecipeIndex = 0;
-        } else if (_recipes.length > 1) {
-          _currentRecipeIndex = (_currentRecipeIndex + 1) % _recipes.length;
-        }
-
         _recipes.removeAt(index);
         _servings.removeAt(index);
         _recipeWeeklyMenu.remove(recipeToRemove.id);
 
-        if (_currentRecipeIndex >= _recipes.length) {
-          _currentRecipeIndex = _recipes.length - 1;
+        // Adjust the current index
+        if (_recipes.isEmpty) {
+          _currentRecipeIndex = 0;
+        } else if (index <= _currentRecipeIndex) {
+          // If we removed a recipe before or at the current index,
+          // we need to decrease the current index
+          _currentRecipeIndex =
+              (_currentRecipeIndex - 1).clamp(0, _recipes.length - 1);
         }
+        // If we removed a recipe after the current index, we don't need to change it
 
+        // Update the page controller
         if (_recipes.isNotEmpty) {
           _pageController?.jumpToPage(_currentRecipeIndex);
         }
