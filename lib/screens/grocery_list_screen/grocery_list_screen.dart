@@ -140,31 +140,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           Expanded(
             child: _buildGroceryList(),
           ),
-          Padding(
-            padding: EdgeInsets.all(proportionalWidth(context, 16)),
-            child: ElevatedButton(
-              onPressed: () {
-                // Add your action
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
-                minimumSize:
-                    Size(double.infinity, proportionalHeight(context, 50)),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(proportionalWidth(context, 10)),
-                ),
-              ),
-              child: Text(
-                'SAVE',
-                style: GoogleFonts.robotoFlex(
-                  color: Colors.white,
-                  fontSize: proportionalFontSize(context, 16),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
+          buildInfoBox(context),
         ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
@@ -287,6 +263,96 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           ],
         );
       },
+    );
+  }
+
+  // Method for the rounded rectangle information box
+  Widget buildInfoBox(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(proportionalWidth(context, 16)),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: proportionalHeight(context, 16),
+          horizontal: proportionalWidth(context, 16),
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white, // Background color of the rectangle
+          borderRadius: BorderRadius.circular(
+              proportionalWidth(context, 10)), // Rounded corners
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3), // Subtle shadow
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3), // Offset for the shadow
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total 12 items', // Replace with dynamic count if needed
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 16),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '\$XXXXX', // Placeholder for total
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 16),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: proportionalHeight(context, 8)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Your budget', // Budget label
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 16),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '\$XXXXX', // Placeholder for the budget
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 16),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: proportionalHeight(context, 8)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'SAVE', // Action label
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 20),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '\$XXXXX', // Placeholder for amount to be saved
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 20),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
