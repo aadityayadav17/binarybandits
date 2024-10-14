@@ -121,17 +121,25 @@ class _IngredientListPageState extends State<IngredientListPage> {
     if (user == null) return;
 
     final userId = user.uid;
-    for (var recipe in recipes) {
-      final ingredients =
-          _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
-      final recipeRef = FirebaseDatabase.instance.ref(
-          "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
 
-      Map<String, bool> updateData = {};
-      for (var ingredient in ingredients) {
-        updateData[ingredient] = selectAll;
+    try {
+      for (var recipe in recipes) {
+        final ingredients =
+            _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
+        final recipeRef = FirebaseDatabase.instance.ref(
+            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
+
+        Map<String, bool> updateData = {};
+        for (var ingredient in ingredients) {
+          updateData[ingredient] = selectAll;
+        }
+
+        await recipeRef.update(updateData);
       }
-      await recipeRef.update(updateData);
+
+      print("All ingredients updated successfully");
+    } catch (error) {
+      print("Error updating all ingredients: $error");
     }
   }
 
@@ -266,10 +274,11 @@ class _IngredientListPageState extends State<IngredientListPage> {
                   Container(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        bool allSelected = ingredients
+                            .every((i) => selectedIngredients[i] ?? false);
+                        await _updateAllIngredientsInFirebase(!allSelected);
                         setState(() {
-                          bool allSelected = ingredients
-                              .every((i) => selectedIngredients[i] ?? false);
                           for (var ingredient in ingredients) {
                             selectedIngredients[ingredient] = !allSelected;
                           }
