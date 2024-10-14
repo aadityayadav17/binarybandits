@@ -43,6 +43,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   Map<String, String> _recipeWeeklyMenuKeys = {};
   Map<String, dynamic> _recipeHistory = {};
   Map<String, String> _recipeHistoryKeys = {};
+  Map<String, dynamic> _recipeCollection = {};
+  Map<String, String> _recipeCollectionKeys = {};
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;
@@ -74,6 +76,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     if (user != null) {
       await _loadDatabaseRecipes(user, 'recipeWeeklyMenu');
       await _loadDatabaseRecipes(user, 'recipeHistory');
+      await _loadRecipeCollection(user);
 
       setState(() {
         _recipes = allRecipes
@@ -82,7 +85,11 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                 _recipeWeeklyMenu[recipe.id]['accepted'] == false)
             .toList();
         _acceptedRecipes = List.generate(_recipes.length, (index) => false);
-        _savedRecipes = List.generate(_recipes.length, (index) => false);
+        _savedRecipes = List.generate(
+            _recipes.length,
+            (index) =>
+                _recipeCollection.containsKey(_recipes[index].id) &&
+                _recipeCollection[_recipes[index].id]['saved'] == true);
         _selectedCount = _recipeWeeklyMenu.values
             .where((recipe) => recipe['accepted'] == true)
             .length;
@@ -120,8 +127,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           'name': value['name'],
           'accepted': value['accepted'],
           'timestamp': value['timestamp'],
-          'servings':
-              value['servings'] ?? 1, // Add servings field with default value 1
+          'servings': value['servings'] ?? 1,
         };
       });
 
@@ -130,6 +136,140 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       } else {
         _recipeHistory = processedMap;
       }
+    }
+  }
+
+  Future<void> _loadRecipeCollection(User user) async {
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('users')
+        .child(user.uid)
+        .child('recipeCollection');
+
+    DataSnapshot snapshot = await ref.once().then((event) => event.snapshot);
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic> collectionMap =
+          snapshot.value as Map<dynamic, dynamic>;
+      Map<String, dynamic> processedMap = {};
+
+      collectionMap.forEach((key, value) {
+        String recipeId = value['id'].toString();
+        processedMap[recipeId] = {
+          'key': key,
+          'name': value['name'],
+          'saved': value['saved'] ?? false,
+          'timestamp': value['timestamp'],
+        };
+      });
+
+      _recipeCollection = processedMap;
+    }
+  }
+
+  Future<void> _updateRecipeInDatabase(
+      String databaseName, Recipe recipe, bool accepted) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child(databaseName);
+
+      Map<String, dynamic> targetMap = databaseName == 'recipeWeeklyMenu'
+          ? _recipeWeeklyMenu
+          : _recipeHistory;
+
+      if (targetMap.containsKey(recipe.id)) {
+        // Update existing entry
+        await ref.child(targetMap[recipe.id]['key']).update({
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        });
+        if (databaseName == 'recipeWeeklyMenu' &&
+            !targetMap[recipe.id].containsKey('servings')) {
+          await ref.child(targetMap[recipe.id]['key']).update({'servings': 1});
+        }
+      } else {
+        // Create new entry
+        DatabaseReference newRef = ref.push();
+        Map<String, dynamic> newEntry = {
+          'id': recipe.id,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        };
+        if (databaseName == 'recipeWeeklyMenu') {
+          newEntry['servings'] = 1;
+        }
+        await newRef.set(newEntry);
+        targetMap[recipe.id] = {
+          'key': newRef.key,
+          'name': recipe.name,
+          'accepted': accepted,
+          'timestamp': ServerValue.timestamp,
+        };
+        if (databaseName == 'recipeWeeklyMenu') {
+          targetMap[recipe.id]['servings'] = 1;
+        }
+      }
+
+      // Update local state
+      setState(() {
+        if (databaseName == 'recipeWeeklyMenu') {
+          _recipeWeeklyMenu = Map.from(targetMap);
+        } else {
+          _recipeHistory = Map.from(targetMap);
+        }
+      });
+    }
+  }
+
+  Future<void> _updateRecipeInCollection(Recipe recipe,
+      {required bool saved}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference collectionRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeCollection');
+
+      String? newRefKey;
+
+      if (_recipeCollection.containsKey(recipe.id)) {
+        // Update existing entry
+        await collectionRef.child(_recipeCollection[recipe.id]['key']).update({
+          'saved': saved,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else if (saved) {
+        // Create new entry only if saving
+        DatabaseReference newRef = collectionRef.push();
+        newRefKey = newRef.key;
+        await newRef.set({
+          'id': recipe.id,
+          'name': recipe.name,
+          'saved': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      // Update local state
+      setState(() {
+        if (!saved) {
+          _recipeCollection[recipe.id]?['saved'] = false;
+        } else {
+          _recipeCollection[recipe.id] = {
+            'key': _recipeCollection[recipe.id]?['key'] ?? newRefKey,
+            'name': recipe.name,
+            'saved': true,
+            'timestamp': ServerValue.timestamp,
+          };
+        }
+        _savedRecipes[_currentRecipeIndex] = saved;
+      });
     }
   }
 
@@ -237,70 +377,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  Future<void> _updateRecipeInDatabase(
-      String databaseName, Recipe recipe, bool accepted) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference ref = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child(databaseName);
-
-      Map<String, dynamic> targetMap = databaseName == 'recipeWeeklyMenu'
-          ? _recipeWeeklyMenu
-          : _recipeHistory;
-
-      if (targetMap.containsKey(recipe.id)) {
-        // Update existing entry
-        await ref.child(targetMap[recipe.id]['key']).update({
-          'accepted': accepted,
-          'timestamp': ServerValue.timestamp,
-        });
-        if (databaseName == 'recipeWeeklyMenu') {
-          // Ensure servings field exists and is not overwritten
-          if (!targetMap[recipe.id].containsKey('servings')) {
-            await ref
-                .child(targetMap[recipe.id]['key'])
-                .update({'servings': 1});
-          }
-        }
-      } else {
-        // Create new entry
-        DatabaseReference newRef = ref.push();
-        Map<String, dynamic> newEntry = {
-          'id': recipe.id,
-          'name': recipe.name,
-          'accepted': accepted,
-          'timestamp': ServerValue.timestamp,
-        };
-        if (databaseName == 'recipeWeeklyMenu') {
-          newEntry['servings'] =
-              1; // Add servings for new entries in weekly menu
-        }
-        await newRef.set(newEntry);
-        targetMap[recipe.id] = {
-          'key': newRef.key,
-          'name': recipe.name,
-          'accepted': accepted,
-          'timestamp': ServerValue.timestamp,
-        };
-        if (databaseName == 'recipeWeeklyMenu') {
-          targetMap[recipe.id]['servings'] = 1;
-        }
-      }
-
-      // Update local state
-      setState(() {
-        if (databaseName == 'recipeWeeklyMenu') {
-          _recipeWeeklyMenu = Map.from(targetMap);
-        } else {
-          _recipeHistory = Map.from(targetMap);
-        }
-      });
-    }
-  }
-
   Future<void> _updateServings(String recipeId, int newServings) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
@@ -368,9 +444,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
 
   Future<void> _onSaveRecipe() async {
     try {
+      Recipe currentRecipe = _recipes[_currentRecipeIndex];
       bool newSavedState = !_savedRecipes[_currentRecipeIndex];
-      await _updateRecipeInCollection(_recipes[_currentRecipeIndex],
-          saved: newSavedState);
+      await _updateRecipeInCollection(currentRecipe, saved: newSavedState);
 
       setState(() {
         _savedRecipes[_currentRecipeIndex] = newSavedState;
@@ -412,48 +488,6 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
           'timestamp': ServerValue.timestamp,
         };
         await weeklyMenuRef.push().set(recipeData);
-      }
-    }
-  }
-
-  Future<void> _updateRecipeInCollection(Recipe recipe,
-      {required bool saved}) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference collectionRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeCollection');
-
-      // Check if the recipe already exists in the collection
-      Query query = collectionRef.orderByChild('id').equalTo(recipe.id);
-      DatabaseEvent event = await query.once();
-
-      if (event.snapshot.value != null) {
-        // Recipe exists, update it
-        Map<dynamic, dynamic> recipeMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        String key = recipeMap.keys.first;
-        if (saved) {
-          await collectionRef.child(key).update({
-            'saved': true,
-            'name': recipe.name,
-            'timestamp': ServerValue.timestamp,
-          });
-        } else {
-          // If unsaving, remove the entry
-          await collectionRef.child(key).remove();
-        }
-      } else if (saved) {
-        // Recipe doesn't exist and we're saving it, create a new entry
-        Map<String, dynamic> recipeData = {
-          'id': recipe.id,
-          'name': recipe.name,
-          'saved': true,
-          'timestamp': ServerValue.timestamp,
-        };
-        await collectionRef.push().set(recipeData);
       }
     }
   }
