@@ -5,6 +5,8 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/ingredient_list_screen/ingredient_list_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -28,9 +30,10 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
-  List<int> _servings = []; // Growable list for servings
+  Map<String, int> _servings = {}; // Map for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
+  Map<String, dynamic> _recipeWeeklyMenu = {};
 
   @override
   void initState() {
@@ -39,17 +42,126 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   }
 
   Future<void> _loadRecipes() async {
-    final jsonString = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    final userId = user.uid;
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+      _recipeWeeklyMenu.clear();
+      _servings.clear();
+
+      final acceptedRecipes = weeklyMenuData.entries
+          .where((entry) => entry.value['accepted'] == true)
+          .map((entry) => {
+                'id': entry.value['id'],
+                'key': entry.key,
+                'servings': entry.value['servings'] ?? 1,
+              })
+          .toList();
+
+      final jsonString = await rootBundle
+          .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+      final List<dynamic> jsonData = json.decode(jsonString);
+
+      final matchedRecipes = jsonData.where((recipeData) {
+        return acceptedRecipes.any((acceptedRecipe) =>
+            acceptedRecipe['id'] == recipeData['recipe_id']);
+      }).toList();
+
+      setState(() {
+        _recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
+        _pageController = PageController(
+            initialPage: _currentRecipeIndex, viewportFraction: 0.8);
+
+        // Populate _recipeWeeklyMenu and _servings
+        for (var recipe in acceptedRecipes) {
+          _recipeWeeklyMenu[recipe['id']] = recipe['key'];
+          _servings[recipe['id']] = recipe['servings'];
+        }
+      });
+    } else {
+      print('No weekly menu data available.');
+    }
+  }
+
+  Future<void> _updateServingsInDatabase(String recipeId, int servings) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu')
+          .child(_recipeWeeklyMenu[recipeId]);
+
+      await ref.update({
+        'servings': servings,
+        'timestamp': ServerValue.timestamp,
+      });
+    }
+  }
+
+  void _adjustServings(String recipeId, bool increase) {
     setState(() {
-      _recipes = jsonData.map((data) => Recipe.fromJson(data)).toList();
-      _servings = List<int>.filled(_recipes.length, 1, growable: true);
-      _pageController = PageController(
-        initialPage: _currentRecipeIndex,
-        viewportFraction: 0.8,
-      );
+      if (increase) {
+        _servings[recipeId] = (_servings[recipeId] ?? 1) + 1;
+      } else if ((_servings[recipeId] ?? 1) > 1) {
+        _servings[recipeId] = (_servings[recipeId] ?? 1) - 1;
+      }
     });
+    _updateServingsInDatabase(recipeId, _servings[recipeId] ?? 1);
+  }
+
+  Future<void> _updateRecipeInWeeklyMenu(String recipeId,
+      {required bool accepted}) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
+      DatabaseReference ref = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('recipeWeeklyMenu')
+          .child(_recipeWeeklyMenu[recipeId]);
+
+      await ref.update({
+        'accepted': accepted,
+        'timestamp': ServerValue.timestamp,
+      });
+    }
+  }
+
+  Future<void> _removeRecipe(int index) async {
+    Recipe recipeToRemove = _recipes[index];
+    try {
+      await _updateRecipeInWeeklyMenu(recipeToRemove.id, accepted: false);
+
+      setState(() {
+        _recipes.removeAt(index);
+        _servings.remove(recipeToRemove.id);
+        _recipeWeeklyMenu.remove(recipeToRemove.id);
+
+        if (_recipes.isEmpty) {
+          _currentRecipeIndex = 0;
+        } else if (index <= _currentRecipeIndex) {
+          _currentRecipeIndex =
+              (_currentRecipeIndex - 1).clamp(0, _recipes.length - 1);
+        }
+
+        if (_recipes.isNotEmpty) {
+          _pageController?.jumpToPage(_currentRecipeIndex);
+        }
+      });
+    } catch (e) {
+      print('Error removing recipe: $e');
+    }
   }
 
   @override
@@ -59,10 +171,12 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   }
 
   void _applyAllServings() {
-    int currentServing = _servings[_currentRecipeIndex];
+    final currentServings = _servings[_recipes[_currentRecipeIndex].id] ?? 1;
     setState(() {
-      _servings =
-          List<int>.filled(_recipes.length, currentServing, growable: true);
+      for (var recipe in _recipes) {
+        _servings[recipe.id] = currentServings;
+        _updateServingsInDatabase(recipe.id, currentServings);
+      }
     });
   }
 
@@ -192,33 +306,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                       width: proportionalWidth(context, 16),
                                       height: proportionalHeight(context, 16),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        // Remove logic for recipes and servings
-                                        if (index == _recipes.length - 1 &&
-                                            _recipes.length > 1) {
-                                          _currentRecipeIndex = 0;
-                                        } else if (_recipes.length > 1) {
-                                          _currentRecipeIndex =
-                                              (_currentRecipeIndex + 1) %
-                                                  _recipes.length;
-                                        }
-
-                                        _recipes.removeAt(index);
-                                        _servings.removeAt(index);
-
-                                        if (_currentRecipeIndex >=
-                                            _recipes.length) {
-                                          _currentRecipeIndex =
-                                              _recipes.length - 1;
-                                        }
-
-                                        if (_recipes.isNotEmpty) {
-                                          _pageController
-                                              ?.jumpToPage(_currentRecipeIndex);
-                                        }
-                                      });
-                                    },
+                                    onPressed: () => _removeRecipe(index),
                                   ),
                                 ),
                               ],
@@ -227,7 +315,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         },
                       ),
                     ),
-                    SizedBox(height: proportionalHeight(context, 16)),
+                    SizedBox(height: proportionalHeight(context, 0)),
                     Slider(
                       value: _currentRecipeIndex.toDouble(),
                       min: 0,
@@ -244,7 +332,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                         _pageController?.jumpToPage(_currentRecipeIndex);
                       },
                     ),
-                    SizedBox(height: proportionalHeight(context, 16)),
+                    SizedBox(height: proportionalHeight(context, 0)),
                     Center(
                       child: Text(
                         'How many servings for this recipe?',
@@ -282,26 +370,29 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   left: proportionalWidth(context, 16)),
                               child: IconButton(
                                 icon: Image.asset(
-                                  _servings[_currentRecipeIndex] > 1
+                                  (_servings[_recipes[_currentRecipeIndex]
+                                                  .id] ??
+                                              1) >
+                                          1
                                       ? 'assets/icons/screens/recipe_overview_screen/minus-enabled.png'
                                       : 'assets/icons/screens/recipe_overview_screen/minus-disabled.png',
                                   width: proportionalWidth(context, 12),
                                   height: proportionalHeight(context, 12),
                                 ),
-                                onPressed: _servings[_currentRecipeIndex] > 1
-                                    ? () {
-                                        setState(() {
-                                          _servings[_currentRecipeIndex]--;
-                                        });
-                                      }
+                                onPressed: (_servings[
+                                                _recipes[_currentRecipeIndex]
+                                                    .id] ??
+                                            1) >
+                                        1
+                                    ? () => _adjustServings(
+                                        _recipes[_currentRecipeIndex].id, false)
                                     : null,
                               ),
                             ),
                             Text(
-                              '${_servings[_currentRecipeIndex]}',
+                              '${_servings[_recipes[_currentRecipeIndex].id] ?? 1}',
                               style: TextStyle(
-                                fontSize: proportionalFontSize(context, 24),
-                              ),
+                                  fontSize: proportionalFontSize(context, 24)),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
@@ -312,11 +403,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                   width: proportionalWidth(context, 12),
                                   height: proportionalHeight(context, 12),
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _servings[_currentRecipeIndex]++;
-                                  });
-                                },
+                                onPressed: () => _adjustServings(
+                                    _recipes[_currentRecipeIndex].id, true),
                               ),
                             ),
                           ],

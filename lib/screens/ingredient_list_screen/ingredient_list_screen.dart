@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class IngredientListPage extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Recipe? selectedRecipe;
   bool isAllSelected = true;
   Map<String, bool> selectedIngredients = {};
+  Map<String, String> recipeKeys = {};
 
   @override
   void initState() {
@@ -24,14 +27,55 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Future<void> _loadRecipes() async {
-    final String response = await rootBundle
-        .loadString('assets/recipes/D3801 Recipes - Recipes.json');
-    final List<dynamic> data = json.decode(response);
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
 
-    setState(() {
-      recipes = data.map((json) => Recipe.fromJson(json)).toList();
-      _updateAllIngredients();
-    });
+    final userId = user.uid;
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+
+      final acceptedRecipes = weeklyMenuData.entries
+          .where((entry) => entry.value['accepted'] == true)
+          .map((entry) => {
+                'id': entry.value['id'],
+                'key': entry.key,
+                'ingredients':
+                    entry.value['ingredients'] as Map<dynamic, dynamic>? ?? {},
+              })
+          .toList();
+
+      final String jsonString = await rootBundle
+          .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+      final List<dynamic> jsonData = json.decode(jsonString);
+
+      final matchedRecipes = jsonData.where((recipeData) {
+        return acceptedRecipes.any((acceptedRecipe) =>
+            acceptedRecipe['id'] == recipeData['recipe_id']);
+      }).toList();
+
+      setState(() {
+        recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
+        for (var recipe in recipes) {
+          var matchedAcceptedRecipe =
+              acceptedRecipes.firstWhere((r) => r['id'] == recipe.id);
+          recipeKeys[recipe.id] = matchedAcceptedRecipe['key'];
+          (matchedAcceptedRecipe['ingredients'] as Map<dynamic, dynamic>)
+              .forEach((key, value) {
+            selectedIngredients[key] = value as bool;
+          });
+        }
+        _updateAllIngredients();
+      });
+    } else {
+      print('No weekly menu data available.');
+    }
   }
 
   void _updateAllIngredients() {
@@ -47,11 +91,74 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
   }
 
-  void _toggleIngredient(String ingredient) {
+  Future<void> _toggleIngredient(String ingredient) async {
     setState(() {
       selectedIngredients[ingredient] =
           !(selectedIngredients[ingredient] ?? false);
     });
+    await _updateIngredientInFirebase(
+        ingredient, selectedIngredients[ingredient]!);
+  }
+
+  Future<void> _updateIngredientInFirebase(
+      String ingredient, bool isSelected) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+    for (var recipe in recipes) {
+      if (_parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams)
+          .contains(ingredient)) {
+        final recipeRef = FirebaseDatabase.instance.ref(
+            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
+        await recipeRef.update({ingredient: isSelected});
+      }
+    }
+  }
+
+  Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+
+    try {
+      Set<String> ingredientsToUpdate = Set<String>();
+
+      // Determine which ingredients to update based on the current selection
+      if (isAllSelected) {
+        // If "All" is selected, update all ingredients
+        for (var recipe in recipes) {
+          ingredientsToUpdate.addAll(
+              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
+        }
+      } else if (selectedRecipe != null) {
+        // If a specific recipe is selected, only update its ingredients
+        ingredientsToUpdate.addAll(_parseIngredientsQuantityInG(
+            selectedRecipe!.ingredientsQuantityInGrams));
+      }
+
+      // Update ingredients for all recipes
+      for (var recipe in recipes) {
+        final recipeIngredients =
+            _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
+        final recipeRef = FirebaseDatabase.instance.ref(
+            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
+
+        Map<String, bool> updateData = {};
+        for (var ingredient in recipeIngredients) {
+          if (ingredientsToUpdate.contains(ingredient)) {
+            updateData[ingredient] = selectAll;
+          }
+        }
+
+        if (updateData.isNotEmpty) {
+          await recipeRef.update(updateData);
+        }
+      }
+    } catch (error) {
+      print("Error updating ingredients: $error");
+    }
   }
 
   int _getSelectedItemsCount() {
@@ -185,10 +292,11 @@ class _IngredientListPageState extends State<IngredientListPage> {
                   Container(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        bool allSelected = ingredients
+                            .every((i) => selectedIngredients[i] ?? false);
+                        await _updateAllIngredientsInFirebase(!allSelected);
                         setState(() {
-                          bool allSelected = ingredients
-                              .every((i) => selectedIngredients[i] ?? false);
                           for (var ingredient in ingredients) {
                             selectedIngredients[ingredient] = !allSelected;
                           }
