@@ -56,30 +56,48 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: _buildFilterTab("All")),
-              Expanded(child: _buildFilterTab("Coles")),
-              Expanded(child: _buildFilterTab("Woolworths")),
-              Expanded(child: _buildFilterTab("Aldi")),
-              Expanded(
-                child: Row(
-                  children: [
-                    Switch(
-                      value: cheapestOption,
-                      onChanged: (value) {
-                        setState(() {
-                          cheapestOption = value;
-                        });
-                      },
-                    ),
-                    Text("Cheapest"),
-                  ],
+          // Cheapest Switch Row
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: proportionalWidth(16)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Cheapest",
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(16),
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-            ],
+                Switch(
+                  value: cheapestOption,
+                  onChanged: (value) {
+                    setState(() {
+                      cheapestOption = value;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
+          SizedBox(height: proportionalHeight(10)),
+          // Store Filter Tabs Row
+          Padding(
+            padding: EdgeInsets.only(left: proportionalWidth(16)),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildFilterTab("All"),
+                  _buildFilterTab("Coles"),
+                  _buildFilterTab("Woolworths"),
+                  _buildFilterTab("Aldi"),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: proportionalHeight(16)),
           Expanded(
             child: _buildGroceryList(),
           ),
