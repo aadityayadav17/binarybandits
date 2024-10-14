@@ -18,6 +18,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Recipe? selectedRecipe;
   bool isAllSelected = true;
   Map<String, bool> selectedIngredients = {};
+  Map<String, String> recipeKeys = {};
 
   @override
   void initState() {
@@ -26,44 +27,50 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Future<void> _loadRecipes() async {
-    // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
-
-    // Ensure the user is authenticated
     if (user == null) {
       print('User is not authenticated');
       return;
     }
 
-    // Fetch the user's weekly menu from Firebase using dynamic user ID
-    final userId = user.uid; // Dynamic user ID
+    final userId = user.uid;
     final databaseRef =
         FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
     final snapshot = await databaseRef.get();
 
-    // Check if there is data in the snapshot
     if (snapshot.exists) {
       final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
 
-      // Filter recipes that are accepted
-      final acceptedRecipes = weeklyMenuData.values
-          .where((recipe) => recipe['accepted'] == true)
-          .map((recipe) => recipe['id']) // Recipe ID in Firebase
+      final acceptedRecipes = weeklyMenuData.entries
+          .where((entry) => entry.value['accepted'] == true)
+          .map((entry) => {
+                'id': entry.value['id'],
+                'key': entry.key,
+                'ingredients':
+                    entry.value['ingredients'] as Map<dynamic, dynamic>? ?? {},
+              })
           .toList();
 
-      // Load recipes from JSON
       final String jsonString = await rootBundle
           .loadString('assets/recipes/D3801 Recipes - Recipes.json');
       final List<dynamic> jsonData = json.decode(jsonString);
 
-      // Filter JSON data based on accepted recipe IDs (Firebase ID is 'id', JSON ID is 'recipe_id')
       final matchedRecipes = jsonData.where((recipeData) {
-        return acceptedRecipes
-            .contains(recipeData['recipe_id']); // JSON recipe_id
+        return acceptedRecipes.any((acceptedRecipe) =>
+            acceptedRecipe['id'] == recipeData['recipe_id']);
       }).toList();
 
       setState(() {
         recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
+        for (var recipe in recipes) {
+          var matchedAcceptedRecipe =
+              acceptedRecipes.firstWhere((r) => r['id'] == recipe.id);
+          recipeKeys[recipe.id] = matchedAcceptedRecipe['key'];
+          (matchedAcceptedRecipe['ingredients'] as Map<dynamic, dynamic>)
+              .forEach((key, value) {
+            selectedIngredients[key] = value as bool;
+          });
+        }
         _updateAllIngredients();
       });
     } else {
@@ -84,11 +91,48 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
   }
 
-  void _toggleIngredient(String ingredient) {
+  Future<void> _toggleIngredient(String ingredient) async {
     setState(() {
       selectedIngredients[ingredient] =
           !(selectedIngredients[ingredient] ?? false);
     });
+    await _updateIngredientInFirebase(
+        ingredient, selectedIngredients[ingredient]!);
+  }
+
+  Future<void> _updateIngredientInFirebase(
+      String ingredient, bool isSelected) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+    for (var recipe in recipes) {
+      if (_parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams)
+          .contains(ingredient)) {
+        final recipeRef = FirebaseDatabase.instance.ref(
+            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
+        await recipeRef.update({ingredient: isSelected});
+      }
+    }
+  }
+
+  Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+    for (var recipe in recipes) {
+      final ingredients =
+          _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
+      final recipeRef = FirebaseDatabase.instance.ref(
+          "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
+
+      Map<String, bool> updateData = {};
+      for (var ingredient in ingredients) {
+        updateData[ingredient] = selectAll;
+      }
+      await recipeRef.update(updateData);
+    }
   }
 
   int _getSelectedItemsCount() {
