@@ -9,6 +9,7 @@ import 'package:binarybandits/screens/recipe_collection_screen/recipe_collection
 import 'package:binarybandits/screens/recipe_history_screen/recipe_history.dart';
 import 'package:binarybandits/screens/home_screen/recipe_search_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -262,7 +263,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               'assets/images/home_screen/grocery-list.png',
                               'GROCERY\nLIST',
                               proportionalHeight(110),
-                              () {},
+                              () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GroceryListScreen(),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
