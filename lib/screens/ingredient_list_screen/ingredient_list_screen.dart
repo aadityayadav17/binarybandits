@@ -123,23 +123,43 @@ class _IngredientListPageState extends State<IngredientListPage> {
     final userId = user.uid;
 
     try {
+      Set<String> ingredientsToUpdate = Set<String>();
+
+      // Determine which ingredients to update based on the current selection
+      if (isAllSelected) {
+        // If "All" is selected, update all ingredients
+        for (var recipe in recipes) {
+          ingredientsToUpdate.addAll(
+              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
+        }
+      } else if (selectedRecipe != null) {
+        // If a specific recipe is selected, only update its ingredients
+        ingredientsToUpdate.addAll(_parseIngredientsQuantityInG(
+            selectedRecipe!.ingredientsQuantityInGrams));
+      }
+
+      // Update ingredients for all recipes
       for (var recipe in recipes) {
-        final ingredients =
+        final recipeIngredients =
             _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
         final recipeRef = FirebaseDatabase.instance.ref(
             "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
 
         Map<String, bool> updateData = {};
-        for (var ingredient in ingredients) {
-          updateData[ingredient] = selectAll;
+        for (var ingredient in recipeIngredients) {
+          if (ingredientsToUpdate.contains(ingredient)) {
+            updateData[ingredient] = selectAll;
+          }
         }
 
-        await recipeRef.update(updateData);
+        if (updateData.isNotEmpty) {
+          await recipeRef.update(updateData);
+        }
       }
 
-      print("All ingredients updated successfully");
+      print("Selected ingredients updated successfully");
     } catch (error) {
-      print("Error updating all ingredients: $error");
+      print("Error updating ingredients: $error");
     }
   }
 
