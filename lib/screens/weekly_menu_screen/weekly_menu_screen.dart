@@ -38,7 +38,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
       // Get the current user ID from FirebaseAuth
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        print("No user is logged in.");
         setState(() {
           _recipes = [];
           _isLoading = false;
@@ -61,14 +60,10 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
             .where((recipe) => recipe['accepted'] == true)
             .toList();
 
-        print("Accepted recipes from Firebase: $acceptedRecipes");
-
         // Load the recipes from the JSON file
         final String jsonResponse = await rootBundle
             .loadString('assets/recipes/D3801 Recipes - Recipes.json');
         final List<dynamic> jsonRecipes = json.decode(jsonResponse);
-
-        print("Recipes from JSON: ${jsonRecipes.length}");
 
         // Match the recipes from the Firebase weeklyMenu with the JSON file based on ID
         List<Recipe> matchedRecipes = [];
@@ -78,8 +73,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
               orElse: () => null);
           if (matchingRecipe != null) {
             matchedRecipes.add(Recipe.fromJson(matchingRecipe));
-          } else {
-            print("No matching recipe found for ID: ${menuRecipe['id']}");
           }
         }
 
@@ -88,17 +81,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           _savedRecipes = List.generate(_recipes.length, (index) => false);
           _isLoading = false;
         });
-
-        print("Loaded recipes: ${_recipes.length}");
       } else {
-        print("No recipes found in Firebase.");
         setState(() {
           _recipes = [];
           _isLoading = false;
         });
       }
     } catch (e) {
-      print("Error loading recipes: $e");
       setState(() {
         _isLoading = false;
       });
