@@ -169,15 +169,27 @@ class _IngredientListPageState extends State<IngredientListPage> {
             selectedRecipe!.ingredientsQuantityInGrams));
       }
 
+      // Prepare batch update
+      Map<String, dynamic> updates = {};
       for (var ingredient in ingredientsToUpdate) {
-        await _updateIngredientInFirebase(ingredient, selectAll);
+        String ingredientKey =
+            ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
+        updates[ingredientKey] = {
+          'name': ingredient,
+          'accepted': selectAll,
+          'timestamp': ServerValue.timestamp,
+        };
+
+        // Update local state
+        ingredientKeys[ingredient] = ingredientKey;
+        selectedIngredients[ingredient] = selectAll;
       }
 
-      setState(() {
-        for (var ingredient in ingredientsToUpdate) {
-          selectedIngredients[ingredient] = selectAll;
-        }
-      });
+      // Perform batch update
+      await ingredientsRef.update(updates);
+
+      // Update UI
+      setState(() {});
     } catch (error) {
       print("Error updating ingredients: $error");
     }
@@ -345,21 +357,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
                   Container(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         bool allSelected = ingredients
                             .every((i) => selectedIngredients[i] ?? false);
-                        _updateAllIngredientsInFirebase(!allSelected);
+                        await _updateAllIngredientsInFirebase(!allSelected);
+                        // No need to setState here as it's called in _updateAllIngredientsInFirebase
                       },
-                      child: Text(
-                        ingredients
-                                .every((i) => selectedIngredients[i] ?? false)
-                            ? "Deselect all"
-                            : "Select all",
-                        style: GoogleFonts.robotoFlex(
-                          color: Colors.white,
-                          fontSize: proportionalFontSize(14),
-                        ),
-                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
@@ -369,6 +372,16 @@ class _IngredientListPageState extends State<IngredientListPage> {
                         padding: EdgeInsets.symmetric(
                           horizontal: proportionalWidth(12),
                           vertical: proportionalHeight(8),
+                        ),
+                      ),
+                      child: Text(
+                        ingredients
+                                .every((i) => selectedIngredients[i] ?? false)
+                            ? "Deselect all"
+                            : "Select all",
+                        style: GoogleFonts.robotoFlex(
+                          color: Colors.white,
+                          fontSize: proportionalFontSize(14),
                         ),
                       ),
                     ),
