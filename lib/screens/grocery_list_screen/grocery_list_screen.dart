@@ -37,12 +37,19 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
+  // Prices are now stored as Strings, not doubles
   List<Map<String, String>> ingredientPrices = [
-    {"Coles": "\$10", "Woolworths": "\$12", "Aldi": "\$8"},
-    {"Coles": "\$15", "Woolworths": "\$16", "Aldi": "\$14"},
-    {"Coles": "\$20", "Woolworths": "\$22", "Aldi": "\$18"},
+    {"Coles": "10.00", "Woolworths": "12.49", "Aldi": "8.99"},
+    {"Coles": "15.50", "Woolworths": "16.00", "Aldi": "14.75"},
+    {"Coles": "200.99", "Woolworths": "220.00", "Aldi": "180.45"},
     // Add more items with prices for each store...
   ];
+
+// Since the prices are stored as Strings, just return the string values as they are
+  String formatPrice(String? price) {
+    if (price == null || price.isEmpty) return "None";
+    return "\$$price"; // Add the dollar sign before the price
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +218,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
 
-        // Check if "All" tab is selected, display prices for all stores
+        // Check if "All" tab is selected, display prices for all stores in aligned columns
         if (selectedTab == "All") {
           return Column(
             children: [
@@ -257,19 +264,40 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        ingredientPrices[index]["Coles"] ?? "None",
-                        style: const TextStyle(color: Colors.grey),
+                      // Coles price, aligned to a fixed width
+                      SizedBox(
+                        width: proportionalWidth(
+                            context, 50), // Fixed width for Coles price
+                        child: Text(
+                          formatPrice(ingredientPrices[index]["Coles"]),
+                          style: const TextStyle(color: Colors.grey),
+                          textAlign: TextAlign
+                              .end, // Align to the right for consistency
+                        ),
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                        ingredientPrices[index]["Woolworths"] ?? "None",
-                        style: const TextStyle(color: Colors.grey),
+                      SizedBox(width: 10), // Space between columns
+                      // Woolworths price, aligned to a fixed width
+                      SizedBox(
+                        width: proportionalWidth(
+                            context, 50), // Fixed width for Woolworths price
+                        child: Text(
+                          formatPrice(ingredientPrices[index]["Woolworths"]),
+                          style: const TextStyle(color: Colors.grey),
+                          textAlign: TextAlign
+                              .end, // Align to the right for consistency
+                        ),
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                        ingredientPrices[index]["Aldi"] ?? "None",
-                        style: const TextStyle(color: Colors.grey),
+                      SizedBox(width: 10), // Space between columns
+                      // Aldi price, aligned to a fixed width
+                      SizedBox(
+                        width: proportionalWidth(
+                            context, 50), // Fixed width for Aldi price
+                        child: Text(
+                          formatPrice(ingredientPrices[index]["Aldi"]),
+                          style: const TextStyle(color: Colors.grey),
+                          textAlign: TextAlign
+                              .end, // Align to the right for consistency
+                        ),
                       ),
                     ],
                   ),
@@ -287,7 +315,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         } else {
           // For individual store tabs (Coles, Woolworths, Aldi), display only one price
           String displayedPrice =
-              ingredientPrices[index][selectedTab] ?? "None";
+              formatPrice(ingredientPrices[index][selectedTab]);
 
           return Column(
             children: [
