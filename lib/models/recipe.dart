@@ -3,6 +3,7 @@ class Recipe {
   final String name;
   final String ingredients;
   final String ingredientsQuantity;
+  final String ingredientsQuantityInG;
   final String ingredientsQuantityInGrams;
   final String cookingDirections;
   final List<String> steps;
@@ -27,6 +28,7 @@ class Recipe {
     required this.name,
     required this.ingredients,
     required this.ingredientsQuantity,
+    required this.ingredientsQuantityInG,
     required this.ingredientsQuantityInGrams,
     required this.cookingDirections,
     required this.steps,
@@ -53,7 +55,9 @@ class Recipe {
       name: json['recipe_name'] as String,
       ingredients: json['ingredients'] as String,
       ingredientsQuantity: json['ingredients_quantity'] as String,
-      ingredientsQuantityInGrams: json['ingredients_quantity_in_g'] as String,
+      ingredientsQuantityInG: json['ingredients_quantity_in_g'] as String,
+      ingredientsQuantityInGrams:
+          json['ingredients_quantity_in_grams'] as String,
       cookingDirections: json['cooking_directions'] as String,
       steps: _parseSteps(json['cooking_directions'] as String),
       prepTime: json['prep_time_min'] as int,

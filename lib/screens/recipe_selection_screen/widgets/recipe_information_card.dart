@@ -225,8 +225,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
   }
 
   Widget _buildIngredientsList(Recipe recipe) {
-    final ingredients =
-        recipe.ingredientsQuantityInGrams.split('\n').map((line) {
+    final ingredients = recipe.ingredientsQuantityInG.split('\n').map((line) {
       final parts = line.split(' -> ');
       return {'name': parts[0], 'quantity': parts[1]};
     }).toList();
