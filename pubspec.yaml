@@ -117,6 +117,9 @@ flutter:
     - assets/images/home_screen/recipe-history.png
     - assets/images/home_screen/weekly-menu.png
     - assets/images/app-logo.png
+    - assets/recipes/products/Aldi.json
+    - assets/recipes/products/Coles.json
+    - assets/recipes/products/Woolworths.json
     - assets/recipes/D3801 Recipes - Recipes.json
     - assets/recipes/images/AlmondMilkPorridge.jpeg
     - assets/recipes/images/ArtichokePastaSalad.jpeg
