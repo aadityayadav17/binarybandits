@@ -24,7 +24,7 @@ class GroceryListScreen extends StatefulWidget {
 }
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
-  String selectedTab = "All";
+  String selectedTab = "All"; // Default selected tab is "All"
   bool cheapestOption = false;
   Map<int, bool> _selectedIngredients = {};
 
@@ -113,11 +113,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   scale: 0.7, // Further reduce the size of the switch
                   child: Switch(
                     value: cheapestOption,
-                    onChanged: (value) {
-                      setState(() {
-                        cheapestOption = value;
-                      });
-                    },
+                    onChanged: selectedTab == "All"
+                        ? (value) {
+                            setState(() {
+                              cheapestOption = value;
+                            });
+                          }
+                        : null, // Disable for individual tabs
                     activeColor: const Color.fromRGBO(
                         73, 160, 120, 1), // Set the active color
                   ),
@@ -163,7 +165,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  // Function for smaller filter tabs with conditional styling
+  // Function for smaller filter tabs
   Widget _buildFilterTab(String label, BuildContext context) {
     bool isSelected =
         selectedTab == label; // Check if this tab is the selected one
@@ -175,6 +177,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         onPressed: () {
           setState(() {
             selectedTab = label; // Update selected tab when this tab is clicked
+            if (selectedTab != "All") {
+              cheapestOption =
+                  false; // Ensure the cheapest option is turned off when a specific store is selected
+            }
           });
         },
         style: ElevatedButton.styleFrom(
