@@ -262,30 +262,113 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Remove $store?"),
-          content: Text(
-              "Are you sure you want to remove $store from the comparison?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text("Cancel"),
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  removedStores.add(store);
-                  if (selectedTab == store)
-                    selectedTab =
-                        "All"; // Switch back to "All" if the removed tab was selected
-                });
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text("Remove"),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+                vertical: MediaQuery.of(context).size.height * 0.03),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Are you sure you want to remove $store?",
+                    style: GoogleFonts.robotoFlex(
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.022,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5,
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: TextStyle(
+                              color: Color.fromRGBO(73, 160, 120, 1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            removedStores.add(store);
+                            if (selectedTab == store)
+                              selectedTab =
+                                  "All"; // Switch back to "All" if the removed tab was selected
+                          });
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor:
+                              const Color.fromRGBO(73, 160, 120, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5,
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                        ),
+                        child: Text(
+                          'Remove',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -296,21 +379,109 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Re-add a Store"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: removedStores.map((store) {
-              return ListTile(
-                title: Text(store),
-                onTap: () {
-                  setState(() {
-                    removedStores.remove(store);
-                  });
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              );
-            }).toList(),
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+                vertical: MediaQuery.of(context).size.height * 0.02),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Re-add a Store",
+                    style: GoogleFonts.robotoFlex(
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.022,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Column(
+                  children: removedStores.map((store) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            store,
+                            style: GoogleFonts.robotoFlex(
+                              textStyle: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.02,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              removedStores.remove(store);
+                            });
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                        ),
+                        Divider(
+                          color: const Color.fromRGBO(
+                              73, 160, 120, 1), // Add the green divider
+                          thickness: 1,
+                          height: 1,
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5,
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: TextStyle(
+                              color: Color.fromRGBO(73, 160, 120, 1),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
