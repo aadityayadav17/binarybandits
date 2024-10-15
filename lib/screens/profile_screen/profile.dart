@@ -81,21 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       // Show the dialog only if the name is not valid (empty)
       if (!_isNameValid) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Invalid Input'),
-            content: Text('Please enter a valid name to save your profile.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
+        _showInvalidInputDialog(context);
       }
     }
   }
@@ -297,6 +283,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showInvalidInputDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+                vertical: MediaQuery.of(context).size.height * 0.02),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Invalid Input",
+                    style: GoogleFonts.robotoFlex(
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.022,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Text(
+                  "Please enter a valid name to save your profile.",
+                  style: GoogleFonts.robotoFlex(
+                    textStyle: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.018,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          backgroundColor:
+                              const Color.fromRGBO(73, 160, 120, 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 5,
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                        ),
+                        child: Text(
+                          'OK',
+                          style: GoogleFonts.robotoFlex(
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
