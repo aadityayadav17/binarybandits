@@ -76,11 +76,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
         final ingredientsData =
             ingredientsSnapshot.value as Map<dynamic, dynamic>;
         ingredientsData.forEach((key, value) {
-          selectedIngredients[value['name']] = value['accepted'];
+          selectedIngredients[value['name']] = value['accepted'] ?? false;
           ingredientKeys[value['name']] = key;
         });
       }
 
+      await updateAllIngredientQuantities();
       _updateAllIngredients();
     } else {
       print('No weekly menu data available.');
@@ -223,6 +224,69 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
     ingredients.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     return ingredients;
+  }
+
+  Map<String, double> parseIngredientsQuantity(
+      String ingredientsQuantityInGrams) {
+    Map<String, double> result = {};
+    List<String> lines = ingredientsQuantityInGrams.split('\n');
+    for (String line in lines) {
+      List<String> parts = line.split('->');
+      if (parts.length == 2) {
+        String ingredient = parts[0].trim();
+        String quantityStr = parts[1].trim();
+        double quantity = double.parse(quantityStr.replaceAll('g', ''));
+        result[ingredient] = quantity;
+      }
+    }
+    return result;
+  }
+
+  Future<void> updateIngredientQuantities(Recipe recipe) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+    final ingredientsRef =
+        FirebaseDatabase.instance.ref("users/$userId/ingredients");
+
+    Map<String, double> quantities =
+        parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+
+    for (var entry in quantities.entries) {
+      String ingredient = entry.key;
+      double quantity = entry.value;
+
+      String? ingredientKey = ingredientKeys[ingredient];
+      if (ingredientKey == null) {
+        final newIngredientRef = ingredientsRef.push();
+        ingredientKey = newIngredientRef.key;
+        ingredientKeys[ingredient] = ingredientKey!;
+      }
+
+      final ingredientRef = ingredientsRef.child(ingredientKey);
+      final snapshot = await ingredientRef.get();
+
+      if (snapshot.exists) {
+        final currentData = snapshot.value as Map<dynamic, dynamic>;
+        double currentQuantity =
+            (currentData['quantity'] as num?)?.toDouble() ?? 0;
+        quantity += currentQuantity;
+      }
+
+      await ingredientRef.update({
+        'name': ingredient,
+        'quantity': quantity,
+        'unit': 'g',
+        'recipes': {recipe.id: true},
+      });
+    }
+  }
+
+  Future<void> updateAllIngredientQuantities() async {
+    for (var recipe in recipes) {
+      await updateIngredientQuantities(recipe);
+    }
   }
 
   // Proportional width based on screen size
