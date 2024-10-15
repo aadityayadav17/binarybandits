@@ -230,6 +230,18 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
         // Check if "All" tab is selected, display prices for all stores in aligned columns
         if (selectedTab == "All") {
+          double? colesPrice =
+              double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+          double? woolworthsPrice =
+              double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+          double? aldiPrice =
+              double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+
+          // Find the lowest price
+          double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+              .where((price) => price != null && price > 0)
+              .reduce((a, b) => a! < b! ? a : b);
+
           return Column(
             children: [
               Padding(
@@ -280,7 +292,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                             context, 50), // Fixed width for Coles price
                         child: Text(
                           formatPrice(ingredientPrices[index]["Coles"]),
-                          style: const TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: cheapestOption && lowestPrice == colesPrice
+                                ? Colors.black
+                                : Colors
+                                    .grey, // Highlight the cheapest price in black
+                          ),
                           textAlign: TextAlign
                               .end, // Align to the right for consistency
                         ),
@@ -292,7 +309,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                             context, 50), // Fixed width for Woolworths price
                         child: Text(
                           formatPrice(ingredientPrices[index]["Woolworths"]),
-                          style: const TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: cheapestOption &&
+                                    lowestPrice == woolworthsPrice
+                                ? Colors.black
+                                : Colors
+                                    .grey, // Highlight the cheapest price in black
+                          ),
                           textAlign: TextAlign
                               .end, // Align to the right for consistency
                         ),
@@ -304,7 +327,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                             context, 50), // Fixed width for Aldi price
                         child: Text(
                           formatPrice(ingredientPrices[index]["Aldi"]),
-                          style: const TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: cheapestOption && lowestPrice == aldiPrice
+                                ? Colors.black
+                                : Colors
+                                    .grey, // Highlight the cheapest price in black
+                          ),
                           textAlign: TextAlign
                               .end, // Align to the right for consistency
                         ),
