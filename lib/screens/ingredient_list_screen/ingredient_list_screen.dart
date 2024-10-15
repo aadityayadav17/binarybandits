@@ -21,6 +21,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Map<String, bool> selectedIngredients = {};
   Map<String, String> recipeKeys = {};
   Map<String, String> ingredientKeys = {};
+  Map<String, int> recipeServings = {};
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
           .map((entry) => {
                 'id': entry.value['id'],
                 'key': entry.key,
+                'servings': entry.value['servings'] ?? 1,
               })
           .toList();
 
@@ -65,10 +67,10 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
       setState(() {
         recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
-        for (var recipe in recipes) {
-          var matchedAcceptedRecipe =
-              acceptedRecipes.firstWhere((r) => r['id'] == recipe.id);
-          recipeKeys[recipe.id] = matchedAcceptedRecipe['key'];
+        for (var acceptedRecipe in acceptedRecipes) {
+          String recipeId = acceptedRecipe['id'];
+          recipeKeys[recipeId] = acceptedRecipe['key'];
+          recipeServings[recipeId] = acceptedRecipe['servings'];
         }
       });
 
@@ -125,14 +127,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
       ingredientKeys[ingredient] = ingredientKey!;
     }
 
-    // Calculate total quantity across all recipes
+    // Calculate total quantity across all recipes, considering servings
     double totalQuantity = 0;
     Map<String, bool> recipeAssociations = {};
     for (var recipe in recipes) {
       var recipeIngredients =
           parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
       if (recipeIngredients.containsKey(ingredient)) {
-        totalQuantity += recipeIngredients[ingredient]!;
+        int servings = recipeServings[recipe.id] ?? 1;
+        totalQuantity += recipeIngredients[ingredient]! * servings;
         recipeAssociations[recipe.id] = true;
       }
     }
@@ -170,14 +173,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
       String ingredientKey =
           ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
 
-      // Calculate total quantity across all recipes
+      // Calculate total quantity across all recipes, considering servings
       double totalQuantity = 0;
       Map<String, bool> recipeAssociations = {};
       for (var recipe in recipes) {
         var recipeIngredients =
             parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
         if (recipeIngredients.containsKey(ingredient)) {
-          totalQuantity += recipeIngredients[ingredient]!;
+          int servings = recipeServings[recipe.id] ?? 1;
+          totalQuantity += recipeIngredients[ingredient]! * servings;
           recipeAssociations[recipe.id] = true;
         }
       }
@@ -255,10 +259,11 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
     Map<String, double> quantities =
         parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+    int servings = recipeServings[recipe.id] ?? 1;
 
     for (var entry in quantities.entries) {
       String ingredient = entry.key;
-      double quantity = entry.value;
+      double quantity = entry.value * servings;
 
       String? ingredientKey = ingredientKeys[ingredient];
       if (ingredientKey == null) {
@@ -278,10 +283,25 @@ class _IngredientListPageState extends State<IngredientListPage> {
       if (snapshot.exists) {
         final currentData = snapshot.value as Map<dynamic, dynamic>;
         updateData['accepted'] = currentData['accepted'] ?? false;
-        updateData['quantity'] =
-            (currentData['quantity'] as num? ?? 0).toDouble() + quantity;
+
+        // Calculate total quantity considering all recipes
+        double totalQuantity = quantity;
         Map<String, bool> recipes =
             Map<String, bool>.from(currentData['recipes'] ?? {});
+        for (var recipeId in recipes.keys) {
+          if (recipeId != recipe.id) {
+            var recipeIngredients = parseIngredientsQuantity(this
+                .recipes
+                .firstWhere((r) => r.id == recipeId)
+                .ingredientsQuantityInGrams);
+            if (recipeIngredients.containsKey(ingredient)) {
+              int recipeServings = this.recipeServings[recipeId] ?? 1;
+              totalQuantity += recipeIngredients[ingredient]! * recipeServings;
+            }
+          }
+        }
+
+        updateData['quantity'] = totalQuantity;
         recipes[recipe.id] = true;
         updateData['recipes'] = recipes;
       } else {
