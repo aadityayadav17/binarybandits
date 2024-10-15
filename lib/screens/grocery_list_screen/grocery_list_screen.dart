@@ -228,163 +228,129 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         String itemLabel =
             selectedTab == "All" ? 'Ingredient name' : 'Product name';
 
-        // Check if "All" tab is selected, display prices for all stores in aligned columns
-        if (selectedTab == "All") {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 4.0), // Reduce vertical padding between items
-                child: ListTile(
-                  leading: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIngredients[index] = !isSelected;
-                      });
-                    },
-                    child: Icon(
-                      isSelected
-                          ? Icons.check_circle
-                          : Icons
-                              .radio_button_unchecked, // Checkmark or empty circle
-                      color: isSelected
-                          ? const Color.fromRGBO(
-                              73, 160, 120, 1) // Active color for checkmark
-                          : Colors.grey,
-                      size: proportionalFontSize(context, 24),
-                    ),
-                  ),
-                  title: Text(
-                    '$itemLabel $index', // Dynamically display the label based on the selected tab
-                    style: GoogleFonts.robotoFlex(
-                      fontSize: proportionalFontSize(
-                          context, 14), // Smaller font size for ingredients
-                      color: isSelected
-                          ? Colors.grey
-                          : Colors.black, // Grey out text when checked
-                      decoration: isSelected
-                          ? TextDecoration.lineThrough
-                          : null, // Strikethrough when checked
-                    ),
-                    maxLines:
-                        null, // Allows text to wrap to a new line if necessary
-                    overflow: TextOverflow
-                        .visible, // Ensures text is visible when wrapped
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Coles price, aligned to a fixed width
-                      SizedBox(
-                        width: proportionalWidth(
-                            context, 50), // Fixed width for Coles price
-                        child: Text(
-                          formatPrice(ingredientPrices[index]["Coles"]),
-                          style: const TextStyle(color: Colors.grey),
-                          textAlign: TextAlign
-                              .end, // Align to the right for consistency
-                        ),
-                      ),
-                      SizedBox(width: 10), // Space between columns
-                      // Woolworths price, aligned to a fixed width
-                      SizedBox(
-                        width: proportionalWidth(
-                            context, 50), // Fixed width for Woolworths price
-                        child: Text(
-                          formatPrice(ingredientPrices[index]["Woolworths"]),
-                          style: const TextStyle(color: Colors.grey),
-                          textAlign: TextAlign
-                              .end, // Align to the right for consistency
-                        ),
-                      ),
-                      SizedBox(width: 10), // Space between columns
-                      // Aldi price, aligned to a fixed width
-                      SizedBox(
-                        width: proportionalWidth(
-                            context, 50), // Fixed width for Aldi price
-                        child: Text(
-                          formatPrice(ingredientPrices[index]["Aldi"]),
-                          style: const TextStyle(color: Colors.grey),
-                          textAlign: TextAlign
-                              .end, // Align to the right for consistency
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Divider(
-                color: Colors.grey.shade400, // Blunt line between items
-                thickness: 1, // Thickness of the divider
-                height: 1, // Reduce the gap around the divider
-                indent: 16, // Padding on the left side of the divider
-                endIndent: 16, // Padding on the right side of the divider
-              ),
-            ],
-          );
-        } else {
-          // For individual store tabs (Coles, Woolworths, Aldi), display only one price
-          String displayedPrice =
-              formatPrice(ingredientPrices[index][selectedTab]);
+        // Check the cheapest price logic when the "All" tab is selected and Cheapest is enabled
+        double? colesPrice =
+            double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+        double? woolworthsPrice =
+            double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+        double? aldiPrice =
+            double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
 
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 4.0), // Reduce vertical padding between items
-                child: ListTile(
-                  leading: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedIngredients[index] = !isSelected;
-                      });
-                    },
-                    child: Icon(
-                      isSelected
-                          ? Icons.check_circle
-                          : Icons
-                              .radio_button_unchecked, // Checkmark or empty circle
-                      color: isSelected
-                          ? const Color.fromRGBO(
-                              73, 160, 120, 1) // Active color for checkmark
-                          : Colors.grey,
-                      size: proportionalFontSize(context, 24),
-                    ),
-                  ),
-                  title: Text(
-                    '$itemLabel $index', // Dynamically display the label based on the selected tab
-                    style: GoogleFonts.robotoFlex(
-                      fontSize: proportionalFontSize(
-                          context, 14), // Smaller font size for ingredients
-                      color: isSelected
-                          ? Colors.grey
-                          : Colors.black, // Grey out text when checked
-                      decoration: isSelected
-                          ? TextDecoration.lineThrough
-                          : null, // Strikethrough when checked
-                    ),
-                    maxLines:
-                        null, // Allows text to wrap to a new line if necessary
-                    overflow: TextOverflow
-                        .visible, // Ensures text is visible when wrapped
-                  ),
-                  trailing: Text(
-                    displayedPrice, // Display the price for the selected store
-                    style: const TextStyle(
-                        color: Colors.grey), // Price is always grey
+        // Find the lowest price
+        double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+            .where((price) => price != null && price > 0)
+            .reduce((a, b) => a! < b! ? a : b);
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: 4.0), // Reduce vertical padding between items
+              child: ListTile(
+                leading: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIngredients[index] = !isSelected;
+                    });
+                  },
+                  child: Icon(
+                    isSelected
+                        ? Icons.check_circle
+                        : Icons
+                            .radio_button_unchecked, // Checkmark or empty circle
+                    color: isSelected
+                        ? const Color.fromRGBO(
+                            73, 160, 120, 1) // Active color for checkmark
+                        : Colors.grey,
+                    size: proportionalFontSize(context, 24),
                   ),
                 ),
+                title: Text(
+                  '$itemLabel $index', // Dynamically display the label based on the selected tab
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(
+                        context, 14), // Smaller font size for ingredients
+                    color: isSelected
+                        ? Colors.grey
+                        : Colors.black, // Grey out text when checked
+                    decoration: isSelected
+                        ? TextDecoration.lineThrough
+                        : null, // Strikethrough when checked
+                  ),
+                  maxLines:
+                      null, // Allows text to wrap to a new line if necessary
+                  overflow: TextOverflow
+                      .visible, // Ensures text is visible when wrapped
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Coles price, aligned to a fixed width and highlighted if it's the cheapest
+                    SizedBox(
+                      width: proportionalWidth(
+                          context, 50), // Fixed width for Coles price
+                      child: Text(
+                        formatPrice(ingredientPrices[index]["Coles"]),
+                        style: TextStyle(
+                          color: cheapestOption && lowestPrice == colesPrice
+                              ? Colors.black
+                              : Colors
+                                  .grey, // Highlight the cheapest price in black
+                        ),
+                        textAlign:
+                            TextAlign.end, // Align to the right for consistency
+                      ),
+                    ),
+                    SizedBox(width: 10), // Space between columns
+
+                    // Woolworths price, aligned to a fixed width and highlighted if it's the cheapest
+                    SizedBox(
+                      width: proportionalWidth(
+                          context, 50), // Fixed width for Woolworths price
+                      child: Text(
+                        formatPrice(ingredientPrices[index]["Woolworths"]),
+                        style: TextStyle(
+                          color: cheapestOption &&
+                                  lowestPrice == woolworthsPrice
+                              ? Colors.black
+                              : Colors
+                                  .grey, // Highlight the cheapest price in black
+                        ),
+                        textAlign:
+                            TextAlign.end, // Align to the right for consistency
+                      ),
+                    ),
+                    SizedBox(width: 10), // Space between columns
+
+                    // Aldi price, aligned to a fixed width and highlighted if it's the cheapest
+                    SizedBox(
+                      width: proportionalWidth(
+                          context, 50), // Fixed width for Aldi price
+                      child: Text(
+                        formatPrice(ingredientPrices[index]["Aldi"]),
+                        style: TextStyle(
+                          color: cheapestOption && lowestPrice == aldiPrice
+                              ? Colors.black
+                              : Colors
+                                  .grey, // Highlight the cheapest price in black
+                        ),
+                        textAlign:
+                            TextAlign.end, // Align to the right for consistency
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Divider(
-                color: Colors.grey.shade400, // Blunt line between items
-                thickness: 1, // Thickness of the divider
-                height: 1, // Reduce the gap around the divider
-                indent: 16, // Padding on the left side of the divider
-                endIndent: 16, // Padding on the right side of the divider
-              ),
-            ],
-          );
-        }
+            ),
+            Divider(
+              color: Colors.grey.shade400, // Blunt line between items
+              thickness: 1, // Thickness of the divider
+              height: 1, // Reduce the gap around the divider
+              indent: 16, // Padding on the left side of the divider
+              endIndent: 16, // Padding on the right side of the divider
+            ),
+          ],
+        );
       },
     );
   }
