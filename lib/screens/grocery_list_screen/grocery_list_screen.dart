@@ -27,6 +27,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   String selectedTab = "All"; // Default selected tab is "All"
   bool cheapestOption = false;
   Map<int, bool> _selectedIngredients = {};
+  List<String> removedStores = [];
 
   // Define product names for each store
   List<String> colesProductNames = [
@@ -167,9 +168,15 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                         .end, // Ensure tabs are right-aligned inside
                     children: [
                       _buildFilterTab("All", context),
-                      _buildFilterTab("Coles", context),
-                      _buildFilterTab("Woolworths", context),
-                      _buildFilterTab("Aldi", context),
+                      if (!removedStores.contains("Coles"))
+                        _buildStoreTab("Coles", context),
+                      if (!removedStores.contains("Woolworths"))
+                        _buildStoreTab("Woolworths", context),
+                      if (!removedStores.contains("Aldi"))
+                        _buildStoreTab("Aldi", context),
+                      if (removedStores.isNotEmpty)
+                        _buildPlusTab(
+                            context), // Add the plus tab if stores are removed
                     ],
                   ),
                 ),
@@ -184,6 +191,129 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
+    );
+  }
+
+  // Build store tabs with long-press functionality for removal
+  Widget _buildStoreTab(String store, BuildContext context) {
+    return GestureDetector(
+      onLongPress: () =>
+          _showRemoveStoreDialog(store), // Handle long press to remove store
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              selectedTab = store;
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: selectedTab == store
+                ? const Color.fromRGBO(73, 160, 120, 1)
+                : Colors.white,
+            foregroundColor: selectedTab == store ? Colors.white : Colors.black,
+            elevation: 0,
+            side: BorderSide(color: Colors.black.withOpacity(0.2)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20), // Rounded corners
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: proportionalWidth(context, 8),
+              vertical: proportionalHeight(context, 4),
+            ),
+          ),
+          child: Text(
+            store,
+            style: GoogleFonts.robotoFlex(
+              fontSize: proportionalFontSize(context, 12),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Build the "plus" tab for re-adding removed stores
+  Widget _buildPlusTab(BuildContext context) {
+    return GestureDetector(
+      onTap: _showReAddStoreDialog, // Show the dialog to re-add stores
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: ElevatedButton(
+          onPressed: null, // Disabled button appearance
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey.shade300,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: proportionalWidth(context, 8),
+              vertical: proportionalHeight(context, 4),
+            ),
+          ),
+          child: Icon(Icons.add, color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  // Method to show confirmation dialog for removing a store
+  void _showRemoveStoreDialog(String store) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Remove $store?"),
+          content: Text(
+              "Are you sure you want to remove $store from the comparison?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  removedStores.add(store);
+                  if (selectedTab == store)
+                    selectedTab =
+                        "All"; // Switch back to "All" if the removed tab was selected
+                });
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Remove"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to show a dialog to re-add a removed store
+  void _showReAddStoreDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Re-add a Store"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: removedStores.map((store) {
+              return ListTile(
+                title: Text(store),
+                onTap: () {
+                  setState(() {
+                    removedStores.remove(store);
+                  });
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 
@@ -240,6 +370,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
+  // Helper method to build the grocery list
   Widget _buildGroceryList() {
     return ListView.builder(
       itemCount: ingredientPrices.length, // Replace with your actual list count
