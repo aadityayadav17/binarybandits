@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
@@ -268,89 +269,103 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(proportionalWidth(context, 16)),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: proportionalHeight(context, 16),
-          horizontal: proportionalWidth(context, 16),
+    return Container(
+      margin:
+          EdgeInsets.only(bottom: 0), // Align with the bottom navigation bar
+      child: ClipRRect(
+        // Clip the blur effect to the rounded corners
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(proportionalWidth(context, 10)),
+          topRight: Radius.circular(proportionalWidth(context, 10)),
         ),
-        decoration: BoxDecoration(
-          color: Colors.white, // Background color of the rectangle
-          borderRadius: BorderRadius.circular(
-              proportionalWidth(context, 10)), // Rounded corners
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3), // Subtle shadow
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3), // Offset for the shadow
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              vertical: proportionalHeight(context, 16),
+              horizontal: proportionalWidth(context, 16),
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total 12 items', // Replace with dynamic count if needed
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 16),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  '\$XXXXX', // Placeholder for total
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 16),
-                    fontWeight: FontWeight.w600,
-                  ),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(
+                  0.05), // Semi-transparent color for frosted effect
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(proportionalWidth(context, 10)),
+                topRight: Radius.circular(proportionalWidth(context, 10)),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3), // Subtle shadow
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // Offset for the shadow
                 ),
               ],
             ),
-            SizedBox(height: proportionalHeight(context, 8)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Your budget', // Budget label
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 16),
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total 12 items', // Replace with dynamic count if needed
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '\$XXXXX', // Placeholder for total
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  '\$XXXXX', // Placeholder for the budget
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 16),
-                    fontWeight: FontWeight.w600,
-                  ),
+                SizedBox(height: proportionalHeight(context, 8)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Your budget', // Budget label
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '\$XXXXX', // Placeholder for the budget
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: proportionalHeight(context, 8)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'SAVE', // Action label
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 20),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '\$XXXXX', // Placeholder for amount to be saved
+                      style: GoogleFonts.robotoFlex(
+                        fontSize: proportionalFontSize(context, 20),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(height: proportionalHeight(context, 8)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'SAVE', // Action label
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 20),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '\$XXXXX', // Placeholder for amount to be saved
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(context, 20),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
