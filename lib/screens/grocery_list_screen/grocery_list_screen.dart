@@ -37,6 +37,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
+  List<Map<String, String>> ingredientPrices = [
+    {"Coles": "\$10", "Woolworths": "\$12", "Aldi": "\$8"},
+    {"Coles": "\$15", "Woolworths": "\$16", "Aldi": "\$14"},
+    {"Coles": "\$20", "Woolworths": "\$22", "Aldi": "\$18"},
+    // Add more items with prices for each store...
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,84 +207,146 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   Widget _buildGroceryList() {
     return ListView.builder(
-      itemCount: 10, // Replace with your actual list count
+      itemCount: ingredientPrices.length, // Replace with your actual list count
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
 
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 4.0), // Reduce vertical padding between items
-              child: ListTile(
-                leading: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIngredients[index] = !isSelected;
-                    });
-                  },
-                  child: Icon(
-                    isSelected
-                        ? Icons.check_circle
-                        : Icons
-                            .radio_button_unchecked, // Checkmark or empty circle
-                    color: isSelected
-                        ? const Color.fromRGBO(
-                            73, 160, 120, 1) // Active color for checkmark
-                        : Colors.grey,
-                    size: proportionalFontSize(context, 24),
-                  ),
-                ),
-                title: Text(
-                  'Ingredient name $index', // Replace with actual ingredient name
-                  style: GoogleFonts.robotoFlex(
-                    fontSize: proportionalFontSize(
-                        context, 14), // Smaller font size for ingredients
-                    color: isSelected
-                        ? Colors.grey
-                        : Colors.black, // Grey out text when checked
-                    decoration: isSelected
-                        ? TextDecoration.lineThrough
-                        : null, // Strikethrough when checked
-                  ),
-                  maxLines:
-                      null, // Allows text to wrap to a new line if necessary
-                  overflow: TextOverflow
-                      .visible, // Ensures text is visible when wrapped
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(
-                      '\$XX',
-                      style:
-                          TextStyle(color: Colors.grey), // Price is always grey
-                    ), // Placeholder for pricing
-                    SizedBox(width: 10),
-                    Text(
-                      'None',
-                      style: TextStyle(
-                          color: Colors.grey), // Additional text color
+        // Check if "All" tab is selected, display prices for all stores
+        if (selectedTab == "All") {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 4.0), // Reduce vertical padding between items
+                child: ListTile(
+                  leading: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIngredients[index] = !isSelected;
+                      });
+                    },
+                    child: Icon(
+                      isSelected
+                          ? Icons.check_circle
+                          : Icons
+                              .radio_button_unchecked, // Checkmark or empty circle
+                      color: isSelected
+                          ? const Color.fromRGBO(
+                              73, 160, 120, 1) // Active color for checkmark
+                          : Colors.grey,
+                      size: proportionalFontSize(context, 24),
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      '\$XX',
-                      style:
-                          TextStyle(color: Colors.grey), // Price is always grey
-                    ), // Another placeholder for pricing
-                  ],
+                  ),
+                  title: Text(
+                    'Ingredient name $index', // Replace with actual ingredient name
+                    style: GoogleFonts.robotoFlex(
+                      fontSize: proportionalFontSize(
+                          context, 14), // Smaller font size for ingredients
+                      color: isSelected
+                          ? Colors.grey
+                          : Colors.black, // Grey out text when checked
+                      decoration: isSelected
+                          ? TextDecoration.lineThrough
+                          : null, // Strikethrough when checked
+                    ),
+                    maxLines:
+                        null, // Allows text to wrap to a new line if necessary
+                    overflow: TextOverflow
+                        .visible, // Ensures text is visible when wrapped
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        ingredientPrices[index]["Coles"] ?? "None",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        ingredientPrices[index]["Woolworths"] ?? "None",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        ingredientPrices[index]["Aldi"] ?? "None",
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Divider(
-              color: Colors.grey.shade400, // Blunt line between items
-              thickness: 1, // Thickness of the divider
-              height: 1, // Reduce the gap around the divider
-              indent: 16, // Padding on the left side of the divider
-              endIndent: 16, // Padding on the right side of the divider
-            ),
-          ],
-        );
+              Divider(
+                color: Colors.grey.shade400, // Blunt line between items
+                thickness: 1, // Thickness of the divider
+                height: 1, // Reduce the gap around the divider
+                indent: 16, // Padding on the left side of the divider
+                endIndent: 16, // Padding on the right side of the divider
+              ),
+            ],
+          );
+        } else {
+          // For individual store tabs (Coles, Woolworths, Aldi), display only one price
+          String displayedPrice =
+              ingredientPrices[index][selectedTab] ?? "None";
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 4.0), // Reduce vertical padding between items
+                child: ListTile(
+                  leading: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIngredients[index] = !isSelected;
+                      });
+                    },
+                    child: Icon(
+                      isSelected
+                          ? Icons.check_circle
+                          : Icons
+                              .radio_button_unchecked, // Checkmark or empty circle
+                      color: isSelected
+                          ? const Color.fromRGBO(
+                              73, 160, 120, 1) // Active color for checkmark
+                          : Colors.grey,
+                      size: proportionalFontSize(context, 24),
+                    ),
+                  ),
+                  title: Text(
+                    'Ingredient name $index', // Replace with actual ingredient name
+                    style: GoogleFonts.robotoFlex(
+                      fontSize: proportionalFontSize(
+                          context, 14), // Smaller font size for ingredients
+                      color: isSelected
+                          ? Colors.grey
+                          : Colors.black, // Grey out text when checked
+                      decoration: isSelected
+                          ? TextDecoration.lineThrough
+                          : null, // Strikethrough when checked
+                    ),
+                    maxLines:
+                        null, // Allows text to wrap to a new line if necessary
+                    overflow: TextOverflow
+                        .visible, // Ensures text is visible when wrapped
+                  ),
+                  trailing: Text(
+                    displayedPrice, // Display the price for the selected store
+                    style: const TextStyle(
+                        color: Colors.grey), // Price is always grey
+                  ),
+                ),
+              ),
+              Divider(
+                color: Colors.grey.shade400, // Blunt line between items
+                thickness: 1, // Thickness of the divider
+                height: 1, // Reduce the gap around the divider
+                indent: 16, // Padding on the left side of the divider
+                endIndent: 16, // Padding on the right side of the divider
+              ),
+            ],
+          );
+        }
       },
     );
   }
