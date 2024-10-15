@@ -394,14 +394,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
     // Check if "All" tab is selected, display prices for all stores in aligned columns
     if (selectedTab == "All") {
-      double? colesPrice =
-          double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
-      double? woolworthsPrice =
-          double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
-      double? aldiPrice =
-          double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+      double? colesPrice = removedStores.contains("Coles")
+          ? null // If Coles is removed, set price to null
+          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null // If Woolworths is removed, set price to null
+          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+      double? aldiPrice = removedStores.contains("Aldi")
+          ? null // If Aldi is removed, set price to null
+          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
 
-      // Find the lowest price
+      // Find the lowest price (ignoring removed stores)
       double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
           .reduce((a, b) => a! < b! ? a : b);
@@ -410,7 +413,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         index,
         itemLabel,
         isSelected,
-        _buildAllTabPriceDisplay(index, lowestPrice, isSelected),
+        _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
+            woolworthsPrice, aldiPrice, isSelected),
       );
     } else {
       String displayedPrice = formatPrice(ingredientPrices[index][selectedTab]);
@@ -423,15 +427,18 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
-// Helper method to get the item label (ingredient or product name)
+  /// Helper method to get the item label (ingredient or product name)
   String _getItemLabel(int index) {
     if (selectedTab == "All") {
-      double? colesPrice =
-          double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
-      double? woolworthsPrice =
-          double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
-      double? aldiPrice =
-          double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+      double? colesPrice = removedStores.contains("Coles")
+          ? null // Ignore Coles if removed
+          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null // Ignore Woolworths if removed
+          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+      double? aldiPrice = removedStores.contains("Aldi")
+          ? null // Ignore Aldi if removed
+          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
 
       // Find the lowest price
       double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
@@ -449,12 +456,14 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         }
       }
       return 'Ingredient name $index'; // Default ingredient name if no match
-    } else if (selectedTab == "Coles") {
-      return colesProductNames[index]; // Use Coles product names
-    } else if (selectedTab == "Woolworths") {
-      return woolworthsProductNames[index]; // Use Woolworths product names
-    } else if (selectedTab == "Aldi") {
-      return aldiProductNames[index]; // Use Aldi product names
+    } else if (selectedTab == "Coles" && !removedStores.contains("Coles")) {
+      return colesProductNames[index]; // Use Coles product names if not removed
+    } else if (selectedTab == "Woolworths" &&
+        !removedStores.contains("Woolworths")) {
+      return woolworthsProductNames[
+          index]; // Use Woolworths product names if not removed
+    } else if (selectedTab == "Aldi" && !removedStores.contains("Aldi")) {
+      return aldiProductNames[index]; // Use Aldi product names if not removed
     }
     return 'Product name $index'; // Fallback if no tab is selected
   }
@@ -506,21 +515,28 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
 // Helper method to build price display for the "All" tab
   Widget _buildAllTabPriceDisplay(
-      int index, double? lowestPrice, bool isSelected) {
-    double? colesPrice =
-        double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
-    double? woolworthsPrice =
-        double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
-    double? aldiPrice = double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
-
+      int index,
+      double? lowestPrice,
+      double? colesPrice,
+      double? woolworthsPrice,
+      double? aldiPrice,
+      bool isSelected) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildPriceColumn(colesPrice, lowestPrice, isSelected),
+        // Coles price, but only if Coles is not removed
+        if (!removedStores.contains("Coles"))
+          _buildPriceColumn(colesPrice, lowestPrice, isSelected),
         SizedBox(width: 10), // Space between columns
-        _buildPriceColumn(woolworthsPrice, lowestPrice, isSelected),
+
+        // Woolworths price, but only if Woolworths is not removed
+        if (!removedStores.contains("Woolworths"))
+          _buildPriceColumn(woolworthsPrice, lowestPrice, isSelected),
         SizedBox(width: 10), // Space between columns
-        _buildPriceColumn(aldiPrice, lowestPrice, isSelected),
+
+        // Aldi price, but only if Aldi is not removed
+        if (!removedStores.contains("Aldi"))
+          _buildPriceColumn(aldiPrice, lowestPrice, isSelected),
       ],
     );
   }
