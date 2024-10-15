@@ -391,6 +391,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
+    int totalItems =
+        ingredientPrices.length; // Get the total number of items dynamically
+
     return Container(
       margin:
           EdgeInsets.only(bottom: 0), // Align with the bottom navigation bar
@@ -408,7 +411,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               horizontal: proportionalWidth(context, 16),
             ),
             decoration: BoxDecoration(
-              color: Colors.white, // Semi-transparent color for frosted effect
+              color: Colors.white, // Semi-transparent for frosted effect
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(proportionalWidth(context, 24)),
                 topRight: Radius.circular(proportionalWidth(context, 24)),
@@ -429,14 +432,14 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Total 12 items', // Replace with dynamic count if needed
+                      'Total $totalItems items', // Display the total number of items
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
-                      '\$XXXXX', // Placeholder for total
+                      '\$XXXXX', // Placeholder for total cost
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
@@ -456,7 +459,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$XXXXX', // Placeholder for the budget
+                      '\$XXXXX', // Placeholder for budget
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
