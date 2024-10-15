@@ -24,6 +24,7 @@ class GroceryListScreen extends StatefulWidget {
 }
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
+  String selectedTab = "All";
   bool cheapestOption = false;
   Map<int, bool> _selectedIngredients = {};
 
@@ -148,20 +149,34 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  // Function for smaller filter tabs
+  // Function for smaller filter tabs with conditional styling
   Widget _buildFilterTab(String label, BuildContext context) {
+    bool isSelected =
+        selectedTab == label; // Check if this tab is the selected one
+
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: 2.0), // Smaller padding between tabs
       child: ElevatedButton(
         onPressed: () {
-          // Action for filter
+          setState(() {
+            selectedTab = label; // Update selected tab when this tab is clicked
+          });
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: isSelected
+              ? const Color.fromRGBO(
+                  73, 160, 120, 1) // Active tab background color
+              : Colors.white, // Inactive tab background color
+          foregroundColor: isSelected
+              ? Colors.white // Active tab text color
+              : Colors.black, // Inactive tab text color
           elevation: 0,
-          side: BorderSide(color: Colors.black.withOpacity(0.2)),
+          side: BorderSide(
+            color: isSelected
+                ? Colors.transparent // No border for the active tab
+                : Colors.black.withOpacity(0.2), // Border for inactive tabs
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20), // Rounded corners
           ),
