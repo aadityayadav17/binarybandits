@@ -125,9 +125,24 @@ class _IngredientListPageState extends State<IngredientListPage> {
       ingredientKeys[ingredient] = ingredientKey!;
     }
 
+    // Calculate total quantity across all recipes
+    double totalQuantity = 0;
+    Map<String, bool> recipeAssociations = {};
+    for (var recipe in recipes) {
+      var recipeIngredients =
+          parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+      if (recipeIngredients.containsKey(ingredient)) {
+        totalQuantity += recipeIngredients[ingredient]!;
+        recipeAssociations[recipe.id] = true;
+      }
+    }
+
     await ingredientsRef.child(ingredientKey).update({
       'name': ingredient,
       'accepted': isSelected,
+      'quantity': totalQuantity,
+      'unit': 'g',
+      'recipes': recipeAssociations,
       'timestamp': ServerValue.timestamp,
     });
   }
@@ -154,11 +169,28 @@ class _IngredientListPageState extends State<IngredientListPage> {
     for (var ingredient in ingredientsToUpdate) {
       String ingredientKey =
           ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
+
+      // Calculate total quantity across all recipes
+      double totalQuantity = 0;
+      Map<String, bool> recipeAssociations = {};
+      for (var recipe in recipes) {
+        var recipeIngredients =
+            parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+        if (recipeIngredients.containsKey(ingredient)) {
+          totalQuantity += recipeIngredients[ingredient]!;
+          recipeAssociations[recipe.id] = true;
+        }
+      }
+
       updates[ingredientKey] = {
         'name': ingredient,
         'accepted': selectAll,
+        'quantity': totalQuantity,
+        'unit': 'g',
+        'recipes': recipeAssociations,
         'timestamp': ServerValue.timestamp,
       };
+
       selectedIngredients[ingredient] = selectAll;
       ingredientKeys[ingredient] = ingredientKey;
     }
@@ -240,19 +272,21 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
       Map<String, dynamic> updateData = {
         'name': ingredient,
-        'quantity': quantity,
         'unit': 'g',
       };
 
       if (snapshot.exists) {
         final currentData = snapshot.value as Map<dynamic, dynamic>;
         updateData['accepted'] = currentData['accepted'] ?? false;
-        updateData['recipes'] = {
-          ...(currentData['recipes'] ?? {}),
-          recipe.id: true
-        };
+        updateData['quantity'] =
+            (currentData['quantity'] as num? ?? 0).toDouble() + quantity;
+        Map<String, bool> recipes =
+            Map<String, bool>.from(currentData['recipes'] ?? {});
+        recipes[recipe.id] = true;
+        updateData['recipes'] = recipes;
       } else {
         updateData['accepted'] = false;
+        updateData['quantity'] = quantity;
         updateData['recipes'] = {recipe.id: true};
       }
 
