@@ -240,7 +240,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
             padding: EdgeInsets.all(proportionalWidth(16)),
             child: ElevatedButton(
               onPressed: () {
-                // Add selected ingredients to grocery list
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GroceryListScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
