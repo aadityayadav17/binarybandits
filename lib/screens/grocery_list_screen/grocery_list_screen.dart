@@ -286,11 +286,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               horizontal: proportionalWidth(context, 16),
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(
-                  0.05), // Semi-transparent color for frosted effect
+              color: Colors.white, // Semi-transparent color for frosted effect
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(proportionalWidth(context, 10)),
-                topRight: Radius.circular(proportionalWidth(context, 10)),
+                topLeft: Radius.circular(proportionalWidth(context, 24)),
+                topRight: Radius.circular(proportionalWidth(context, 24)),
               ),
               boxShadow: [
                 BoxShadow(
