@@ -219,14 +219,42 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
   Widget _buildGroceryList() {
+    // Define unique product names for each tab
+    List<String> colesProductNames = [
+      "Coles Product 1", "Coles Product 2", "Coles Product 3", "Coles Product 4"
+      // Add more unique names for Coles
+    ];
+
+    List<String> woolworthsProductNames = [
+      "Woolworths Product 1", "Woolworths Product 2", "Woolworths Product 3",
+      "Woolworths Product 4"
+      // Add more unique names for Woolworths
+    ];
+
+    List<String> aldiProductNames = [
+      "Aldi Product 1", "Aldi Product 2", "Aldi Product 3", "Aldi Product 4"
+      // Add more unique names for Aldi
+    ];
+
     return ListView.builder(
       itemCount: ingredientPrices.length, // Replace with your actual list count
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
 
-        // Determine whether to display "Ingredient Name" or "Product Name"
+        // Determine the product name based on the selected tab
         String itemLabel =
-            selectedTab == "All" ? 'Ingredient name' : 'Product name';
+            'Unknown'; // Default value to ensure it's always initialized
+        if (selectedTab == "All") {
+          itemLabel =
+              'Ingredient name $index'; // Use Ingredient name for "All" tab
+        } else if (selectedTab == "Coles") {
+          itemLabel = colesProductNames[index]; // Use Coles product names
+        } else if (selectedTab == "Woolworths") {
+          itemLabel =
+              woolworthsProductNames[index]; // Use Woolworths product names
+        } else if (selectedTab == "Aldi") {
+          itemLabel = aldiProductNames[index]; // Use Aldi product names
+        }
 
         // Check if "All" tab is selected, display prices for all stores in aligned columns
         if (selectedTab == "All") {
@@ -267,7 +295,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                     ),
                   ),
                   title: Text(
-                    '$itemLabel $index', // Dynamically display the label based on the selected tab
+                    '$itemLabel', // Dynamically display the label based on the selected tab
                     style: GoogleFonts.robotoFlex(
                       fontSize: proportionalFontSize(
                           context, 14), // Smaller font size for ingredients
@@ -380,7 +408,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                     ),
                   ),
                   title: Text(
-                    '$itemLabel $index', // Dynamically display the label based on the selected tab
+                    '$itemLabel', // Display distinct Product name for individual tabs
                     style: GoogleFonts.robotoFlex(
                       fontSize: proportionalFontSize(
                           context, 14), // Smaller font size for ingredients
