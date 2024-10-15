@@ -41,7 +41,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   List<Map<String, String>> ingredientPrices = [
     {"Coles": "10.00", "Woolworths": "12.49", "Aldi": "8.99"},
     {"Coles": "15.50", "Woolworths": "16.00", "Aldi": "14.75"},
-    {"Coles": "200.99", "Woolworths": "220.00", "Aldi": "180.45"},
+    {"Coles": "120.99", "Woolworths": "220.00", "Aldi": "180.45"},
     // Add more items with prices for each store...
   ];
 
@@ -242,11 +242,36 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         bool isSelected = _selectedIngredients[index] ?? false;
 
         // Determine the product name based on the selected tab
-        String itemLabel =
-            'Unknown'; // Default value to ensure it's always initialized
+        String itemLabel;
         if (selectedTab == "All") {
-          itemLabel =
-              'Ingredient name $index'; // Use Ingredient name for "All" tab
+          double? colesPrice =
+              double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+          double? woolworthsPrice =
+              double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+          double? aldiPrice =
+              double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+
+          // Find the lowest price
+          double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+              .where((price) => price != null && price > 0)
+              .reduce((a, b) => a! < b! ? a : b);
+
+          // If the cheapest toggle is on, replace the ingredient name with the cheapest product's name
+          if (cheapestOption) {
+            if (lowestPrice == colesPrice) {
+              itemLabel = colesProductNames[index];
+            } else if (lowestPrice == woolworthsPrice) {
+              itemLabel = woolworthsProductNames[index];
+            } else if (lowestPrice == aldiPrice) {
+              itemLabel = aldiProductNames[index];
+            } else {
+              itemLabel =
+                  'Ingredient name $index'; // Default ingredient name if no match
+            }
+          } else {
+            itemLabel =
+                'Ingredient name $index'; // Default ingredient name if toggle is off
+          }
         } else if (selectedTab == "Coles") {
           itemLabel = colesProductNames[index]; // Use Coles product names
         } else if (selectedTab == "Woolworths") {
@@ -254,6 +279,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               woolworthsProductNames[index]; // Use Woolworths product names
         } else if (selectedTab == "Aldi") {
           itemLabel = aldiProductNames[index]; // Use Aldi product names
+        } else {
+          itemLabel = 'Product name $index'; // Fallback if no tab is selected
         }
 
         // Check if "All" tab is selected, display prices for all stores in aligned columns
@@ -295,7 +322,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                     ),
                   ),
                   title: Text(
-                    '$itemLabel', // Dynamically display the label based on the selected tab
+                    '$itemLabel', // Display either product name or ingredient name
                     style: GoogleFonts.robotoFlex(
                       fontSize: proportionalFontSize(
                           context, 14), // Smaller font size for ingredients
