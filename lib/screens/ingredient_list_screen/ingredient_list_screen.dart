@@ -92,7 +92,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     Set<String> allIngredients = {};
     for (var recipe in recipes) {
       allIngredients.addAll(
-          _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
+          parseIngredientsQuantity(recipe.ingredientsQuantityInGrams).keys);
     }
     for (var ingredient in allIngredients) {
       if (!selectedIngredients.containsKey(ingredient)) {
@@ -102,12 +102,11 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Future<void> _toggleIngredient(String ingredient) async {
+    final newState = !(selectedIngredients[ingredient] ?? false);
     setState(() {
-      selectedIngredients[ingredient] =
-          !(selectedIngredients[ingredient] ?? false);
+      selectedIngredients[ingredient] = newState;
     });
-    await _updateIngredientInFirebase(
-        ingredient, selectedIngredients[ingredient]!);
+    await _updateIngredientInFirebase(ingredient, newState);
   }
 
   Future<void> _updateIngredientInFirebase(
@@ -121,32 +120,16 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
     String? ingredientKey = ingredientKeys[ingredient];
     if (ingredientKey == null) {
-      // If the ingredient doesn't exist, create a new entry
       final newIngredientRef = ingredientsRef.push();
       ingredientKey = newIngredientRef.key;
       ingredientKeys[ingredient] = ingredientKey!;
     }
 
-    final ingredientData = {
+    await ingredientsRef.child(ingredientKey).update({
       'name': ingredient,
       'accepted': isSelected,
       'timestamp': ServerValue.timestamp,
-    };
-
-    // Update the ingredient data
-    await ingredientsRef.child(ingredientKey).update(ingredientData);
-
-    // Update the recipes that contain this ingredient
-    for (var recipe in recipes) {
-      if (_parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams)
-          .contains(ingredient)) {
-        await ingredientsRef
-            .child(ingredientKey)
-            .child('recipes')
-            .child(recipe.id)
-            .set(true);
-      }
-    }
+    });
   }
 
   Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
@@ -157,43 +140,31 @@ class _IngredientListPageState extends State<IngredientListPage> {
     final ingredientsRef =
         FirebaseDatabase.instance.ref("users/$userId/ingredients");
 
-    try {
-      Set<String> ingredientsToUpdate = Set<String>();
+    Set<String> ingredientsToUpdate = isAllSelected
+        ? recipes
+            .expand((recipe) =>
+                parseIngredientsQuantity(recipe.ingredientsQuantityInGrams)
+                    .keys)
+            .toSet()
+        : parseIngredientsQuantity(selectedRecipe!.ingredientsQuantityInGrams)
+            .keys
+            .toSet();
 
-      if (isAllSelected) {
-        for (var recipe in recipes) {
-          ingredientsToUpdate.addAll(
-              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
-        }
-      } else if (selectedRecipe != null) {
-        ingredientsToUpdate.addAll(_parseIngredientsQuantityInG(
-            selectedRecipe!.ingredientsQuantityInGrams));
-      }
-
-      // Prepare batch update
-      Map<String, dynamic> updates = {};
-      for (var ingredient in ingredientsToUpdate) {
-        String ingredientKey =
-            ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
-        updates[ingredientKey] = {
-          'name': ingredient,
-          'accepted': selectAll,
-          'timestamp': ServerValue.timestamp,
-        };
-
-        // Update local state
-        ingredientKeys[ingredient] = ingredientKey;
-        selectedIngredients[ingredient] = selectAll;
-      }
-
-      // Perform batch update
-      await ingredientsRef.update(updates);
-
-      // Update UI
-      setState(() {});
-    } catch (error) {
-      print("Error updating ingredients: $error");
+    Map<String, dynamic> updates = {};
+    for (var ingredient in ingredientsToUpdate) {
+      String ingredientKey =
+          ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
+      updates[ingredientKey] = {
+        'name': ingredient,
+        'accepted': selectAll,
+        'timestamp': ServerValue.timestamp,
+      };
+      selectedIngredients[ingredient] = selectAll;
+      ingredientKeys[ingredient] = ingredientKey;
     }
+
+    await ingredientsRef.update(updates);
+    setState(() {});
   }
 
   int _getSelectedItemsCount() {
@@ -267,19 +238,25 @@ class _IngredientListPageState extends State<IngredientListPage> {
       final ingredientRef = ingredientsRef.child(ingredientKey);
       final snapshot = await ingredientRef.get();
 
-      if (snapshot.exists) {
-        final currentData = snapshot.value as Map<dynamic, dynamic>;
-        double currentQuantity =
-            (currentData['quantity'] as num?)?.toDouble() ?? 0;
-        quantity += currentQuantity;
-      }
-
-      await ingredientRef.update({
+      Map<String, dynamic> updateData = {
         'name': ingredient,
         'quantity': quantity,
         'unit': 'g',
-        'recipes': {recipe.id: true},
-      });
+      };
+
+      if (snapshot.exists) {
+        final currentData = snapshot.value as Map<dynamic, dynamic>;
+        updateData['accepted'] = currentData['accepted'] ?? false;
+        updateData['recipes'] = {
+          ...(currentData['recipes'] ?? {}),
+          recipe.id: true
+        };
+      } else {
+        updateData['accepted'] = false;
+        updateData['recipes'] = {recipe.id: true};
+      }
+
+      await ingredientRef.update(updateData);
     }
   }
 
@@ -425,7 +402,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
                         bool allSelected = ingredients
                             .every((i) => selectedIngredients[i] ?? false);
                         await _updateAllIngredientsInFirebase(!allSelected);
-                        // No need to setState here as it's called in _updateAllIngredientsInFirebase
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
