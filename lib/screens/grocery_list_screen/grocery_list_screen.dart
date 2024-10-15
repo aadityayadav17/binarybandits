@@ -224,6 +224,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
 
+        // Determine whether to display "Ingredient Name" or "Product Name"
+        String itemLabel =
+            selectedTab == "All" ? 'Ingredient name' : 'Product name';
+
         // Check if "All" tab is selected, display prices for all stores in aligned columns
         if (selectedTab == "All") {
           return Column(
@@ -251,7 +255,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                     ),
                   ),
                   title: Text(
-                    'Ingredient name $index', // Replace with actual ingredient name
+                    '$itemLabel $index', // Dynamically display the label based on the selected tab
                     style: GoogleFonts.robotoFlex(
                       fontSize: proportionalFontSize(
                           context, 14), // Smaller font size for ingredients
@@ -348,7 +352,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                     ),
                   ),
                   title: Text(
-                    'Ingredient name $index', // Replace with actual ingredient name
+                    '$itemLabel $index', // Dynamically display the label based on the selected tab
                     style: GoogleFonts.robotoFlex(
                       fontSize: proportionalFontSize(
                           context, 14), // Smaller font size for ingredients
