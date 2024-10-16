@@ -8,6 +8,7 @@ import 'package:binarybandits/screens/recipe_overview_screen/recipe_overview_scr
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_card_components.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -66,7 +67,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   Future<void> _loadRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
 
-    // Load recipes from JSON
+    // Load all recipes from JSON
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
@@ -78,11 +79,32 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       await _loadDatabaseRecipes(user, 'recipeHistory');
       await _loadRecipeCollection(user);
 
+      // Load PossibleRecipes from Firebase
+      DatabaseReference possibleRecipesRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('PossibleRecipes');
+
+      DataSnapshot snapshot =
+          await possibleRecipesRef.once().then((event) => event.snapshot);
+
+      Set<String> possibleRecipeIds = {};
+
+      if (snapshot.value != null) {
+        List<dynamic> possibleRecipes = snapshot.value as List<dynamic>;
+        possibleRecipeIds = possibleRecipes
+            .map<String>((recipe) => recipe['recipe_id'].toString())
+            .toSet();
+      }
+
+      // Filter allRecipes to only include those present in PossibleRecipes
       setState(() {
         _recipes = allRecipes
             .where((recipe) =>
-                !_recipeWeeklyMenu.containsKey(recipe.id) ||
-                _recipeWeeklyMenu[recipe.id]['accepted'] == false)
+                possibleRecipeIds.contains(recipe.id) &&
+                (!_recipeWeeklyMenu.containsKey(recipe.id) ||
+                    _recipeWeeklyMenu[recipe.id]['accepted'] == false))
             .toList();
         _acceptedRecipes = List.generate(_recipes.length, (index) => false);
         _savedRecipes = List.generate(
@@ -863,7 +885,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
             // Action for Discover Recipe button
             break;
           case 2:
-            // Action for Grocery List button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroceryListScreen(),
+              ),
+            );
             break;
           case 3:
             Navigator.push(

@@ -8,6 +8,7 @@ import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_card_com
 import 'package:binarybandits/screens/weekly_menu_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/no_weekly_menu_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -643,7 +644,10 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
               );
               break;
             case 2:
-              // Action for Discover Recipe button
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => GroceryListScreen()),
+              );
               break;
             case 3:
               // Action for Weekly Menu button
