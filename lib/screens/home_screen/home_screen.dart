@@ -10,6 +10,8 @@ import 'package:binarybandits/screens/recipe_history_screen/recipe_history.dart'
 import 'package:binarybandits/screens/home_screen/recipe_search_detail_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,12 +23,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Recipe> _allRecipes = [];
   List<Recipe> _filteredRecipes = [];
-  final FocusNode _searchFocusNode = FocusNode(); // Create a FocusNode
+  final FocusNode _searchFocusNode = FocusNode();
+  String userName = "User"; // Default value // Create a FocusNode
 
   @override
   void initState() {
     super.initState();
     _loadRecipes();
+    _fetchUserName(); // Fetch user's name from Firebase
+  }
+
+  Future<void> _fetchUserName() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      String uid = currentUser.uid;
+
+      // Reference to the user's data in Firebase Realtime Database
+      DatabaseReference userRef = FirebaseDatabase.instance.ref("users/$uid");
+
+      // Listen for data once
+      userRef.once().then((DatabaseEvent event) {
+        if (event.snapshot.exists) {
+          setState(() {
+            userName = event.snapshot.child("name").value as String;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -161,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       SizedBox(height: proportionalHeight(16)),
                       Text(
-                        'Hello, USER!',
+                        'Hello, $userName!',
                         style: GoogleFonts.robotoFlex(
                           fontSize: proportionalFontSize(32),
                           fontWeight: FontWeight.w900,
