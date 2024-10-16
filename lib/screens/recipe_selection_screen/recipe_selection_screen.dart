@@ -67,7 +67,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   Future<void> _loadRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
 
-    // Load recipes from JSON
+    // Load all recipes from JSON
     final jsonString = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
     final List<dynamic> jsonData = json.decode(jsonString);
@@ -79,11 +79,32 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       await _loadDatabaseRecipes(user, 'recipeHistory');
       await _loadRecipeCollection(user);
 
+      // Load PossibleRecipes from Firebase
+      DatabaseReference possibleRecipesRef = FirebaseDatabase.instance
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('PossibleRecipes');
+
+      DataSnapshot snapshot =
+          await possibleRecipesRef.once().then((event) => event.snapshot);
+
+      Set<String> possibleRecipeIds = {};
+
+      if (snapshot.value != null) {
+        List<dynamic> possibleRecipes = snapshot.value as List<dynamic>;
+        possibleRecipeIds = possibleRecipes
+            .map<String>((recipe) => recipe['recipe_id'].toString())
+            .toSet();
+      }
+
+      // Filter allRecipes to only include those present in PossibleRecipes
       setState(() {
         _recipes = allRecipes
             .where((recipe) =>
-                !_recipeWeeklyMenu.containsKey(recipe.id) ||
-                _recipeWeeklyMenu[recipe.id]['accepted'] == false)
+                possibleRecipeIds.contains(recipe.id) &&
+                (!_recipeWeeklyMenu.containsKey(recipe.id) ||
+                    _recipeWeeklyMenu[recipe.id]['accepted'] == false))
             .toList();
         _acceptedRecipes = List.generate(_recipes.length, (index) => false);
         _savedRecipes = List.generate(
