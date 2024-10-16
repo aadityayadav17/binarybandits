@@ -55,7 +55,7 @@ class NoRecipeSelectionScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Discover\nRecipe",
+                  "Discover\nRecipes",
                   style: GoogleFonts.robotoFlex(
                     textStyle: TextStyle(
                       color: Colors.black,
