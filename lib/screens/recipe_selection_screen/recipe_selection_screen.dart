@@ -74,6 +74,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     List<Recipe> allRecipes =
         jsonData.map((data) => Recipe.fromJson(data)).toList();
 
+      allRecipes.shuffle();
     if (user != null) {
       await _loadDatabaseRecipes(user, 'recipeWeeklyMenu');
       await _loadDatabaseRecipes(user, 'recipeHistory');
