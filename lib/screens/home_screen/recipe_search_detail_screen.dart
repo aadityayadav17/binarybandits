@@ -6,6 +6,9 @@ import 'package:binarybandits/screens/recipe_collection_screen/widgets/recipe_ca
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 // Proportional methods (you can extract these into a utils file later)
 double proportionalWidth(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
@@ -19,11 +22,128 @@ double proportionalFontSize(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
 }
 
-class RecipeSearchDetailScreen extends StatelessWidget {
+class RecipeSearchDetailScreen extends StatefulWidget {
   final Recipe recipe;
-  final ScrollController _scrollController = ScrollController();
 
   RecipeSearchDetailScreen({Key? key, required this.recipe}) : super(key: key);
+
+  @override
+  _RecipeSearchDetailScreenState createState() =>
+      _RecipeSearchDetailScreenState();
+}
+
+class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
+  bool addedToMenu = false; // Initially false
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkRecipeInWeeklyMenu(); // Check recipe status in Firebase
+  }
+
+  Future<void> _checkRecipeInWeeklyMenu() async {
+    // Get the current user
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Ensure the user is authenticated
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    // Fetch the user's weekly menu from Firebase using dynamic user ID
+    final userId = user.uid;
+    final databaseRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final snapshot = await databaseRef.get();
+
+    // Check if the snapshot exists
+    if (snapshot.exists) {
+      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+
+      // Check if the current recipe is in the weekly menu and if it's accepted
+      for (var entry in weeklyMenuData.values) {
+        if (entry['id'] == widget.recipe.id && entry['accepted'] == true) {
+          setState(() {
+            addedToMenu = true; // Set to true if recipe is found and accepted
+          });
+          break;
+        }
+      }
+    } else {
+      print('No weekly menu data available.');
+    }
+  }
+
+  Future<void> _addToMenu() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User is not authenticated');
+      return;
+    }
+
+    final userId = user.uid;
+    final weeklyMenuRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
+    final historyRef =
+        FirebaseDatabase.instance.ref("users/$userId/recipeHistory");
+
+    try {
+      // Check if the recipe already exists in the weekly menu
+      final weeklyMenuSnapshot = await weeklyMenuRef
+          .orderByChild('id')
+          .equalTo(widget.recipe.id)
+          .once();
+      if (weeklyMenuSnapshot.snapshot.value != null) {
+        // Update existing entry
+        final existingEntries =
+            weeklyMenuSnapshot.snapshot.value as Map<dynamic, dynamic>;
+        final existingKey = existingEntries.keys.first;
+        await weeklyMenuRef.child(existingKey).update({
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Add new entry
+        await weeklyMenuRef.push().set({
+          'id': widget.recipe.id,
+          'name': widget.recipe.name,
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      // Check if the recipe already exists in the history
+      final historySnapshot =
+          await historyRef.orderByChild('id').equalTo(widget.recipe.id).once();
+      if (historySnapshot.snapshot.value != null) {
+        // Update existing entry
+        final existingEntries =
+            historySnapshot.snapshot.value as Map<dynamic, dynamic>;
+        final existingKey = existingEntries.keys.first;
+        await historyRef.child(existingKey).update({
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      } else {
+        // Add new entry
+        await historyRef.push().set({
+          'id': widget.recipe.id,
+          'name': widget.recipe.name,
+          'accepted': true,
+          'timestamp': ServerValue.timestamp,
+        });
+      }
+
+      setState(() {
+        addedToMenu = true;
+      });
+      print('Recipe added to menu and history successfully');
+    } catch (e) {
+      print('Error adding recipe to menu and history: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +211,7 @@ class RecipeSearchDetailScreen extends StatelessWidget {
                     ),
                   ),
                   RecipeCardStack(
-                    recipe: recipe,
+                    recipe: widget.recipe,
                     screenWidth: screenWidth,
                     cardTopPosition: cardTopPosition,
                     cardHeight: cardHeight,
@@ -100,8 +220,8 @@ class RecipeSearchDetailScreen extends StatelessWidget {
                 ],
               ),
               RecipeInformationCard(
-                key: ValueKey(recipe.id),
-                recipe: recipe,
+                key: ValueKey(widget.recipe.id),
+                recipe: widget.recipe,
                 topPosition: cardTopPosition + proportionalHeight(context, 30),
                 cardHeight: cardHeight,
                 scrollController: _scrollController,
@@ -116,25 +236,28 @@ class RecipeSearchDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        // Action for Add to My Menu button
-                      },
+                      onPressed: addedToMenu ? null : _addToMenu,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
+                        backgroundColor: addedToMenu
+                            ? Colors.grey
+                            : const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               proportionalWidth(context, 10)),
                         ),
                         padding: EdgeInsets.symmetric(
-                          horizontal: proportionalWidth(context, 120),
                           vertical: proportionalHeight(context, 12),
                         ),
                       ),
-                      child: Text(
-                        'Add to My Menu',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: proportionalFontSize(context, 16),
+                      child: SizedBox(
+                        width: proportionalWidth(context, 320),
+                        child: Text(
+                          addedToMenu ? 'Added to My Menu' : 'Add to My Menu',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: proportionalFontSize(context, 16),
+                          ),
                         ),
                       ),
                     ),
