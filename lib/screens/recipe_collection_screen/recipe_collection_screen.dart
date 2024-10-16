@@ -112,7 +112,7 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
               bottom: proportionalHeight(context, 16),
             ),
             child: Text(
-              "Recipe Collection",
+              "Saved Recipes",
               style: GoogleFonts.robotoFlex(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,

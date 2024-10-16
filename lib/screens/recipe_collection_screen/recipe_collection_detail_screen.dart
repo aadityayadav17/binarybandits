@@ -198,7 +198,7 @@ class _RecipeCollectionDetailScreenState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Recipe Collection",
+                              "Saved Recipes",
                               style: GoogleFonts.robotoFlex(
                                 textStyle: TextStyle(
                                   color: Colors.black,

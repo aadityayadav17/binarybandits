@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildFeatureButton(
                         context,
                         'assets/images/home_screen/discover-recipe.png',
-                        'DISCOVER\nRECIPE',
+                        'DISCOVER\nRECIPES',
                         proportionalHeight(160),
                         () {
                           Navigator.push(
@@ -242,15 +242,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: _buildFeatureButton(
                               context,
-                              'assets/images/home_screen/recipe-collection.png',
-                              'RECIPE\nCOLLECTION',
+                              'assets/images/home_screen/weekly-menu.png',
+                              'MY MEAL\nPLAN',
                               proportionalHeight(110),
                               () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecipeCollectionPage(),
+                                    builder: (context) => WeeklyMenuScreen(),
                                   ),
                                 );
                               },
@@ -281,14 +280,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: _buildFeatureButton(
                               context,
-                              'assets/images/home_screen/weekly-menu.png',
-                              'MY MEAL\nPLAN',
+                              'assets/images/home_screen/recipe-collection.png',
+                              'SAVED\nRECIPES',
                               proportionalHeight(110),
                               () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => WeeklyMenuScreen(),
+                                    builder: (context) =>
+                                        RecipeCollectionPage(),
                                   ),
                                 );
                               },
