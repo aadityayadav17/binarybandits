@@ -76,7 +76,7 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
         }
       }
     } else {
-      print('No weekly menu data available.');
+      print('No meal plan data available.');
     }
   }
 

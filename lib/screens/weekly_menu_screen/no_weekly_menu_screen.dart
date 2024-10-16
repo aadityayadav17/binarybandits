@@ -40,7 +40,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "My Menu",
+                  "My Meal Plan",
                   style: GoogleFonts.robotoFlex(
                     textStyle: TextStyle(
                       color: Colors.black,
@@ -82,7 +82,7 @@ class NoWeeklyMenuScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'You have no recipes in the Weekly Menu!',
+                    'You have no recipes in the Meal Plan!',
                     style: GoogleFonts.robotoFlex(
                       textStyle: TextStyle(
                         color: Colors.grey,

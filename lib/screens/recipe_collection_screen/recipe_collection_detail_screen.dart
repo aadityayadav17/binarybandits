@@ -76,7 +76,7 @@ class _RecipeCollectionDetailScreenState
         }
       }
     } else {
-      print('No weekly menu data available.');
+      print('No meal plan data available.');
     }
   }
 

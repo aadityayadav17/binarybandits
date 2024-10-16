@@ -157,7 +157,7 @@ class NoRecipeSelectionScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 3, // Weekly Menu is selected
+        currentIndex: 3, // Meal Plan is selected
         onTap: (index) {
           switch (index) {
             case 0:

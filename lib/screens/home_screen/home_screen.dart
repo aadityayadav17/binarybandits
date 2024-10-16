@@ -282,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: _buildFeatureButton(
                               context,
                               'assets/images/home_screen/weekly-menu.png',
-                              'WEEKLY\nMENU',
+                              'MY MEAL\nPLAN',
                               proportionalHeight(110),
                               () {
                                 Navigator.push(

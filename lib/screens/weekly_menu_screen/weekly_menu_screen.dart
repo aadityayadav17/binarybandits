@@ -464,7 +464,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "My Menu",
+                            "My Meal Plan",
                             style: GoogleFonts.robotoFlex(
                               textStyle: TextStyle(
                                 color: Colors.black,
