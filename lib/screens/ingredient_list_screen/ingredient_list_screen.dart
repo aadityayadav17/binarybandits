@@ -7,6 +7,7 @@ import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class IngredientListPage extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _IngredientListPageState extends State<IngredientListPage> {
   bool isAllSelected = true;
   Map<String, bool> selectedIngredients = {};
   Map<String, String> recipeKeys = {};
+  Map<String, String> ingredientKeys = {};
+  Map<String, int> recipeServings = {};
 
   @override
   void initState() {
@@ -34,20 +37,22 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
 
     final userId = user.uid;
-    final databaseRef =
-        FirebaseDatabase.instance.ref("users/$userId/recipeWeeklyMenu");
-    final snapshot = await databaseRef.get();
+    final userRef = FirebaseDatabase.instance.ref("users/$userId");
+    final recipeMenuRef = userRef.child("recipeWeeklyMenu");
+    final ingredientsRef = userRef.child("ingredients");
 
-    if (snapshot.exists) {
-      final weeklyMenuData = snapshot.value as Map<dynamic, dynamic>;
+    final recipeSnapshot = await recipeMenuRef.get();
+    final ingredientsSnapshot = await ingredientsRef.get();
+
+    if (recipeSnapshot.exists) {
+      final weeklyMenuData = recipeSnapshot.value as Map<dynamic, dynamic>;
 
       final acceptedRecipes = weeklyMenuData.entries
           .where((entry) => entry.value['accepted'] == true)
           .map((entry) => {
                 'id': entry.value['id'],
                 'key': entry.key,
-                'ingredients':
-                    entry.value['ingredients'] as Map<dynamic, dynamic>? ?? {},
+                'servings': entry.value['servings'] ?? 1,
               })
           .toList();
 
@@ -62,17 +67,24 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
       setState(() {
         recipes = matchedRecipes.map((data) => Recipe.fromJson(data)).toList();
-        for (var recipe in recipes) {
-          var matchedAcceptedRecipe =
-              acceptedRecipes.firstWhere((r) => r['id'] == recipe.id);
-          recipeKeys[recipe.id] = matchedAcceptedRecipe['key'];
-          (matchedAcceptedRecipe['ingredients'] as Map<dynamic, dynamic>)
-              .forEach((key, value) {
-            selectedIngredients[key] = value as bool;
-          });
+        for (var acceptedRecipe in acceptedRecipes) {
+          String recipeId = acceptedRecipe['id'];
+          recipeKeys[recipeId] = acceptedRecipe['key'];
+          recipeServings[recipeId] = acceptedRecipe['servings'];
         }
-        _updateAllIngredients();
       });
+
+      if (ingredientsSnapshot.exists) {
+        final ingredientsData =
+            ingredientsSnapshot.value as Map<dynamic, dynamic>;
+        ingredientsData.forEach((key, value) {
+          selectedIngredients[value['name']] = value['accepted'] ?? false;
+          ingredientKeys[value['name']] = key;
+        });
+      }
+
+      await updateAllIngredientQuantities();
+      _updateAllIngredients();
     } else {
       print('No weekly menu data available.');
     }
@@ -82,7 +94,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     Set<String> allIngredients = {};
     for (var recipe in recipes) {
       allIngredients.addAll(
-          _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
+          parseIngredientsQuantity(recipe.ingredientsQuantityInGrams).keys);
     }
     for (var ingredient in allIngredients) {
       if (!selectedIngredients.containsKey(ingredient)) {
@@ -92,12 +104,11 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Future<void> _toggleIngredient(String ingredient) async {
+    final newState = !(selectedIngredients[ingredient] ?? false);
     setState(() {
-      selectedIngredients[ingredient] =
-          !(selectedIngredients[ingredient] ?? false);
+      selectedIngredients[ingredient] = newState;
     });
-    await _updateIngredientInFirebase(
-        ingredient, selectedIngredients[ingredient]!);
+    await _updateIngredientInFirebase(ingredient, newState);
   }
 
   Future<void> _updateIngredientInFirebase(
@@ -106,14 +117,37 @@ class _IngredientListPageState extends State<IngredientListPage> {
     if (user == null) return;
 
     final userId = user.uid;
+    final ingredientsRef =
+        FirebaseDatabase.instance.ref("users/$userId/ingredients");
+
+    String? ingredientKey = ingredientKeys[ingredient];
+    if (ingredientKey == null) {
+      final newIngredientRef = ingredientsRef.push();
+      ingredientKey = newIngredientRef.key;
+      ingredientKeys[ingredient] = ingredientKey!;
+    }
+
+    // Calculate total quantity across all recipes, considering servings
+    double totalQuantity = 0;
+    Map<String, bool> recipeAssociations = {};
     for (var recipe in recipes) {
-      if (_parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams)
-          .contains(ingredient)) {
-        final recipeRef = FirebaseDatabase.instance.ref(
-            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
-        await recipeRef.update({ingredient: isSelected});
+      var recipeIngredients =
+          parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+      if (recipeIngredients.containsKey(ingredient)) {
+        int servings = recipeServings[recipe.id] ?? 1;
+        totalQuantity += recipeIngredients[ingredient]! * servings;
+        recipeAssociations[recipe.id] = true;
       }
     }
+
+    await ingredientsRef.child(ingredientKey).update({
+      'name': ingredient,
+      'accepted': isSelected,
+      'quantity': totalQuantity,
+      'unit': 'g',
+      'recipes': recipeAssociations,
+      'timestamp': ServerValue.timestamp,
+    });
   }
 
   Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
@@ -121,48 +155,169 @@ class _IngredientListPageState extends State<IngredientListPage> {
     if (user == null) return;
 
     final userId = user.uid;
+    final ingredientsRef =
+        FirebaseDatabase.instance.ref("users/$userId/ingredients");
 
-    try {
-      Set<String> ingredientsToUpdate = Set<String>();
+    Set<String> ingredientsToUpdate = isAllSelected
+        ? recipes
+            .expand((recipe) =>
+                parseIngredientsQuantity(recipe.ingredientsQuantityInGrams)
+                    .keys)
+            .toSet()
+        : parseIngredientsQuantity(selectedRecipe!.ingredientsQuantityInGrams)
+            .keys
+            .toSet();
 
-      // Determine which ingredients to update based on the current selection
-      if (isAllSelected) {
-        // If "All" is selected, update all ingredients
-        for (var recipe in recipes) {
-          ingredientsToUpdate.addAll(
-              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams));
-        }
-      } else if (selectedRecipe != null) {
-        // If a specific recipe is selected, only update its ingredients
-        ingredientsToUpdate.addAll(_parseIngredientsQuantityInG(
-            selectedRecipe!.ingredientsQuantityInGrams));
-      }
+    Map<String, dynamic> updates = {};
+    for (var ingredient in ingredientsToUpdate) {
+      String ingredientKey =
+          ingredientKeys[ingredient] ?? ingredientsRef.push().key!;
 
-      // Update ingredients for all recipes
+      // Calculate total quantity across all recipes, considering servings
+      double totalQuantity = 0;
+      Map<String, bool> recipeAssociations = {};
       for (var recipe in recipes) {
-        final recipeIngredients =
-            _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams);
-        final recipeRef = FirebaseDatabase.instance.ref(
-            "users/$userId/recipeWeeklyMenu/${recipeKeys[recipe.id]}/ingredients");
-
-        Map<String, bool> updateData = {};
-        for (var ingredient in recipeIngredients) {
-          if (ingredientsToUpdate.contains(ingredient)) {
-            updateData[ingredient] = selectAll;
-          }
-        }
-
-        if (updateData.isNotEmpty) {
-          await recipeRef.update(updateData);
+        var recipeIngredients =
+            parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+        if (recipeIngredients.containsKey(ingredient)) {
+          int servings = recipeServings[recipe.id] ?? 1;
+          totalQuantity += recipeIngredients[ingredient]! * servings;
+          recipeAssociations[recipe.id] = true;
         }
       }
-    } catch (error) {
-      print("Error updating ingredients: $error");
+
+      updates[ingredientKey] = {
+        'name': ingredient,
+        'accepted': selectAll,
+        'quantity': totalQuantity,
+        'unit': 'g',
+        'recipes': recipeAssociations,
+        'timestamp': ServerValue.timestamp,
+      };
+
+      selectedIngredients[ingredient] = selectAll;
+      ingredientKeys[ingredient] = ingredientKey;
     }
+
+    await ingredientsRef.update(updates);
+    setState(() {});
   }
 
   int _getSelectedItemsCount() {
     return selectedIngredients.values.where((isSelected) => isSelected).length;
+  }
+
+  List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
+    return ingredientsQuantityInGrams
+        .split('\n')
+        .map((line) => line.split('->').first.trim())
+        .toList();
+  }
+
+  List<String> _getIngredientsList() {
+    List<String> ingredients;
+    if (isAllSelected) {
+      ingredients = recipes
+          .expand((recipe) =>
+              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams))
+          .toSet()
+          .toList();
+    } else if (selectedRecipe != null) {
+      ingredients = _parseIngredientsQuantityInG(
+          selectedRecipe!.ingredientsQuantityInGrams);
+    } else {
+      ingredients = [];
+    }
+
+    ingredients.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return ingredients;
+  }
+
+  Map<String, double> parseIngredientsQuantity(
+      String ingredientsQuantityInGrams) {
+    Map<String, double> result = {};
+    List<String> lines = ingredientsQuantityInGrams.split('\n');
+    for (String line in lines) {
+      List<String> parts = line.split('->');
+      if (parts.length == 2) {
+        String ingredient = parts[0].trim();
+        String quantityStr = parts[1].trim();
+        double quantity = double.parse(quantityStr.replaceAll('g', ''));
+        result[ingredient] = quantity;
+      }
+    }
+    return result;
+  }
+
+  Future<void> updateIngredientQuantities(Recipe recipe) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userId = user.uid;
+    final ingredientsRef =
+        FirebaseDatabase.instance.ref("users/$userId/ingredients");
+
+    Map<String, double> quantities =
+        parseIngredientsQuantity(recipe.ingredientsQuantityInGrams);
+    int servings = recipeServings[recipe.id] ?? 1;
+
+    for (var entry in quantities.entries) {
+      String ingredient = entry.key;
+      double quantity = entry.value * servings;
+
+      String? ingredientKey = ingredientKeys[ingredient];
+      if (ingredientKey == null) {
+        final newIngredientRef = ingredientsRef.push();
+        ingredientKey = newIngredientRef.key;
+        ingredientKeys[ingredient] = ingredientKey!;
+      }
+
+      final ingredientRef = ingredientsRef.child(ingredientKey);
+      final snapshot = await ingredientRef.get();
+
+      Map<String, dynamic> updateData = {
+        'name': ingredient,
+        'unit': 'g',
+      };
+
+      if (snapshot.exists) {
+        final currentData = snapshot.value as Map<dynamic, dynamic>;
+        updateData['accepted'] = currentData['accepted'] ?? false;
+
+        // Calculate total quantity considering all recipes
+        double totalQuantity = quantity;
+        Map<String, bool> recipes =
+            Map<String, bool>.from(currentData['recipes'] ?? {});
+        for (var recipeId in recipes.keys) {
+          if (recipeId != recipe.id) {
+            var recipeIngredients = parseIngredientsQuantity(this
+                .recipes
+                .firstWhere((r) => r.id == recipeId)
+                .ingredientsQuantityInGrams);
+            if (recipeIngredients.containsKey(ingredient)) {
+              int recipeServings = this.recipeServings[recipeId] ?? 1;
+              totalQuantity += recipeIngredients[ingredient]! * recipeServings;
+            }
+          }
+        }
+
+        updateData['quantity'] = totalQuantity;
+        recipes[recipe.id] = true;
+        updateData['recipes'] = recipes;
+      } else {
+        updateData['accepted'] = false;
+        updateData['quantity'] = quantity;
+        updateData['recipes'] = {recipe.id: true};
+      }
+
+      await ingredientRef.update(updateData);
+    }
+  }
+
+  Future<void> updateAllIngredientQuantities() async {
+    for (var recipe in recipes) {
+      await updateIngredientQuantities(recipe);
+    }
   }
 
   // Proportional width based on screen size
@@ -239,7 +394,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
             padding: EdgeInsets.all(proportionalWidth(16)),
             child: ElevatedButton(
               onPressed: () {
-                // Add selected ingredients to grocery list
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GroceryListScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
@@ -296,22 +456,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
                         bool allSelected = ingredients
                             .every((i) => selectedIngredients[i] ?? false);
                         await _updateAllIngredientsInFirebase(!allSelected);
-                        setState(() {
-                          for (var ingredient in ingredients) {
-                            selectedIngredients[ingredient] = !allSelected;
-                          }
-                        });
                       },
-                      child: Text(
-                        ingredients
-                                .every((i) => selectedIngredients[i] ?? false)
-                            ? "Deselect all"
-                            : "Select all",
-                        style: GoogleFonts.robotoFlex(
-                          color: Colors.white,
-                          fontSize: proportionalFontSize(14),
-                        ),
-                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(73, 160, 120, 1),
                         shape: RoundedRectangleBorder(
@@ -321,6 +466,16 @@ class _IngredientListPageState extends State<IngredientListPage> {
                         padding: EdgeInsets.symmetric(
                           horizontal: proportionalWidth(12),
                           vertical: proportionalHeight(8),
+                        ),
+                      ),
+                      child: Text(
+                        ingredients
+                                .every((i) => selectedIngredients[i] ?? false)
+                            ? "Deselect all"
+                            : "Select all",
+                        style: GoogleFonts.robotoFlex(
+                          color: Colors.white,
+                          fontSize: proportionalFontSize(14),
                         ),
                       ),
                     ),
@@ -494,32 +649,6 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
-  List<String> _getIngredientsList() {
-    List<String> ingredients;
-    if (isAllSelected) {
-      ingredients = recipes
-          .expand((recipe) =>
-              _parseIngredientsQuantityInG(recipe.ingredientsQuantityInGrams))
-          .toSet()
-          .toList();
-    } else if (selectedRecipe != null) {
-      ingredients = _parseIngredientsQuantityInG(
-          selectedRecipe!.ingredientsQuantityInGrams);
-    } else {
-      ingredients = [];
-    }
-
-    ingredients.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-    return ingredients;
-  }
-
-  List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
-    return ingredientsQuantityInGrams
-        .split('\n')
-        .map((line) => line.split('->').first.trim())
-        .toList();
-  }
-
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
@@ -536,10 +665,15 @@ class _IngredientListPageState extends State<IngredientListPage> {
             );
             break;
           case 1:
-            // Action for Grocery List button
+            // Action for Discover Recipe button
             break;
           case 2:
-            // Action for Discover Recipe button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroceryListScreen(),
+              ),
+            );
             break;
           case 3:
             Navigator.push(

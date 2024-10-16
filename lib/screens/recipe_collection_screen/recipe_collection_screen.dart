@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -213,7 +214,12 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
             );
             break;
           case 2:
-            // Action for Grocery List button
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GroceryListScreen(),
+              ),
+            );
             break;
           case 3:
             Navigator.push(
