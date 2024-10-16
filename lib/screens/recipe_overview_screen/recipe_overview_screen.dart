@@ -321,7 +321,9 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                       value: _currentRecipeIndex.toDouble(),
                       min: 0,
                       max: (_recipes.length - 1).toDouble(),
-                      divisions: _recipes.length - 1,
+                      divisions: _recipes.length > 1
+                          ? _recipes.length - 1
+                          : null, // Fix here
                       label:
                           'Recipe ${_currentRecipeIndex + 1} of ${_recipes.length}',
                       activeColor: const Color.fromRGBO(73, 160, 120, 1),
