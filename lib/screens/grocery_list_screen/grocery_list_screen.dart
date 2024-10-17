@@ -1,3 +1,104 @@
+/// This file defines the `GroceryListScreen` widget, which displays a grocery list
+/// with various functionalities such as filtering by store, calculating total costs,
+/// and displaying user budget information.
+///
+/// The main components and functionalities include:
+///
+/// - **Proportional Helper Functions**:
+///   - `proportionalWidth`: Calculates width based on screen size.
+///   - `proportionalHeight`: Calculates height based on screen size.
+///   - `proportionalFontSize`: Calculates font size based on screen size.
+///
+/// - **GroceryListScreen**:
+///   - A stateful widget that displays the grocery list screen.
+///
+/// - **GroceryListScreenState**:
+///   - Manages the state of the `GroceryListScreen`.
+///   - `selectedTab`: Tracks the currently selected tab (e.g., "All", "Coles").
+///   - `cheapestOption`: Tracks whether the cheapest option is selected.
+///   - `_selectedIngredients`: Tracks selected ingredients.
+///   - `removedStores`: Tracks stores that have been removed.
+///   - `ingredientPrices`: Stores ingredient prices.
+///   - `_userBudget`: Stores the user's budget.
+///   - `_showIngredientName`: Tracks ingredient name visibility.
+///   - `storeProductNames`: Stores product names for each store.
+///
+/// - **initState**:
+///   - Initializes the state and loads product data and user budget.
+///
+/// - **_fetchUserBudget**:
+///   - Fetches the user's budget from Firebase.
+///
+/// - **_fetchAcceptedIngredients**:
+///   - Fetches the accepted ingredients from Firebase.
+///
+/// - **_loadProductData**:
+///   - Loads product data from a JSON file and filters it based on accepted ingredients.
+///
+/// - **formatPrice**:
+///   - Formats the price for display.
+///
+/// - **formatProductName**:
+///   - Formats the product name for display.
+///
+/// - **calculateTotalCheapestCost**:
+///   - Calculates the total cost for the cheapest items.
+///
+/// - **calculateTotalHighestCost**:
+///   - Calculates the total cost for the highest price among the available stores.
+///
+/// - **calculateTotalCostForStore**:
+///   - Calculates the total cost for a specific store.
+///
+/// - **build**:
+///   - Builds the UI for the grocery list screen.
+///
+/// - **_buildStoreTab**:
+///   - Builds store tabs with long-press functionality for removal.
+///
+/// - **_buildPlusTab**:
+///   - Builds the "plus" tab for re-adding removed stores.
+///
+/// - **_showRemoveStoreDialog**:
+///   - Shows a confirmation dialog for removing a store.
+///
+/// - **_showReAddStoreDialog**:
+///   - Shows a dialog to re-add a removed store.
+///
+/// - **_buildFilterTab**:
+///   - Builds smaller filter tabs.
+///
+/// - **_buildGroceryList**:
+///   - Builds the grocery list.
+///
+/// - **_buildGroceryListItem**:
+///   - Builds a grocery list item.
+///
+/// - **_getItemLabel**:
+///   - Gets the item label based on the selected tab.
+///
+/// - **_buildListTile**:
+///   - Builds the list tile.
+///
+/// - **_buildAllTabPriceDisplay**:
+///   - Builds the price display for the "All" tab.
+///
+/// - **_buildIndividualTabPriceDisplay**:
+///   - Builds the price display for individual tabs.
+///
+/// - **_buildPriceColumn**:
+///   - Builds the price column, highlighting the cheapest price if applicable.
+///
+/// - **_buildDivider**:
+///   - Builds a divider between list items.
+///
+/// - **buildInfoBox**:
+///   - Builds the rounded rectangle information box.
+///
+/// - **_buildBottomNavigationBar**:
+///   - Builds the bottom navigation bar.
+library grocery_list_screen;
+
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:convert';
