@@ -288,7 +288,9 @@ class RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
                       child: SizedBox(
                         width: proportionalWidth(context, 320),
                         child: Text(
-                          addedToMenu ? 'Added to My Menu' : 'Add to My Menu',
+                          addedToMenu
+                              ? 'Added to My Meal Plan'
+                              : 'Add to My Meal Plan',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
