@@ -45,9 +45,11 @@ class VerificationScreenState extends State<VerificationScreen> {
     user = FirebaseAuth.instance.currentUser;
     if (user != null && user.emailVerified) {
       _timer?.cancel();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => const ProfileScreen(fromSignup: true),
-      ));
+      if (mounted) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => const ProfileScreen(fromSignup: true),
+        ));
+      }
     }
   }
 
