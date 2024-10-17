@@ -426,8 +426,8 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = true;
         _selectedCount++;
-        _nextRecipe();
       });
+      _nextRecipe(); // This will handle moving to the next recipe or redirecting if all are accepted
     } catch (e) {
       _showErrorDialog("Error accepting recipe: $e");
     }
@@ -449,17 +449,31 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   }
 
   void _nextRecipe() {
-    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
-    while (_acceptedRecipes[nextIndex] &&
-        _recipeWeeklyMenu.length < _recipes.length) {
-      nextIndex = (nextIndex + 1) % _recipes.length;
+    if (_selectedCount == _recipes.length) {
+      // All recipes have been accepted, redirect to no recipe selection screen
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+      return;
     }
-    _currentRecipeIndex = nextIndex;
-    _checkAllRecipesAccepted();
+
+    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
+    int loopCount = 0;
+    while (_acceptedRecipes[nextIndex] && loopCount < _recipes.length) {
+      nextIndex = (nextIndex + 1) % _recipes.length;
+      loopCount++;
+    }
+
+    if (loopCount == _recipes.length) {
+      // We've looped through all recipes and they're all accepted
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    } else {
+      setState(() {
+        _currentRecipeIndex = nextIndex;
+      });
+    }
   }
 
   void _checkAllRecipesAccepted() {
-    if (_acceptedRecipes.every((isAccepted) => isAccepted)) {
+    if (_selectedCount == _recipes.length) {
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
     }
   }
