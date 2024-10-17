@@ -9,10 +9,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   bool _keepMeSignedIn = false;
   bool _showPassword = false;
   final FocusNode _emailFocusNode = FocusNode();
@@ -20,12 +20,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Load the keep me signed in preference when the screen is created
   @override
   void initState() {
     super.initState();
     _loadKeepMeSignedInPreference();
   }
 
+  // Dispose the focus nodes
   @override
   void dispose() {
     _emailFocusNode.dispose();
@@ -33,11 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // Clear the focus of the text fields
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
   }
 
+  // Load the keep me signed in preference
   Future<void> _loadKeepMeSignedInPreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -45,11 +49,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // Save the keep me signed in preference
   Future<void> _saveKeepMeSignedInPreference(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('keepMeSignedIn', value);
   }
 
+  // Sign in with email and password
   Future<void> _signIn() async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
@@ -62,8 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
@@ -102,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An unexpected error occurred. Please try again.'),
