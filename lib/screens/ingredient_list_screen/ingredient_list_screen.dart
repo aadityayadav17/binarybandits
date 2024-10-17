@@ -1,3 +1,27 @@
+/// IngredientListPage is a StatefulWidget that displays a list of ingredients
+/// for recipes selected by the user. It allows users to select or deselect
+/// ingredients and update their status in Firebase.
+///
+/// The page includes:
+/// - Loading recipes and ingredients from Firebase.
+/// - Displaying a list of ingredients with the ability to select/deselect them.
+/// - Updating ingredient quantities and their status in Firebase.
+/// - Navigating to the Grocery List screen.
+///
+/// The main components of the page are:
+/// - AppBar with a back button.
+/// - Recipe tabs to switch between different recipes.
+/// - Ingredient list with selection functionality.
+/// - Button to add selected ingredients to the grocery list.
+/// - Bottom navigation bar for navigation between different screens.
+///
+/// The class includes methods for:
+/// - Loading recipes and ingredients from Firebase.
+/// - Updating ingredient quantities and their status in Firebase.
+/// - Parsing ingredient quantities from a string.
+/// - Building UI components such as recipe tabs, ingredient list, and buttons.
+library ingredient_list_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
