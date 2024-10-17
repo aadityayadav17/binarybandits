@@ -1,3 +1,35 @@
+/// A screen that displays detailed information about a selected recipe and allows
+/// the user to add the recipe to their weekly menu.
+///
+/// The `RecipeSearchDetailScreen` is a stateful widget that shows detailed information
+/// about a recipe. It provides functionality to check if the recipe is already in the
+/// user's weekly menu and allows the user to add it if not.
+///
+/// The screen includes:
+/// - An app bar with a back button.
+/// - A scrollable body with recipe details.
+/// - A button to add the recipe to the weekly menu.
+/// - A bottom navigation bar for navigation between different screens.
+///
+/// The screen uses Firebase to check and update the user's weekly menu and recipe history.
+///
+/// Proportional methods are used to ensure the UI scales correctly on different screen sizes.
+///
+/// Properties:
+/// - `recipe`: The recipe to display details for.
+///
+/// Methods:
+/// - `proportionalWidth`: Calculates width proportional to the screen size.
+/// - `proportionalHeight`: Calculates height proportional to the screen size.
+/// - `proportionalFontSize`: Calculates font size proportional to the screen size.
+/// - `_checkRecipeInWeeklyMenu`: Checks if the recipe is in the user's weekly menu.
+/// - `_addToMenu`: Adds the recipe to the user's weekly menu and history.
+///
+/// State:
+/// - `addedToMenu`: A boolean indicating if the recipe has been added to the weekly menu.
+/// - `_scrollController`: A controller for the scrollable content.
+library recipe_search_detail_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
