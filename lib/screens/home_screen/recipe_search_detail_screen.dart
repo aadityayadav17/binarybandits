@@ -51,7 +51,6 @@ class RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
 
     // Ensure the user is authenticated
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -74,16 +73,13 @@ class RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
           break;
         }
       }
-    } else {
-      print('No meal plan data available.');
-    }
+    } else {}
   }
 
   // Add the recipe to the user's weekly menu and history
   Future<void> _addToMenu() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -143,9 +139,8 @@ class RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
       setState(() {
         addedToMenu = true;
       });
-      print('Recipe added to menu and history successfully');
     } catch (e) {
-      print('Error adding recipe to menu and history: $e');
+      print(e);
     }
   }
 
