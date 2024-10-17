@@ -26,23 +26,25 @@ double proportionalFontSize(BuildContext context, double size) {
 class RecipeSearchDetailScreen extends StatefulWidget {
   final Recipe recipe;
 
-  RecipeSearchDetailScreen({Key? key, required this.recipe}) : super(key: key);
+  const RecipeSearchDetailScreen({super.key, required this.recipe});
 
   @override
-  _RecipeSearchDetailScreenState createState() =>
-      _RecipeSearchDetailScreenState();
+  RecipeSearchDetailScreenState createState() =>
+      RecipeSearchDetailScreenState();
 }
 
-class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
+class RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
   bool addedToMenu = false; // Initially false
   final ScrollController _scrollController = ScrollController();
 
+  // Initialize the state
   @override
   void initState() {
     super.initState();
     _checkRecipeInWeeklyMenu(); // Check recipe status in Firebase
   }
 
+  // Check if the recipe is in the user's weekly menu
   Future<void> _checkRecipeInWeeklyMenu() async {
     // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
@@ -77,6 +79,7 @@ class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
     }
   }
 
+  // Add the recipe to the user's weekly menu and history
   Future<void> _addToMenu() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -146,6 +149,7 @@ class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
     }
   }
 
+  // Build the Recipe Search Detail Screen
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
