@@ -1,3 +1,40 @@
+/// A screen that displays the details of a selected recipe from the recipe collection.
+///
+/// This screen allows users to view detailed information about a recipe, add it to their weekly menu,
+/// and navigate to other screens using the bottom navigation bar.
+///
+/// The screen uses proportional sizing for various UI elements to ensure responsiveness across different
+/// screen sizes.
+///
+/// The screen also interacts with Firebase to check if the recipe is already in the user's weekly menu
+/// and to add the recipe to the weekly menu and history.
+///
+/// The screen consists of the following main components:
+/// - An app bar with a back button.
+/// - A scrollable body that displays the recipe details and an "Add to My Menu" button.
+/// - A bottom navigation bar for navigating to other screens.
+///
+/// The screen uses the following helper functions for proportional sizing:
+/// - `proportionalWidth`: Calculates the proportional width based on the screen width.
+/// - `proportionalHeight`: Calculates the proportional height based on the screen height.
+/// - `proportionalFontSize`: Calculates the proportional font size based on the screen width.
+///
+/// The screen uses the following main methods:
+/// - `initState`: Initializes the state and checks if the recipe is in the weekly menu.
+/// - `_checkRecipeInWeeklyMenu`: Checks if the recipe is in the user's weekly menu in Firebase.
+/// - `_addToMenu`: Adds the recipe to the user's weekly menu and history in Firebase.
+///
+/// The screen uses the following main widgets:
+/// - `RecipeCardStack`: Displays a stack of recipe cards.
+/// - `RecipeInformationCard`: Displays detailed information about the recipe.
+/// - `ElevatedButton`: A button to add the recipe to the weekly menu.
+///
+/// The screen uses the following main properties:
+/// - `recipe`: The recipe to display details for.
+/// - `addedToMenu`: A boolean indicating whether the recipe has been added to the weekly menu.
+/// - `_scrollController`: A scroll controller for the scrollable body.
+library recipe_collection_detail_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
@@ -26,32 +63,32 @@ double proportionalFontSize(BuildContext context, double size) {
 class RecipeCollectionDetailScreen extends StatefulWidget {
   final Recipe recipe;
 
-  const RecipeCollectionDetailScreen({Key? key, required this.recipe})
-      : super(key: key);
+  const RecipeCollectionDetailScreen({super.key, required this.recipe});
 
   @override
-  _RecipeCollectionDetailScreenState createState() =>
-      _RecipeCollectionDetailScreenState();
+  RecipeCollectionDetailScreenState createState() =>
+      RecipeCollectionDetailScreenState();
 }
 
-class _RecipeCollectionDetailScreenState
+class RecipeCollectionDetailScreenState
     extends State<RecipeCollectionDetailScreen> {
   bool addedToMenu = false; // Initially false
   final ScrollController _scrollController = ScrollController();
 
+  // Check if the recipe is in the weekly menu
   @override
   void initState() {
     super.initState();
     _checkRecipeInWeeklyMenu(); // Check if the recipe is in the menu
   }
 
+  // Check if the recipe is in the weekly menu
   Future<void> _checkRecipeInWeeklyMenu() async {
     // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
 
     // Ensure the user is authenticated
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -75,15 +112,13 @@ class _RecipeCollectionDetailScreenState
           break;
         }
       }
-    } else {
-      print('No meal plan data available.');
-    }
+    } else {}
   }
 
+  // Add the recipe to the weekly menu and history
   Future<void> _addToMenu() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -143,7 +178,6 @@ class _RecipeCollectionDetailScreenState
       setState(() {
         addedToMenu = true;
       });
-      print('Recipe added to menu and history successfully');
     } catch (e) {
       print('Error adding recipe to menu and history: $e');
     }
