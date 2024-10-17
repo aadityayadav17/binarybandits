@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'package:binarybandits/screens/grocery_list_screen/no_grocery_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -85,14 +86,21 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         .child('users/${user.uid}/ingredients'); // Path to the ingredients node
 
     final snapshot = await ingredientsRef.once();
-    final ingredientsData = snapshot.snapshot.value as Map<dynamic, dynamic>;
 
-    ingredientsData.forEach((key, value) {
-      if (value['accepted'] == true) {
-        acceptedIngredients
-            .add(value['name']); // Collect accepted ingredient names
-      }
-    });
+    if (snapshot.snapshot.value == null) {
+      return []; // If there are no ingredients, return an empty list
+    }
+
+    final ingredientsData = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+
+    if (ingredientsData != null) {
+      ingredientsData.forEach((key, value) {
+        if (value['accepted'] == true) {
+          acceptedIngredients
+              .add(value['name']); // Collect accepted ingredient names
+        }
+      });
+    }
 
     return acceptedIngredients;
   }
@@ -114,6 +122,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       if (acceptedIngredients.contains(ingredientName)) {
         filteredProducts.add(product);
       }
+    }
+
+    if (filteredProducts.isEmpty) {
+      // Use a post-frame callback to navigate after the build method finishes
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NoGroceryListScreen()),
+        );
+      });
+      return; // Stop further execution
     }
 
     setState(() {
