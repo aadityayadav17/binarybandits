@@ -1,3 +1,36 @@
+/// RecipeOverviewScreen is a StatefulWidget that displays an overview of
+/// recipes added to the user's meal plan. It allows users to view, adjust
+/// servings, and remove recipes from their weekly menu.
+///
+/// The screen fetches recipes from Firebase based on the user's weekly menu
+/// and displays them in a PageView. Users can adjust the number of servings
+/// for each recipe, apply the same servings to all recipes, and navigate to
+/// the IngredientListPage.
+///
+/// The screen also includes a bottom navigation bar for navigating to other
+/// screens like HomeScreen, GroceryListScreen, and WeeklyMenuScreen.
+///
+/// Proportional helper functions are used to ensure the UI scales correctly
+/// on different screen sizes.
+///
+/// Methods:
+/// - _loadRecipes: Fetches recipes from Firebase and loads them into the
+///   state.
+/// - _updateServingsInDatabase: Updates the number of servings for a recipe
+///   in the Firebase database.
+/// - _adjustServings: Adjusts the number of servings for a recipe and updates
+///   the database.
+/// - _updateRecipeInWeeklyMenu: Updates the acceptance status of a recipe in
+///   the weekly menu in the Firebase database.
+/// - _removeRecipe: Removes a recipe from the weekly menu and updates the
+///   state.
+/// - _applyAllServings: Applies the current servings of the selected recipe
+///   to all recipes.
+///
+/// The build method constructs the UI, including the AppBar, PageView for
+/// recipes, servings adjustment controls, and bottom navigation bar.
+library recipe_overview_screen;
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -23,18 +56,18 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeOverviewScreen extends StatefulWidget {
-  const RecipeOverviewScreen({Key? key}) : super(key: key);
+  const RecipeOverviewScreen({super.key});
 
   @override
-  _RecipeOverviewScreenState createState() => _RecipeOverviewScreenState();
+  RecipeOverviewScreenState createState() => RecipeOverviewScreenState();
 }
 
-class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
+class RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
-  Map<String, int> _servings = {}; // Map for servings
+  final Map<String, int> _servings = {}; // Map for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
-  Map<String, dynamic> _recipeWeeklyMenu = {};
+  final Map<String, dynamic> _recipeWeeklyMenu = {};
 
   @override
   void initState() {
@@ -45,7 +78,6 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   Future<void> _loadRecipes() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -88,9 +120,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
           _servings[recipe['id']] = recipe['servings'];
         }
       });
-    } else {
-      print('No weekly menu data available.');
-    }
+    } else {}
   }
 
   Future<void> _updateServingsInDatabase(String recipeId, int servings) async {
@@ -211,7 +241,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'You successfully added ${_recipes.length} recipes to the My Menu!',
+                      'You successfully added ${_recipes.length} recipes to the My Meal Plan!',
                       style: TextStyle(
                         fontSize: proportionalFontSize(context, 20),
                         fontWeight: FontWeight.bold,
@@ -255,7 +285,8 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                         borderRadius: BorderRadius.circular(
                                             proportionalWidth(context, 15)),
                                         child: Image.asset(
-                                          recipe.image,
+                                          recipe
+                                              .image, // Image generated using DALL·E 3
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height:

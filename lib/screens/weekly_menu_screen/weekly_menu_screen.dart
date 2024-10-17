@@ -1,3 +1,27 @@
+/// A screen that displays the weekly menu for the user. It allows users to view,
+/// save, and remove recipes from their weekly menu. The recipes are loaded from
+/// Firebase and matched with local JSON data.
+///
+/// The screen provides functionalities to:
+/// - Load recipes from Firebase and match them with local JSON data.
+/// - Update recipes in the weekly menu and collection.
+/// - Navigate between recipes.
+/// - Clear all recipes from the weekly menu.
+/// - Show a dialog to confirm clearing all recipes.
+///
+/// The screen also includes a bottom navigation bar for navigating to other
+/// screens such as Home, Recipe Selection, and Grocery List.
+///
+/// The main components of the screen are:
+/// - Recipe cards displaying the current recipe.
+/// - Buttons to save or remove the current recipe.
+/// - Navigation buttons to move to the next or previous recipe.
+/// - A button to clear all recipes from the weekly menu.
+///
+/// The screen handles loading states and navigates to a different screen if no
+/// recipes are available in the weekly menu.
+library weekly_menu_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,13 +37,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  WeeklyMenuScreen({Key? key}) : super(key: key);
+  const WeeklyMenuScreen({super.key});
 
   @override
-  _WeeklyMenuScreenState createState() => _WeeklyMenuScreenState();
+  WeeklyMenuScreenState createState() => WeeklyMenuScreenState();
 }
 
-class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
+class WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
   late List<Recipe> _recipes = [];
@@ -46,7 +70,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         });
         return;
       }
-      String userId = user.uid;
 
       await _loadRecipeCollection(user);
       await _loadRecipeWeeklyMenu(user);
@@ -66,7 +89,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           }
         }
       });
-
+      matchedRecipes.sort((a, b) => a.name.compareTo(b.name));
       setState(() {
         _recipes = matchedRecipes;
         _savedRecipes = List.generate(
@@ -77,13 +100,13 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading recipes: $e');
       setState(() {
         _isLoading = false;
       });
     }
   }
 
+  // Load recipe collection from Firebase
   Future<void> _loadRecipeCollection(User user) async {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref()
@@ -112,6 +135,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Load weekly menu from Firebase
   Future<void> _loadRecipeWeeklyMenu(User user) async {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref()
@@ -142,6 +166,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Update recipe in weekly menu
   Future<void> _updateRecipeInWeeklyMenu(String recipeId,
       {required bool accepted}) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -164,6 +189,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Update recipe in collection
   Future<void> _updateRecipeInCollection(Recipe recipe,
       {required bool saved}) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -211,6 +237,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Go to next recipe
   void _nextRecipe() {
     if (_currentIndex < _recipes.length - 1) {
       setState(() {
@@ -219,6 +246,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Go to previous recipe
   void _previousRecipe() {
     if (_currentIndex > 0) {
       setState(() {
@@ -227,6 +255,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Remove recipe from weekly menu
   Future<void> _removeRecipe(int index) async {
     Recipe recipeToRemove = _recipes[index];
     try {
@@ -240,7 +269,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         }
       });
 
-      if (_recipes.isEmpty) {
+      if (_recipes.isEmpty && mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
         );
@@ -251,6 +280,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Toggle saved state of recipe
   void _toggleSavedRecipe(int index) async {
     Recipe currentRecipe = _recipes[index];
     bool newSavedState = !_savedRecipes[index];
@@ -263,6 +293,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Clear all recipes from weekly menu
   Future<void> _clearAllRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -288,9 +319,11 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           }
         });
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
-        );
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => NoWeeklyMenuScreen()),
+          );
+        }
       } catch (e) {
         print('Error clearing all recipes: $e');
         // Optionally show an error message to the user
@@ -298,6 +331,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
     }
   }
 
+  // Show dialog to confirm clearing all recipes
   void _showClearAllDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -464,7 +498,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "My Menu",
+                            "My Meal Plan",
                             style: GoogleFonts.robotoFlex(
                               textStyle: TextStyle(
                                 color: Colors.black,

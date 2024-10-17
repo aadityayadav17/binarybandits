@@ -1,3 +1,40 @@
+/// A screen that allows users to select recipes for their meal plan.
+///
+/// This screen displays a list of recipes that the user can swipe through and
+/// either accept or reject. Accepted recipes are added to the user's weekly
+/// menu and recipe history in Firebase. Users can also save recipes to their
+/// collection.
+///
+/// The screen uses proportional sizing for UI elements to ensure consistent
+/// appearance across different screen sizes.
+///
+/// The screen also handles loading recipes from a local JSON file and Firebase,
+/// and updates the UI accordingly.
+///
+/// The screen includes the following features:
+/// - Load recipes from a local JSON file and Firebase.
+/// - Display recipes in a swipeable card stack.
+/// - Accept or reject recipes.
+/// - Save recipes to the user's collection.
+/// - Undo the last accepted or rejected recipe.
+/// - Navigate to the recipe overview screen when at least one recipe is selected.
+/// - Display a bottom navigation bar for navigating to other screens.
+///
+/// The screen uses the following widgets:
+/// - `RecipeCardStack`: Displays the current recipe in a swipeable card stack.
+/// - `RecipeInformationCard`: Displays detailed information about the current recipe.
+/// - `BottomNavigationBar`: Provides navigation to other screens.
+///
+/// The screen uses the following helper functions:
+/// - `proportionalWidth`: Calculates width based on screen size.
+/// - `proportionalHeight`: Calculates height based on screen size.
+/// - `proportionalFontSize`: Calculates font size based on screen size.
+///
+/// The screen uses Firebase for authentication and database operations.
+///
+/// The screen uses the `GoogleFonts` package for custom fonts.
+library recipe_selection_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,14 +62,16 @@ double proportionalFontSize(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
 }
 
+// RecipeSelectionScreen class
 class RecipeSelectionScreen extends StatefulWidget {
   const RecipeSelectionScreen({super.key});
 
   @override
-  _RecipeSelectionScreenState createState() => _RecipeSelectionScreenState();
+  RecipeSelectionScreenState createState() => RecipeSelectionScreenState();
 }
 
-class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
+// RecipeSelectionScreenState class
+class RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     with SingleTickerProviderStateMixin {
   List<Recipe> _recipes = [];
   int _currentRecipeIndex = 0;
@@ -41,15 +80,12 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
   Map<String, dynamic> _recipeWeeklyMenu = {};
-  Map<String, String> _recipeWeeklyMenuKeys = {};
   Map<String, dynamic> _recipeHistory = {};
-  Map<String, String> _recipeHistoryKeys = {};
   Map<String, dynamic> _recipeCollection = {};
-  Map<String, String> _recipeCollectionKeys = {};
 
   late AnimationController _swipeController;
-  late Animation<Offset> _swipeAnimation;
 
+  // The initState method is updated to load recipes from JSON and Firebase
   @override
   void initState() {
     super.initState();
@@ -58,12 +94,9 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _swipeAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset.zero,
-    ).animate(_swipeController);
   }
 
+  // Load recipes from JSON and Firebase
   Future<void> _loadRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -74,6 +107,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     List<Recipe> allRecipes =
         jsonData.map((data) => Recipe.fromJson(data)).toList();
 
+      allRecipes.shuffle();
     if (user != null) {
       await _loadDatabaseRecipes(user, 'recipeWeeklyMenu');
       await _loadDatabaseRecipes(user, 'recipeHistory');
@@ -124,11 +158,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       });
     }
 
-    if (_recipes.isEmpty) {
+    // Check if widget is still mounted before using context
+    if (_recipes.isEmpty && mounted) {
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
     }
   }
 
+  // Load recipes from Firebase
   Future<void> _loadDatabaseRecipes(User user, String databaseName) async {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref()
@@ -161,6 +197,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  // Load recipe collection from Firebase
   Future<void> _loadRecipeCollection(User user) async {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref()
@@ -189,6 +226,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  // Update recipe in Firebase
   Future<void> _updateRecipeInDatabase(
       String databaseName, Recipe recipe, bool accepted) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -248,6 +286,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  // Update recipe in collection
   Future<void> _updateRecipeInCollection(Recipe recipe,
       {required bool saved}) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -295,128 +334,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  Future<void> _loadSavedRecipes() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference collectionRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeCollection');
-
-      DataSnapshot collectionSnapshot =
-          await collectionRef.once().then((event) => event.snapshot);
-
-      if (collectionSnapshot.value != null) {
-        Map<dynamic, dynamic> collectionMap =
-            collectionSnapshot.value as Map<dynamic, dynamic>;
-        Set<String> savedRecipeIds = collectionMap.values
-            .where((recipe) => recipe['saved'] == true)
-            .map<String>((recipe) => recipe['id'].toString())
-            .toSet();
-
-        setState(() {
-          for (int i = 0; i < _recipes.length; i++) {
-            _savedRecipes[i] = savedRecipeIds.contains(_recipes[i].id);
-          }
-        });
-      }
-    }
-  }
-
-  Future<void> _loadWeeklyMenu(User user) async {
-    DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
-        .ref()
-        .child('users')
-        .child(user.uid)
-        .child('recipeWeeklyMenu');
-
-    DataSnapshot weeklyMenuSnapshot =
-        await weeklyMenuRef.once().then((event) => event.snapshot);
-
-    if (weeklyMenuSnapshot.value != null) {
-      Map<dynamic, dynamic> weeklyMenuMap =
-          weeklyMenuSnapshot.value as Map<dynamic, dynamic>;
-
-      _recipeWeeklyMenuKeys.clear();
-      Set<String> acceptedRecipeIds = {};
-
-      weeklyMenuMap.forEach((key, value) {
-        String recipeId = value['id'].toString();
-        _recipeWeeklyMenuKeys[recipeId] = key;
-        if (value['accepted'] == true) {
-          acceptedRecipeIds.add(recipeId);
-        }
-      });
-
-      setState(() {
-        _recipes = _recipes
-            .where((recipe) => !acceptedRecipeIds.contains(recipe.id))
-            .toList();
-        _acceptedRecipes = List.generate(_recipes.length, (index) => false);
-        _savedRecipes = List.generate(_recipes.length, (index) => false);
-        _selectedCount = acceptedRecipeIds.length;
-      });
-    }
-  }
-
-  Future<void> _loadRecipeHistory(User user) async {
-    DatabaseReference historyRef = FirebaseDatabase.instance
-        .ref()
-        .child('users')
-        .child(user.uid)
-        .child('recipeHistory');
-
-    DataSnapshot historySnapshot =
-        await historyRef.once().then((event) => event.snapshot);
-
-    if (historySnapshot.value != null) {
-      Map<dynamic, dynamic> historyMap =
-          historySnapshot.value as Map<dynamic, dynamic>;
-
-      _recipeHistoryKeys.clear();
-
-      historyMap.forEach((key, value) {
-        String recipeId = value['id'].toString();
-        _recipeHistoryKeys[recipeId] = key;
-      });
-    }
-  }
-
-  Future<void> _updateRecipeWeeklyMenu(Recipe recipe,
-      {required bool accepted}) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await _updateRecipeInDatabase('recipeWeeklyMenu', recipe, accepted);
-    }
-  }
-
-  Future<void> _updateRecipeHistory(Recipe recipe,
-      {required bool accepted}) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await _updateRecipeInDatabase('recipeHistory', recipe, accepted);
-    }
-  }
-
-  Future<void> _updateServings(String recipeId, int newServings) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null && _recipeWeeklyMenu.containsKey(recipeId)) {
-      DatabaseReference ref = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeWeeklyMenu')
-          .child(_recipeWeeklyMenu[recipeId]['key']);
-
-      await ref.update({'servings': newServings});
-
-      setState(() {
-        _recipeWeeklyMenu[recipeId]['servings'] = newServings;
-      });
-    }
-  }
-
+  // Accept recipe methods
   Future<void> _acceptRecipe() async {
     try {
       Recipe currentRecipe = _recipes[_currentRecipeIndex];
@@ -426,13 +344,14 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       setState(() {
         _acceptedRecipes[_currentRecipeIndex] = true;
         _selectedCount++;
-        _nextRecipe();
       });
+      _nextRecipe(); // This will handle moving to the next recipe or redirecting if all are accepted
     } catch (e) {
       _showErrorDialog("Error accepting recipe: $e");
     }
   }
 
+  // Reject recipe method
   Future<void> _rejectRecipe() async {
     try {
       Recipe currentRecipe = _recipes[_currentRecipeIndex];
@@ -448,22 +367,32 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  // Move to the next recipe
   void _nextRecipe() {
-    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
-    while (_acceptedRecipes[nextIndex] &&
-        _recipeWeeklyMenu.length < _recipes.length) {
-      nextIndex = (nextIndex + 1) % _recipes.length;
-    }
-    _currentRecipeIndex = nextIndex;
-    _checkAllRecipesAccepted();
-  }
-
-  void _checkAllRecipesAccepted() {
-    if (_acceptedRecipes.every((isAccepted) => isAccepted)) {
+    if (_selectedCount == _recipes.length) {
+      // All recipes have been accepted, redirect to no recipe selection screen
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+      return;
+    }
+
+    int nextIndex = (_currentRecipeIndex + 1) % _recipes.length;
+    int loopCount = 0;
+    while (_acceptedRecipes[nextIndex] && loopCount < _recipes.length) {
+      nextIndex = (nextIndex + 1) % _recipes.length;
+      loopCount++;
+    }
+
+    if (loopCount == _recipes.length) {
+      // We've looped through all recipes and they're all accepted
+      Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
+    } else {
+      setState(() {
+        _currentRecipeIndex = nextIndex;
+      });
     }
   }
 
+  // Save recipe method
   Future<void> _onSaveRecipe() async {
     try {
       Recipe currentRecipe = _recipes[_currentRecipeIndex];
@@ -478,42 +407,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  Future<void> _saveRecipeToFirebase(Recipe recipe,
-      {required bool accepted}) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeWeeklyMenu');
-
-      // Check if the recipe already exists in the weeklyMenu
-      Query query = weeklyMenuRef.orderByChild('id').equalTo(recipe.id);
-      DatabaseEvent event = await query.once();
-
-      if (event.snapshot.value != null) {
-        // Recipe exists, update it
-        Map<dynamic, dynamic> recipeMap =
-            event.snapshot.value as Map<dynamic, dynamic>;
-        String key = recipeMap.keys.first;
-        await weeklyMenuRef.child(key).update({
-          'accepted': accepted,
-          'timestamp': ServerValue.timestamp,
-        });
-      } else {
-        // Recipe doesn't exist, create a new entry
-        Map<String, dynamic> recipeData = {
-          'id': recipe.id,
-          'name': recipe.name,
-          'accepted': accepted,
-          'timestamp': ServerValue.timestamp,
-        };
-        await weeklyMenuRef.push().set(recipeData);
-      }
-    }
-  }
-
+  // Undo recipe method
   Future<void> _undoRecipe() async {
     if (_recipeWeeklyMenu.isNotEmpty) {
       try {
@@ -538,6 +432,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
+  // Remove recipe from database
   Future<void> _removeRecipeFromDatabase(
       String databaseName, Recipe recipe) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -568,19 +463,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     }
   }
 
-  Future<void> _removeRecipeFromWeeklyMenu(Recipe recipe) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null && _recipeWeeklyMenuKeys.containsKey(recipe.id)) {
-      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeWeeklyMenu');
-
-      await weeklyMenuRef.child(_recipeWeeklyMenuKeys[recipe.id]!).remove();
-    }
-  }
-
+  // Show error dialog
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -597,36 +480,13 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     );
   }
 
-  Future<void> _addRecipeToWeeklyMenu(Recipe recipe,
-      {required bool accepted}) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DatabaseReference weeklyMenuRef = FirebaseDatabase.instance
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('recipeWeeklyMenu');
-
-      Map<String, dynamic> recipeData = {
-        'id': recipe.id,
-        'name': recipe.name,
-        'accepted': accepted,
-        'timestamp': ServerValue.timestamp,
-      };
-
-      await weeklyMenuRef.push().set(recipeData);
-    }
-  }
-
+  // The dispose method is updated to dispose of the new controllers
   @override
   void dispose() {
     _scrollController.dispose();
     _swipeController.dispose();
     super.dispose();
   }
-
-  // The build method and other UI-related methods remain largely unchanged
-  // but should be updated to use the new state variables and methods
 
   @override
   Widget build(BuildContext context) {
@@ -685,7 +545,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Discover\nRecipe",
+                                    "Create\nMeal Plan",
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
@@ -791,14 +651,19 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                       ),
                       SizedBox(width: proportionalWidth(context, 16)),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const RecipeOverviewScreen(),
-                          ));
-                        },
+                        onPressed: _selectedCount > 0
+                            ? () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const RecipeOverviewScreen(),
+                                ));
+                              }
+                            : null, // Disable button if no recipes are selected
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(73, 160, 120, 1),
+                          backgroundColor: _selectedCount > 0
+                              ? const Color.fromRGBO(
+                                  73, 160, 120, 1) // Active color
+                              : Colors.grey, // Inactive color
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 proportionalWidth(context, 10)),
@@ -809,7 +674,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           ),
                         ),
                         child: Text(
-                          'Done',
+                          'Next',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: proportionalFontSize(context, 16),
@@ -835,6 +700,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     );
   }
 
+  // Build action button
   Widget _buildActionButton(String backgroundPath, String iconPath,
       VoidCallback onPressed, double screenWidth) {
     return ElevatedButton(
@@ -866,6 +732,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
     );
   }
 
+  // Build bottom navigation bar
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,

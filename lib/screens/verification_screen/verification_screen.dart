@@ -1,3 +1,19 @@
+/// A screen that handles email verification for the user. This screen periodically checks if the user's email
+/// has been verified and navigates to the profile screen upon successful verification.
+///
+/// The screen displays a message instructing the user to check their email for a verification link and provides
+/// options to resend the verification email or go back to the sign-up screen.
+///
+/// The verification check is performed every 5 seconds using a timer. If the email is verified, the timer is
+/// canceled, and the user is navigated to the profile screen.
+///
+/// The screen also includes a button to manually check the email verification status and a button to resend the
+/// verification email.
+///
+/// The layout of the screen is responsive, with font sizes and dimensions adjusted proportionally based on the
+/// screen size.
+library verification_screen;
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,13 +21,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({Key? key}) : super(key: key);
+  const VerificationScreen({super.key});
 
   @override
-  _VerificationScreenState createState() => _VerificationScreenState();
+  VerificationScreenState createState() => VerificationScreenState();
 }
 
-class _VerificationScreenState extends State<VerificationScreen> {
+class VerificationScreenState extends State<VerificationScreen> {
   Timer? _timer;
 
   @override
@@ -22,15 +38,18 @@ class _VerificationScreenState extends State<VerificationScreen> {
     });
   }
 
+  // Check if the email is verified
   Future<void> _checkEmailVerified() async {
     User? user = FirebaseAuth.instance.currentUser;
     await user?.reload();
     user = FirebaseAuth.instance.currentUser;
     if (user != null && user.emailVerified) {
       _timer?.cancel();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => const ProfileScreen(fromSignup: true),
-      ));
+      if (mounted) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => const ProfileScreen(fromSignup: true),
+        ));
+      }
     }
   }
 
@@ -40,6 +59,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
     super.dispose();
   }
 
+  // Show a snackbar message
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),

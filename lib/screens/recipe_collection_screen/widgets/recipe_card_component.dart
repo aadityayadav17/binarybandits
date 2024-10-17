@@ -1,3 +1,29 @@
+/// A widget that displays a recipe image card with proportional dimensions.
+///
+/// The [RecipeImageCard] widget is a stateless widget that takes a [Recipe] object
+/// and the screen width as parameters. It displays the recipe image inside a card
+/// with rounded corners and proportional dimensions based on the screen size.
+///
+/// Parameters:
+/// - [recipe]: The [Recipe] object containing the recipe details.
+/// - [screenWidth]: The width of the screen to calculate proportional dimensions.
+
+/// A widget that displays a stack of recipe cards with proportional dimensions.
+///
+/// The [RecipeCardStack] widget is a stateless widget that takes a [Recipe] object,
+/// screen width, card top position, card height, and a scroll controller as parameters.
+/// It displays a stack of recipe cards with the recipe image on top and the recipe
+/// information card below it. The dimensions are calculated proportionally based on
+/// the screen size.
+///
+/// Parameters:
+/// - [recipe]: The [Recipe] object containing the recipe details.
+/// - [screenWidth]: The width of the screen to calculate proportional dimensions.
+/// - [cardTopPosition]: The top position of the card stack.
+/// - [cardHeight]: The height of the card.
+/// - [scrollController]: The scroll controller for the recipe information card.
+library recipe_card_component;
+
 import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
@@ -15,15 +41,16 @@ double proportionalFontSize(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
 }
 
+// Add controller to constructor
 class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;
   final double screenWidth;
 
   const RecipeImageCard({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +70,7 @@ class RecipeImageCard extends StatelessWidget {
               borderRadius:
                   BorderRadius.circular(proportionalWidth(context, 20)),
               child: Image.asset(
-                recipe.image,
+                recipe.image, // Image generated using DALL·E 3
                 width: double.infinity,
                 height: proportionalHeight(context, 320),
                 fit: BoxFit.cover,
@@ -56,6 +83,7 @@ class RecipeImageCard extends StatelessWidget {
   }
 }
 
+// Add controller to constructor
 class RecipeCardStack extends StatelessWidget {
   final Recipe recipe;
   final double screenWidth;
@@ -64,13 +92,13 @@ class RecipeCardStack extends StatelessWidget {
   final ScrollController scrollController;
 
   const RecipeCardStack({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
     required this.cardTopPosition,
     required this.cardHeight,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

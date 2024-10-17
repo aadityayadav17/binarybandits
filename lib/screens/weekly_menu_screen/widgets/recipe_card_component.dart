@@ -15,15 +15,16 @@ double proportionalFontSize(BuildContext context, double size) {
   return size * MediaQuery.of(context).size.width / 375;
 }
 
+// RecipeImageCard
 class RecipeImageCard extends StatelessWidget {
   final Recipe recipe;
   final double screenWidth;
 
   const RecipeImageCard({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class RecipeImageCard extends StatelessWidget {
               borderRadius:
                   BorderRadius.circular(proportionalWidth(context, 20)),
               child: Image.asset(
-                recipe.image,
+                recipe.image, // Image generated using DALL·E 3
                 width: double.infinity,
                 height: proportionalHeight(context, 320),
                 fit: BoxFit.cover,
@@ -57,6 +58,7 @@ class RecipeImageCard extends StatelessWidget {
   }
 }
 
+// RecipeInformationCard
 class RecipeCardStack extends StatelessWidget {
   final Recipe recipe;
   final double screenWidth;
@@ -65,13 +67,13 @@ class RecipeCardStack extends StatelessWidget {
   final ScrollController scrollController;
 
   const RecipeCardStack({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
     required this.cardTopPosition,
     required this.cardHeight,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

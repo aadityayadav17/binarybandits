@@ -1,3 +1,29 @@
+/// A custom widget that displays a labeled input field for height or weight
+/// with a specified unit. The input field is styled with proportional sizes
+/// based on the screen dimensions.
+///
+/// The widget takes a label text, unit, a text editing controller, and a
+/// callback function to handle changes in the input field.
+///
+/// Example usage:
+/// ```dart
+/// HeightWeightField(
+///   labelText: 'Height',
+///   unit: 'cm',
+///   controller: heightController,
+///   onChanged: (value) {
+///     // Handle change
+///   },
+/// )
+/// ```
+///
+/// Parameters:
+/// - `labelText`: The text to display as the label for the input field.
+/// - `unit`: The unit of measurement to display next to the input field.
+/// - `controller`: The [TextEditingController] to manage the input field's text.
+/// - `onChanged`: A callback function that is called when the input field's text changes.
+library height_weight_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
@@ -9,13 +35,14 @@ class HeightWeightField extends StatelessWidget {
       controller; // Add controller for height/weight input
   final Function(String) onChanged;
 
+  // Add controller to constructor
   const HeightWeightField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.unit,
     required this.controller, // Add controller as a required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,36 @@
+/// A custom widget that represents a budget input field with a label and a text field.
+///
+/// The `BudgetField` widget is designed to take a monetary input from the user. It includes
+/// a label, a dollar sign prefix, and a text field for entering the budget amount. The text
+/// field is controlled by a `TextEditingController` and allows only numeric input with a
+/// maximum length of 5 digits.
+///
+/// The widget adjusts its size and font based on the screen dimensions to ensure a
+/// responsive design.
+///
+/// ## Parameters:
+///
+/// - `labelText` (String): The text to display as the label for the budget field.
+/// - `controller` (TextEditingController): The controller to manage the text input for the budget field.
+/// - `onChanged` (Function(String)): A callback function that is called whenever the text in the field changes.
+///
+/// ## Example:
+///
+/// ```dart
+/// BudgetField(
+///   labelText: 'Enter Budget',
+///   controller: _budgetController,
+///   onChanged: (value) {
+///     // Handle change in budget input
+///   },
+/// )
+/// ```
+///
+/// ## Note:
+///
+/// The widget uses the `google_fonts` package to apply the Roboto font to the text elements.
+library budget_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
@@ -7,12 +40,13 @@ class BudgetField extends StatelessWidget {
   final TextEditingController controller; // Add controller for budget input
   final Function(String) onChanged;
 
+  // Update the constructor to include controller as a required parameter
   const BudgetField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.controller, // Add controller as required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +100,7 @@ class BudgetField extends StatelessWidget {
                 ),
               ),
               SizedBox(width: proportionalWidth(8)),
-              Container(
+              SizedBox(
                 width: proportionalWidth(
                     50), // Proportional width for the underline
                 child: TextField(

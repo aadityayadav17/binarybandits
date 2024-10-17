@@ -1,7 +1,40 @@
+/// A widget that displays detailed information about a recipe in a card format.
+///
+/// The `RecipeInformationCard` widget is a stateful widget that shows various
+/// details about a recipe, including its name, difficulty, total time, rating,
+/// nutritional information, tags, ingredients, and steps. The card can toggle
+/// between showing the ingredients list and the steps list.
+///
+/// The card is positioned at a specified `topPosition` and has a specified
+/// `cardHeight`. It also takes a `scrollController` to control the scrolling
+/// behavior within the card.
+///
+/// The card's width is proportional to the screen width, and it has a consistent
+/// margin and rounded corners.
+///
+/// The widget uses the `GoogleFonts` package for custom fonts and the `Image.asset`
+/// method to display icons.
+///
+/// The `RecipeInformationCard` widget requires the following parameters:
+///
+/// - `recipe`: The recipe object containing all the details to be displayed.
+/// - `topPosition`: The top position of the card.
+/// - `cardHeight`: The height of the card.
+/// - `scrollController`: The scroll controller for the card's scrollable content.
+/// - `screenWidth`: The width of the screen.
+/// - `screenHeight`: The height of the screen.
+///
+/// The widget provides several private methods to build different parts of the
+/// card, including the header row, nutrition row, recipe name, tags, toggle buttons,
+/// ingredients list, and steps list. It also includes a utility method to capitalize
+/// the first letter of a string.
+library recipe_information_card;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
 
+// Recipe Information Card
 class RecipeInformationCard extends StatefulWidget {
   final Recipe recipe;
   final double topPosition;
@@ -21,10 +54,10 @@ class RecipeInformationCard extends StatefulWidget {
   }) : super(key: ValueKey(recipe.id));
 
   @override
-  _RecipeInformationCardState createState() => _RecipeInformationCardState();
+  RecipeInformationCardState createState() => RecipeInformationCardState();
 }
 
-class _RecipeInformationCardState extends State<RecipeInformationCard> {
+class RecipeInformationCardState extends State<RecipeInformationCard> {
   bool showIngredients = true;
 
   @override
@@ -74,6 +107,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the header row
   Widget _buildHeaderRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,6 +134,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the nutrition row
   Widget _buildNutritionRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -120,6 +155,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the recipe name
   Widget _buildRecipeName() {
     return Text(
       widget.recipe.name,
@@ -132,6 +168,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the tags
   Widget _buildTags(Recipe recipe) {
     List<Widget> tags = [];
     if (recipe.classification != null && recipe.classification!.isNotEmpty) {
@@ -153,6 +190,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     return Wrap(spacing: 8.0, runSpacing: 4.0, children: tags);
   }
 
+  // Method to build the icon and text
   Widget _buildIconText(String iconPath, String text) {
     return Column(
       children: [
@@ -163,6 +201,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the icon and text side by side
   Widget _buildIconTextSideBySide(String iconPath, String text) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -174,6 +213,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the tag
   Widget _buildTag(String text, Color backgroundColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -186,6 +226,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the toggle buttons
   Widget _buildToggleButtons() {
     return Row(
       children: [
@@ -196,6 +237,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the toggle button
   Widget _buildToggleButton(String text, bool isSelected) {
     return GestureDetector(
       onTap: () {
@@ -224,6 +266,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Method to build the ingredients list
   Widget _buildIngredientsList(Recipe recipe) {
     final ingredients = recipe.ingredientsQuantityInG.split('\n').map((line) {
       final parts = line.split(' -> ');
@@ -253,6 +296,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Build the steps list
   Widget _buildStepsList(Recipe recipe) {
     return ListView.builder(
       shrinkWrap: true,
@@ -278,6 +322,7 @@ class _RecipeInformationCardState extends State<RecipeInformationCard> {
     );
   }
 
+  // Capitalize the first letter of a string
   String capitalizeFirstLetter(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);

@@ -1,3 +1,27 @@
+/// IngredientListPage is a StatefulWidget that displays a list of ingredients
+/// for recipes selected by the user. It allows users to select or deselect
+/// ingredients and update their status in Firebase.
+///
+/// The page includes:
+/// - Loading recipes and ingredients from Firebase.
+/// - Displaying a list of ingredients with the ability to select/deselect them.
+/// - Updating ingredient quantities and their status in Firebase.
+/// - Navigating to the Grocery List screen.
+///
+/// The main components of the page are:
+/// - AppBar with a back button.
+/// - Recipe tabs to switch between different recipes.
+/// - Ingredient list with selection functionality.
+/// - Button to add selected ingredients to the grocery list.
+/// - Bottom navigation bar for navigation between different screens.
+///
+/// The class includes methods for:
+/// - Loading recipes and ingredients from Firebase.
+/// - Updating ingredient quantities and their status in Firebase.
+/// - Parsing ingredient quantities from a string.
+/// - Building UI components such as recipe tabs, ingredient list, and buttons.
+library ingredient_list_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,11 +34,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class IngredientListPage extends StatefulWidget {
+  const IngredientListPage({super.key});
+
   @override
-  _IngredientListPageState createState() => _IngredientListPageState();
+  IngredientListPageState createState() => IngredientListPageState();
 }
 
-class _IngredientListPageState extends State<IngredientListPage> {
+class IngredientListPageState extends State<IngredientListPage> {
   List<Recipe> recipes = [];
   Recipe? selectedRecipe;
   bool isAllSelected = true;
@@ -23,16 +49,17 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Map<String, String> ingredientKeys = {};
   Map<String, int> recipeServings = {};
 
+  // Init state
   @override
   void initState() {
     super.initState();
     _loadRecipes();
   }
 
+  // Method to load recipes
   Future<void> _loadRecipes() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -85,11 +112,10 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
       await updateAllIngredientQuantities();
       _updateAllIngredients();
-    } else {
-      print('No weekly menu data available.');
-    }
+    } else {}
   }
 
+  // Method to update all ingredients
   void _updateAllIngredients() {
     Set<String> allIngredients = {};
     for (var recipe in recipes) {
@@ -103,6 +129,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
   }
 
+  // Method to toggle ingredient
   Future<void> _toggleIngredient(String ingredient) async {
     final newState = !(selectedIngredients[ingredient] ?? false);
     setState(() {
@@ -111,6 +138,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     await _updateIngredientInFirebase(ingredient, newState);
   }
 
+  // Update ingredient in Firebase
   Future<void> _updateIngredientInFirebase(
       String ingredient, bool isSelected) async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -150,6 +178,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     });
   }
 
+  // Update all ingredients in Firebase
   Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -203,10 +232,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
     setState(() {});
   }
 
+  // Get count of selected items
   int _getSelectedItemsCount() {
     return selectedIngredients.values.where((isSelected) => isSelected).length;
   }
 
+  // Parse ingredients quantity in grams
   List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
     return ingredientsQuantityInGrams
         .split('\n')
@@ -214,6 +245,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
         .toList();
   }
 
+  // Get list of ingredients
   List<String> _getIngredientsList() {
     List<String> ingredients;
     if (isAllSelected) {
@@ -233,6 +265,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     return ingredients;
   }
 
+  // Parse ingredients quantity in grams
   Map<String, double> parseIngredientsQuantity(
       String ingredientsQuantityInGrams) {
     Map<String, double> result = {};
@@ -249,6 +282,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     return result;
   }
 
+  // Update ingredient quantities for a recipe
   Future<void> updateIngredientQuantities(Recipe recipe) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -273,47 +307,20 @@ class _IngredientListPageState extends State<IngredientListPage> {
       }
 
       final ingredientRef = ingredientsRef.child(ingredientKey);
-      final snapshot = await ingredientRef.get();
 
       Map<String, dynamic> updateData = {
         'name': ingredient,
+        'quantity': quantity,
         'unit': 'g',
+        'accepted': false,
+        'recipes': {recipe.id: true},
       };
-
-      if (snapshot.exists) {
-        final currentData = snapshot.value as Map<dynamic, dynamic>;
-        updateData['accepted'] = currentData['accepted'] ?? false;
-
-        // Calculate total quantity considering all recipes
-        double totalQuantity = quantity;
-        Map<String, bool> recipes =
-            Map<String, bool>.from(currentData['recipes'] ?? {});
-        for (var recipeId in recipes.keys) {
-          if (recipeId != recipe.id) {
-            var recipeIngredients = parseIngredientsQuantity(this
-                .recipes
-                .firstWhere((r) => r.id == recipeId)
-                .ingredientsQuantityInGrams);
-            if (recipeIngredients.containsKey(ingredient)) {
-              int recipeServings = this.recipeServings[recipeId] ?? 1;
-              totalQuantity += recipeIngredients[ingredient]! * recipeServings;
-            }
-          }
-        }
-
-        updateData['quantity'] = totalQuantity;
-        recipes[recipe.id] = true;
-        updateData['recipes'] = recipes;
-      } else {
-        updateData['accepted'] = false;
-        updateData['quantity'] = quantity;
-        updateData['recipes'] = {recipe.id: true};
-      }
 
       await ingredientRef.update(updateData);
     }
   }
 
+  // Update all ingredient quantities
   Future<void> updateAllIngredientQuantities() async {
     for (var recipe in recipes) {
       await updateIngredientQuantities(recipe);
@@ -424,6 +431,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build ingredient card
   Widget _buildIngredientCard(double screenWidth, double screenHeight) {
     List<String> ingredients = _getIngredientsList();
 
@@ -449,7 +457,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
                       onPressed: () async {
@@ -505,6 +513,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build ingredient item
   Widget _buildIngredientItem(
       String ingredient, double screenWidth, double screenHeight) {
     bool isSelected = selectedIngredients[ingredient] ?? false;
@@ -578,8 +587,9 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build recipe tabs
   Widget _buildRecipeTabs(double screenWidth) {
-    return Container(
+    return SizedBox(
       height: proportionalHeight(40),
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -608,6 +618,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build tab with shadow
   Widget _buildTabWithShadow(Widget tab) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: proportionalWidth(8)),
@@ -627,6 +638,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build recipe tab
   Widget _buildRecipeTab(String title, bool isSelected, VoidCallback onTap) {
     return ElevatedButton(
       onPressed: onTap,
@@ -649,6 +661,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Bottom Navigation Bar
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       backgroundColor: Colors.white,

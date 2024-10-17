@@ -1,3 +1,35 @@
+/// A screen that displays detailed information about a selected recipe and allows
+/// the user to add the recipe to their weekly menu.
+///
+/// The `RecipeSearchDetailScreen` is a stateful widget that shows detailed information
+/// about a recipe. It provides functionality to check if the recipe is already in the
+/// user's weekly menu and allows the user to add it if not.
+///
+/// The screen includes:
+/// - An app bar with a back button.
+/// - A scrollable body with recipe details.
+/// - A button to add the recipe to the weekly menu.
+/// - A bottom navigation bar for navigation between different screens.
+///
+/// The screen uses Firebase to check and update the user's weekly menu and recipe history.
+///
+/// Proportional methods are used to ensure the UI scales correctly on different screen sizes.
+///
+/// Properties:
+/// - `recipe`: The recipe to display details for.
+///
+/// Methods:
+/// - `proportionalWidth`: Calculates width proportional to the screen size.
+/// - `proportionalHeight`: Calculates height proportional to the screen size.
+/// - `proportionalFontSize`: Calculates font size proportional to the screen size.
+/// - `_checkRecipeInWeeklyMenu`: Checks if the recipe is in the user's weekly menu.
+/// - `_addToMenu`: Adds the recipe to the user's weekly menu and history.
+///
+/// State:
+/// - `addedToMenu`: A boolean indicating if the recipe has been added to the weekly menu.
+/// - `_scrollController`: A controller for the scrollable content.
+library recipe_search_detail_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
@@ -26,30 +58,31 @@ double proportionalFontSize(BuildContext context, double size) {
 class RecipeSearchDetailScreen extends StatefulWidget {
   final Recipe recipe;
 
-  RecipeSearchDetailScreen({Key? key, required this.recipe}) : super(key: key);
+  const RecipeSearchDetailScreen({super.key, required this.recipe});
 
   @override
-  _RecipeSearchDetailScreenState createState() =>
-      _RecipeSearchDetailScreenState();
+  RecipeSearchDetailScreenState createState() =>
+      RecipeSearchDetailScreenState();
 }
 
-class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
+class RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
   bool addedToMenu = false; // Initially false
   final ScrollController _scrollController = ScrollController();
 
+  // Initialize the state
   @override
   void initState() {
     super.initState();
     _checkRecipeInWeeklyMenu(); // Check recipe status in Firebase
   }
 
+  // Check if the recipe is in the user's weekly menu
   Future<void> _checkRecipeInWeeklyMenu() async {
     // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
 
     // Ensure the user is authenticated
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -72,15 +105,13 @@ class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
           break;
         }
       }
-    } else {
-      print('No weekly menu data available.');
-    }
+    } else {}
   }
 
+  // Add the recipe to the user's weekly menu and history
   Future<void> _addToMenu() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -140,12 +171,12 @@ class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
       setState(() {
         addedToMenu = true;
       });
-      print('Recipe added to menu and history successfully');
     } catch (e) {
-      print('Error adding recipe to menu and history: $e');
+      print(e);
     }
   }
 
+  // Build the Recipe Search Detail Screen
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -253,7 +284,9 @@ class _RecipeSearchDetailScreenState extends State<RecipeSearchDetailScreen> {
                       child: SizedBox(
                         width: proportionalWidth(context, 320),
                         child: Text(
-                          addedToMenu ? 'Added to My Menu' : 'Add to My Menu',
+                          addedToMenu
+                              ? 'Added to My Meal Plan'
+                              : 'Add to My Meal Plan',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,

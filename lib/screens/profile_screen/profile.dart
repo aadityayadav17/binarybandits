@@ -1,13 +1,52 @@
-import 'package:flutter/material.dart';  // Flutter framework for UI components
-import 'package:firebase_auth/firebase_auth.dart';  // Firebase Authentication
-import 'package:firebase_database/firebase_database.dart';  // Firebase Realtime Database
-import 'package:google_fonts/google_fonts.dart';  // Google Fonts for text styling
-import 'package:flutter/services.dart';  // For loading assets (like JSON files)
-import 'dart:convert';  // For JSON encoding and decoding
-import 'widgets/profile_form_fields.dart';  // Custom widget for profile form fields
-import 'widgets/save_button.dart';  // Custom widget for save button
-import '../home_screen/home_screen.dart';  // Home screen navigation after saving profile
-import '../login_screen/login_screen.dart';  // Login screen for log out functionality
+/// The `ProfileScreen` widget displays and manages the user's profile information.
+/// It allows users to view, edit, and save their profile details, including personal
+/// information, dietary preferences, and dietary restrictions. The profile data is
+/// stored and retrieved from Firebase Realtime Database.
+///
+/// The screen also provides functionality to calculate the user's daily calorie
+/// requirements based on their weight, height, and dietary preferences. Additionally,
+/// it filters and uploads possible recipes that match the user's dietary needs.
+///
+/// The `ProfileScreen` widget is a stateful widget that maintains the state of the
+/// profile form fields and handles various actions such as saving the profile,
+/// loading profile data, and logging out the user.
+///
+/// Properties:
+/// - `fromSignup`: A boolean indicating whether the screen is accessed from the signup
+///   process.
+///
+/// State:
+/// - `ProfileScreenState`: The state class for `ProfileScreen` that manages the profile
+///   form fields, handles data loading and saving, and provides UI elements for the
+///   profile screen.
+///
+/// Methods:
+/// - `initState`: Initializes the state and loads the user's profile data if the user
+///   is logged in.
+/// - `_saveProfile`: Validates and saves the profile data to Firebase Realtime Database,
+///   calculates the user's calorie requirements, and filters possible recipes based on
+///   the user's preferences.
+/// - `_loadProfile`: Loads the user's profile data from Firebase Realtime Database.
+/// - `_logout`: Logs out the user and redirects to the login screen.
+/// - `_updateSaveStatus`: Updates the save status of the profile form.
+/// - `_validateName`: Validates the name field to ensure it is not empty.
+/// - `_showInvalidInputDialog`: Displays a dialog indicating invalid input if the name
+///   field is empty.
+///
+/// The `ProfileScreen` widget uses various other widgets such as `ProfileFormFields`
+/// and `SaveButton` to build the profile form and handle user interactions.
+library profile_screen;
+
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'widgets/profile_form_fields.dart';
+import 'widgets/save_button.dart';
+import '../home_screen/home_screen.dart';
+import '../login_screen/login_screen.dart';
 import 'package:binarybandits/models/recipe.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,19 +55,20 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.fromSignup});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   // Controllers for each field
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _budgetController = TextEditingController();
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _weightController = TextEditingController();
-  TextEditingController _expectedWeightController = TextEditingController();
-  TextEditingController _homeDistrictController = TextEditingController();
- 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _budgetController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _expectedWeightController =
+      TextEditingController();
+  final TextEditingController _homeDistrictController = TextEditingController();
+
   double calories = 0;
   String? dietaryPreference = 'No Preference';
   List<String> dietaryRestrictions = [];
@@ -39,6 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final databaseRef = FirebaseDatabase.instance.ref();
   User? user; // Firebase user object to track the logged-in user
 
+  // Load user-specific profile data
   @override
   void initState() {
     super.initState();
@@ -46,40 +87,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (user != null) {
       _loadProfile(user!.uid); // Load user-specific profile data using UID
-    } else {
-      print('No user is signed in.');
-    }
+    } else {}
   }
 
   // Save profile data to Firebase Realtime Database
-void _saveProfile() async {
-  _validateName(
-      _nameController.text); // Ensure validation is called before checking
+  void _saveProfile() async {
+    _validateName(
+        _nameController.text); // Ensure validation is called before checking
 
-  double weight = double.tryParse(_weightController.text) ?? 0;
-  double height = double.tryParse(_heightController.text) ?? 0;
-  double expectedWeight = double.tryParse(_expectedWeightController.text) ?? 0;
+    double weight = double.tryParse(_weightController.text) ?? 0;
+    double height = double.tryParse(_heightController.text) ?? 0;
+    double expectedWeight =
+        double.tryParse(_expectedWeightController.text) ?? 0;
 
-  if (weight == 0 || height == 0) {
-    print("Invalid inputs for calorie calculation");
-    return;
-  }
+    if (weight == 0 || height == 0) {
+      return;
+    }
 
-  // Using a general estimation formula 
-  calories = ((10 * weight) + (6.25 * height)) * 1.55;
+    // Using a general estimation formula
+    calories = ((10 * weight) + (6.25 * height)) * 1.55;
 
-  if (weight < expectedWeight) {
-    calories += 500;
-  } else if (weight > expectedWeight) {
-    calories -= 500;
-  }
+    if (weight < expectedWeight) {
+      calories += 500;
+    } else if (weight > expectedWeight) {
+      calories -= 500;
+    }
 
-  // Adjust calories based on dietary preference
-  if (dietaryPreference == 'Vegetarian') {
-    calories *= 0.9;
-  } else if (dietaryPreference == 'Vegan') {
-    calories *= 0.85;
-  }
+    // Adjust calories based on dietary preference
+    if (dietaryPreference == 'Vegetarian') {
+      calories *= 0.9;
+    } else if (dietaryPreference == 'Vegan') {
+      calories *= 0.85;
+    }
 
     if (_isNameValid && user != null) {
       try {
@@ -96,35 +135,47 @@ void _saveProfile() async {
           'calorieRequirement': calories,
         });
 
-      // Load recipes from the JSON file
-      final String response = await rootBundle.loadString('assets/recipes/D3801 Recipes - Recipes.json');
-      final List<dynamic> recipeData = json.decode(response);
+        // Load recipes from the JSON file
+        final String response = await rootBundle
+            .loadString('assets/recipes/D3801 Recipes - Recipes.json');
+        final List<dynamic> recipeData = json.decode(response);
 
-      List<Map<String, dynamic>> possibleRecipes = [];
+        List<Map<String, dynamic>> possibleRecipes = [];
 
-      // Filter the recipes based on user's preferences and requirements
-      for (var recipeJson in recipeData) {
-        Recipe recipe = Recipe.fromJson(recipeJson);
+        // Filter the recipes based on user's preferences and requirements
+        for (var recipeJson in recipeData) {
+          Recipe recipe = Recipe.fromJson(recipeJson);
 
-        bool meetsCalorieRequirement = recipe.energyKcal <= (calories / 4);
-        bool matchesDietaryPreference = dietaryPreference == 'No Preference' || 
-            recipe.classification?.toLowerCase() == dietaryPreference?.toLowerCase();
-        bool noAllergenConflict = dietaryRestrictions.every((restriction) =>
-            recipe.allergens == null || !recipe.allergens!.map((allergen) => allergen.toLowerCase()).contains(restriction.toLowerCase()));
+          bool meetsCalorieRequirement = recipe.energyKcal <= (calories / 4);
+          bool matchesDietaryPreference =
+              dietaryPreference == 'No Preference' ||
+                  recipe.classification?.toLowerCase() ==
+                      dietaryPreference?.toLowerCase();
+          bool noAllergenConflict = dietaryRestrictions.every((restriction) =>
+              recipe.allergens == null ||
+              !recipe.allergens!
+                  .map((allergen) => allergen.toLowerCase())
+                  .contains(restriction.toLowerCase()));
 
-        // Add to possible recipes if all conditions are met
-        if (meetsCalorieRequirement && matchesDietaryPreference && noAllergenConflict) {
-          possibleRecipes.add({
-            'recipe_id': recipe.id,
-            'recipe_name': recipe.name,
-          });
+          // Add to possible recipes if all conditions are met
+          if (meetsCalorieRequirement &&
+              matchesDietaryPreference &&
+              noAllergenConflict) {
+            possibleRecipes.add({
+              'recipe_id': recipe.id,
+              'recipe_name': recipe.name,
+            });
+          }
         }
-      }
 
-      // Upload possible recipes to Firebase under the node 'PossibleRecipes'
-      await databaseRef.child('users/${user!.uid}/PossibleRecipes').set(possibleRecipes);
+        // Upload possible recipes to Firebase under the node 'PossibleRecipes'
+        await databaseRef
+            .child('users/${user!.uid}/PossibleRecipes')
+            .set(possibleRecipes);
         _updateSaveStatus(true);
-        if (widget.fromSignup) {
+
+        // Check if widget is still mounted before navigating
+        if (widget.fromSignup && mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -132,9 +183,8 @@ void _saveProfile() async {
             ),
           );
         }
-        print('Profile saved successfully');
       } catch (e) {
-        print('Error saving profile: $e');
+        print(e);
       }
     } else {
       // Show the dialog only if the name is not valid (empty)
@@ -145,71 +195,57 @@ void _saveProfile() async {
   }
 
   // Load profile data from Firebase Realtime Database
-void _loadProfile(String userId) async {
-  try {
-    DataSnapshot snapshot = await databaseRef.child('users/$userId').get();
-    if (snapshot.exists) {
-      Map<String, dynamic> data =
-          Map<String, dynamic>.from(snapshot.value as Map);
+  void _loadProfile(String userId) async {
+    try {
+      DataSnapshot snapshot = await databaseRef.child('users/$userId').get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data =
+            Map<String, dynamic>.from(snapshot.value as Map);
 
-      setState(() {
-        _nameController.text = data['name'] ?? '';
-        _phoneNumberController.text = data['phoneNumber'] ?? '';
-        _budgetController.text = data['budget'] ?? '';
-        _heightController.text = data['height'] ?? '';
-        _weightController.text = data['weight'] ?? '';
-        _expectedWeightController.text = data['expectedWeight'] ?? '';
-        _homeDistrictController.text = data['homeDistrict'] ?? '';
-        dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
-        dietaryRestrictions = (data['dietaryRestrictions'] != null)
-            ? List<String>.from(data['dietaryRestrictions'] as List)
-            : [];
-      });
-      print('Profile loaded successfully');
-    } else {
-      print('No profile data found for user: $userId');
+        setState(() {
+          _nameController.text = data['name'] ?? '';
+          _phoneNumberController.text = data['phoneNumber'] ?? '';
+          _budgetController.text = data['budget'] ?? '';
+          _heightController.text = data['height'] ?? '';
+          _weightController.text = data['weight'] ?? '';
+          _expectedWeightController.text = data['expectedWeight'] ?? '';
+          _homeDistrictController.text = data['homeDistrict'] ?? '';
+          dietaryPreference = data['dietaryPreference'] ?? 'No Preference';
+          dietaryRestrictions = (data['dietaryRestrictions'] != null)
+              ? List<String>.from(data['dietaryRestrictions'] as List)
+              : [];
+        });
+      } else {}
+    } catch (e) {
+      print(e);
     }
-  } catch (e) {
-    print('Error loading profile: $e');
   }
-}
 
   // Log out the user
   void _logout() async {
     try {
       await FirebaseAuth.instance.signOut(); // Log out from Firebase
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ), // Redirect to login
-      );
-    } catch (e) {
-      print('Error logging out: $e');
-    }
-  }
-
-  // Reset the user's account (delete user data from Firebase Realtime Database)
-  void _resetAccount() async {
-    if (user != null) {
-      try {
-        await databaseRef
-            .child('users/${user!.uid}')
-            .remove(); // Remove user data
-        print('Account reset successfully');
-        _logout(); // Log out after resetting the account
-      } catch (e) {
-        print('Error resetting account: $e');
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ), // Redirect to login
+        );
       }
+    } catch (e) {
+      print(e);
     }
   }
 
+  // Update the save status
   void _updateSaveStatus(bool saved) {
     setState(() {
       _isSaved = saved;
     });
   }
 
+  // Validate the name field
   void _validateName(String? name) {
     setState(() {
       _isNameValid = name?.trim().isNotEmpty ??
@@ -344,6 +380,7 @@ void _loadProfile(String userId) async {
     );
   }
 
+  // Method to show an invalid input dialog
   void _showInvalidInputDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -1,3 +1,19 @@
+/// A custom dropdown field widget that allows users to select an option from a list of items.
+///
+/// The `DropdownField` widget is a stateful widget that displays a dropdown menu with a label.
+/// It supports proportional sizing based on the screen dimensions and uses custom fonts and styles.
+///
+/// The widget takes the following parameters:
+///
+/// - `labelText`: A [String] that represents the label text displayed above the dropdown.
+/// - `currentValue`: A nullable [String] that represents the currently selected value in the dropdown.
+/// - `items`: A [List<String>] that contains the items to be displayed in the dropdown menu.
+/// - `onChanged`: A [ValueChanged<String?>] callback that is called when the selected value changes.
+///
+/// The widget uses the `DropdownButton2` package for the dropdown functionality and the `google_fonts`
+/// package for custom fonts. It also includes custom styling for the dropdown menu, items, and icons.
+library dropdown_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -8,19 +24,20 @@ class DropdownField extends StatefulWidget {
   final List<String> items;
   final ValueChanged<String?> onChanged;
 
+  // Add controller to constructor
   const DropdownField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.currentValue,
     required this.items,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
-  _DropdownFieldState createState() => _DropdownFieldState();
+  DropdownFieldState createState() => DropdownFieldState();
 }
 
-class _DropdownFieldState extends State<DropdownField> {
+class DropdownFieldState extends State<DropdownField> {
   bool _isDropdownOpen = false;
 
   @override
@@ -127,8 +144,8 @@ class _DropdownFieldState extends State<DropdownField> {
                 ),
                 scrollbarTheme: ScrollbarThemeData(
                   radius: Radius.circular(proportionalWidth(40)),
-                  thickness: MaterialStateProperty.all(proportionalWidth(6)),
-                  thumbVisibility: MaterialStateProperty.all(true),
+                  thickness: WidgetStateProperty.all(proportionalWidth(6)),
+                  thumbVisibility: WidgetStateProperty.all(true),
                 ),
               ),
               menuItemStyleData: MenuItemStyleData(

@@ -1,3 +1,21 @@
+/// A custom `SaveButton` widget that displays a button with dynamic text and styling
+/// based on the `isSaved` state. The button's size and font are proportional to the
+/// screen dimensions.
+///
+/// The button's background color changes based on the `isSaved` state:
+/// - If `isSaved` is `true`, the button is grey and displays "Saved".
+/// - If `isSaved` is `false`, the button is green and displays "Save".
+///
+/// The button's dimensions and font size are calculated proportionally based on the
+/// screen width and height, assuming a base screen width of 375 and height of 812.
+///
+/// The button triggers the provided `onPressed` callback when pressed.
+///
+/// Parameters:
+/// - `isSaved` (`bool`): Indicates whether the item is saved or not.
+/// - `onPressed` (`VoidCallback`): The callback function to be executed when the button is pressed.
+library save_button;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -5,11 +23,12 @@ class SaveButton extends StatelessWidget {
   final bool isSaved;
   final VoidCallback onPressed;
 
+  // Add controller to constructor
   const SaveButton({
-    Key? key,
+    super.key,
     required this.isSaved,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

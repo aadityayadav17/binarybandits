@@ -1,3 +1,43 @@
+/// A class representing a recipe with various attributes such as ingredients,
+/// cooking directions, nutritional information, and more.
+///
+/// The [Recipe] class includes methods to convert JSON data into a [Recipe]
+/// object and to parse specific fields from the JSON data.
+///
+/// Attributes:
+/// - `id`: Unique identifier for the recipe.
+/// - `name`: Name of the recipe.
+/// - `ingredients`: Ingredients required for the recipe.
+/// - `ingredientsQuantity`: Quantity of ingredients.
+/// - `ingredientsQuantityInG`: Quantity of ingredients in grams.
+/// - `ingredientsQuantityInGrams`: Quantity of ingredients in grams (duplicate).
+/// - `cookingDirections`: Directions for cooking the recipe.
+/// - `steps`: List of steps extracted from the cooking directions.
+/// - `prepTime`: Preparation time in minutes.
+/// - `cookTime`: Cooking time in minutes.
+/// - `totalTime`: Total time in minutes (prep time + cook time).
+/// - `difficulty`: Difficulty level of the recipe.
+/// - `rating`: Rating of the recipe.
+/// - `protein`: Protein content in grams.
+/// - `energyKcal`: Energy content in kilocalories.
+/// - `fat`: Fat content in grams.
+/// - `saturatedFat`: Saturated fat content in grams.
+/// - `carbs`: Carbohydrate content in grams.
+/// - `sugar`: Sugar content in grams.
+/// - `sodium`: Sodium content in milligrams.
+/// - `image`: URL of the recipe image.
+/// - `classification`: Classification of the recipe (optional).
+/// - `allergens`: List of allergens present in the recipe (optional).
+///
+/// Methods:
+/// - `Recipe.fromJson(Map<String, dynamic> json)`: Factory constructor to create
+///   a [Recipe] object from JSON data.
+/// - `_parseSteps(String cookingDirections)`: Static method to parse steps from
+///   the cooking directions.
+/// - `_parseAllergens(dynamic allergens)`: Static method to parse allergens from
+///   the JSON data.
+library recipe;
+
 class Recipe {
   final String id;
   final String name;
@@ -49,6 +89,7 @@ class Recipe {
     this.allergens,
   });
 
+  // Method to convert JSON data to Recipe object
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       id: json['recipe_id'] as String,
@@ -78,6 +119,7 @@ class Recipe {
     );
   }
 
+  // Method to get steps from the JSON data
   static List<String> _parseSteps(String cookingDirections) {
     return cookingDirections
         .split('\n')
@@ -86,6 +128,7 @@ class Recipe {
         .toList();
   }
 
+  // Method to get allergens from the JSON data
   static List<String>? _parseAllergens(dynamic allergens) {
     if (allergens == null || allergens == 'none') {
       return null;

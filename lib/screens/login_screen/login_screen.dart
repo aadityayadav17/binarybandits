@@ -1,3 +1,38 @@
+/// A stateful widget that represents the login screen of the application.
+///
+/// This screen allows users to sign in using their email and password. It also
+/// provides options to keep the user signed in and to toggle the visibility of
+/// the password. The screen includes navigation to the sign-up screen and the
+/// home screen upon successful login.
+///
+/// The `LoginScreen` widget manages the following states:
+/// - `_keepMeSignedIn`: A boolean indicating whether the user wants to stay signed in.
+/// - `_showPassword`: A boolean indicating whether the password should be visible.
+///
+/// The widget uses the following controllers and focus nodes:
+/// - `_emailController`: A controller for the email text field.
+/// - `_passwordController`: A controller for the password text field.
+/// - `_emailFocusNode`: A focus node for the email text field.
+/// - `_passwordFocusNode`: A focus node for the password text field.
+///
+/// The widget performs the following actions:
+/// - Loads the "keep me signed in" preference when the screen is created.
+/// - Saves the "keep me signed in" preference when the user signs in.
+/// - Signs in the user using Firebase authentication.
+/// - Displays appropriate error messages if the sign-in fails.
+/// - Navigates to the home screen upon successful login.
+/// - Navigates to the sign-up screen when the "Sign Up" button is pressed.
+///
+/// The UI of the login screen includes:
+/// - An app logo.
+/// - Text fields for email and password input.
+/// - A checkbox for the "keep me signed in" option.
+/// - A button to toggle password visibility.
+/// - A "Forgot Password?" button (currently not implemented).
+/// - A "Sign In" button that triggers the sign-in process.
+/// - A "Sign Up" button that navigates to the sign-up screen.
+library login_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/sign_up_screen/sign_up_screen.dart';
@@ -9,10 +44,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   bool _keepMeSignedIn = false;
   bool _showPassword = false;
   final FocusNode _emailFocusNode = FocusNode();
@@ -20,12 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Load the keep me signed in preference when the screen is created
   @override
   void initState() {
     super.initState();
     _loadKeepMeSignedInPreference();
   }
 
+  // Dispose the focus nodes
   @override
   void dispose() {
     _emailFocusNode.dispose();
@@ -33,11 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // Clear the focus of the text fields
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
   }
 
+  // Load the keep me signed in preference
   Future<void> _loadKeepMeSignedInPreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -45,25 +84,28 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // Save the keep me signed in preference
   Future<void> _saveKeepMeSignedInPreference(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('keepMeSignedIn', value);
   }
 
+  // Sign in with email and password
   Future<void> _signIn() async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter both email and password'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter both email and password'),
+          ),
+        );
+      }
       return;
     }
 
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
@@ -81,10 +123,12 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       if (e.code == 'user-not-found') {
@@ -96,18 +140,22 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         errorMessage = 'Authentication failed. Please check your credentials.';
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-        ),
-      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+          ),
+        );
+      }
     } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An unexpected error occurred. Please try again.'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An unexpected error occurred. Please try again.'),
+          ),
+        );
+      }
     }
   }
 

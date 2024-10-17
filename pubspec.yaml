@@ -42,6 +42,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  firebase_core_platform_interface: ^5.3.0
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +72,6 @@ flutter:
   #   - images/a_dot_ham.jpeg
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/examples/screens/recipe_selection_screen/AlmondMilkPorridge.jpeg
     - assets/icons/bottom_navigation/discover-recipe-off.png
     - assets/icons/bottom_navigation/discover-recipe-on.png
     - assets/icons/bottom_navigation/grocery-list-off.png
@@ -117,9 +117,13 @@ flutter:
     - assets/images/home_screen/recipe-history.png
     - assets/images/home_screen/weekly-menu.png
     - assets/images/app-logo.png
-    - assets/recipes/products/Aldi.json
-    - assets/recipes/products/Coles.json
-    - assets/recipes/products/Woolworths.json
+    - assets/recipes/products/supermarket/Aldi.json
+    - assets/recipes/products/supermarket/Coles.json
+    - assets/recipes/products/supermarket/Woolworths.json
+    - assets/recipes/products/supermarket/old_csv/Aldi.csv
+    - assets/recipes/products/supermarket/old_csv/Coles.csv
+    - assets/recipes/products/supermarket/old_csv/Woolworths.csv
+    - assets/recipes/products/products.json
     - assets/recipes/D3801 Recipes - Recipes.json
     - assets/recipes/images/AlmondMilkPorridge.jpeg
     - assets/recipes/images/ArtichokePastaSalad.jpeg
