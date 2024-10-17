@@ -1,3 +1,19 @@
+/// A stateless widget that represents the screen displayed when there are no
+/// recipes in the weekly meal plan. The screen includes an app bar with a
+/// back button, a message indicating that no recipes are selected, and a
+/// bottom navigation bar for navigating between different sections of the app.
+///
+/// The screen is divided into the following sections:
+/// - AppBar: Contains a back button.
+/// - Body: Displays a message indicating that no recipes are selected and
+///   prompts the user to add recipes.
+/// - BottomNavigationBar: Allows navigation to Home, Recipe Selection,
+///   Grocery List, and Weekly Menu screens.
+///
+/// The widget uses the `GoogleFonts` package for custom fonts and
+/// `MediaQuery` to adapt the layout to different screen sizes.
+library no_weekly_menu_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
@@ -5,6 +21,8 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class NoWeeklyMenuScreen extends StatelessWidget {
+  const NoWeeklyMenuScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
