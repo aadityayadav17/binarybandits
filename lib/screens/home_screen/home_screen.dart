@@ -247,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildFeatureButton(
                         context,
                         'assets/images/home_screen/discover-recipe.png',
-                        'DISCOVER\nRECIPES',
+                        'CREATE\nMEAL PLAN',
                         proportionalHeight(160),
                         () {
                           Navigator.push(

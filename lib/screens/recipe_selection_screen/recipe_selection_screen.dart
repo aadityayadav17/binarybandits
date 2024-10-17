@@ -685,7 +685,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Discover\nRecipes",
+                                    "Create\nMeal Plan",
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
@@ -814,7 +814,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                           ),
                         ),
                         child: Text(
-                          'Done',
+                          'Next',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: proportionalFontSize(context, 16),

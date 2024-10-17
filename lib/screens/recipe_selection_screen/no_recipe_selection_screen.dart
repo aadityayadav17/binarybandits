@@ -55,7 +55,7 @@ class NoRecipeSelectionScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Discover\nRecipes",
+                  "Create\nMeal Plan",
                   style: GoogleFonts.robotoFlex(
                     textStyle: TextStyle(
                       color: Colors.black,
@@ -143,7 +143,7 @@ class NoRecipeSelectionScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Done',
+                  'Next',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: proportionalFontSize(context, 16),
