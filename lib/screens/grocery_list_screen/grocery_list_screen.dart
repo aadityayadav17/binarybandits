@@ -619,6 +619,14 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final product = products[index];
     final ingredientName = product['ingredient_name'];
 
+    // Check if the user has long pressed to show the ingredient name
+    bool showIngredientName = _showIngredientNames[index] ?? false;
+
+    // If the user has long pressed, show the ingredient name
+    if (showIngredientName) {
+      return ingredientName;
+    }
+
     // Get the manually selected store for this product (if any)
     String? selectedStore = _selectedStorePrices[index];
 
@@ -678,21 +686,27 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return ingredientName;
   }
 
-// Helper method to build the list tile
   Widget _buildListTile(
       int index, String itemLabel, bool isSelected, Widget trailing) {
     bool isExpanded =
-        _expandedIndex == index; // Check if the current item is expanded
+        _expandedItems[index] ?? false; // Check if the current item is expanded
 
     return Padding(
       padding: const EdgeInsets.symmetric(
           vertical: 4.0), // Reduce vertical padding between items
       child: GestureDetector(
         onLongPress: () {
-          // Toggle between product name and ingredient name on long press
+          // Toggle between showing product name and ingredient name on long press
           setState(() {
             _showIngredientNames[index] =
                 !(_showIngredientNames[index] ?? false); // Toggle the state
+          });
+        },
+        onTap: () {
+          // Toggle the expanded state on simple click
+          setState(() {
+            _expandedItems[index] =
+                !(_expandedItems[index] ?? false); // Toggle expansion
           });
         },
         child: ListTile(
