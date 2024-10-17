@@ -35,6 +35,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   int? _expandedIndex;
   Map<int, String> _manuallySelectedPrices = {};
   Map<int, bool> _showIngredientNames = {};
+  Map<int, String?> _selectedStorePrices = {};
 
   @override
   void initState() {
@@ -46,22 +47,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             .toString()
             .compareTo(b['ingredient_name'].toString()));
 
-        // Initialize the state to show product names by default
+        // Initialize the selection and display states
         for (int i = 0; i < products.length; i++) {
-          _selectedIngredients[i] = false;
-          _showIngredientNames[i] = false; // Show product names by default
+          _selectedStorePrices[i] = null; // No store is selected by default
         }
       });
     });
   }
-
-  // Prices are now stored as Strings, not doubles
-  List<Map<String, String>> ingredientPrices = [
-    {"Coles": "10.00", "Woolworths": "12.49", "Aldi": "8.99"},
-    {"Coles": "15.50", "Woolworths": "16.00", "Aldi": "14.75"},
-    {"Coles": "120.99", "Woolworths": "220.00", "Aldi": "180.45"},
-    // Add more items with prices for each store...
-  ];
 
 // Since the prices are stored as Strings, just return the string values as they are
   String formatPrice(String? price) {
@@ -139,13 +131,16 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   scale: 0.7, // Further reduce the size of the switch
                   child: Switch(
                     value: cheapestOption,
-                    onChanged: selectedTab == "All"
-                        ? (value) {
-                            setState(() {
-                              cheapestOption = value;
-                            });
-                          }
-                        : null, // Disable for individual tabs
+                    onChanged: (value) {
+                      setState(() {
+                        cheapestOption = value;
+
+                        // Reset all selected store prices if the toggle is turned off
+                        if (!cheapestOption) {
+                          _selectedStorePrices.clear();
+                        }
+                      });
+                    },
                     activeColor: const Color.fromRGBO(
                         73, 160, 120, 1), // Set the active color
                   ),
@@ -593,8 +588,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           _getItemLabel(
               index), // Dynamically display the product name based on selection
           isSelected,
-          _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
-              woolworthsPrice, aldiPrice, isSelected),
+          _buildAllTabPriceDisplay(
+              index, colesPrice, woolworthsPrice, aldiPrice),
         );
       }
     } else {
@@ -624,65 +619,63 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final product = products[index];
     final ingredientName = product['ingredient_name'];
 
-    // Check if the user has long pressed to show the ingredient name
-    bool showIngredientName = _showIngredientNames[index] ?? false;
+    // Get the manually selected store for this product (if any)
+    String? selectedStore = _selectedStorePrices[index];
 
-    // If the user has long pressed, show the ingredient name
-    if (showIngredientName) {
-      return ingredientName;
-    }
+    // If no store has been manually selected and the cheapest toggle is on, select the cheapest product
+    if (selectedStore == null && cheapestOption) {
+      double? colesPrice = removedStores.contains("Coles")
+          ? null
+          : double.tryParse(product['coles']['price']);
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null
+          : double.tryParse(product['woolworths']['price']);
+      double? aldiPrice =
+          removedStores.contains("Aldi") || product['aldi']['price'] == "NONE"
+              ? null
+              : double.tryParse(product['aldi']['price']);
 
-    // Otherwise, show the product name (based on the manually selected store or cheapest)
-    String? manuallySelectedStore = _manuallySelectedPrices[index];
+      List<double?> validPrices = [colesPrice, woolworthsPrice, aldiPrice]
+          .where((price) => price != null && price > 0)
+          .toList();
 
-    if (selectedTab == "All") {
-      if (manuallySelectedStore != null) {
-        if (manuallySelectedStore == "Coles") {
+      if (validPrices.isNotEmpty) {
+        double? lowestPrice = validPrices.reduce((a, b) => a! < b! ? a : b);
+
+        // Automatically select the store with the lowest price and display its product name
+        if (lowestPrice == colesPrice) {
+          selectedStore = "Coles";
+        } else if (lowestPrice == woolworthsPrice) {
+          selectedStore = "Woolworths";
+        } else if (lowestPrice == aldiPrice) {
+          selectedStore = "Aldi";
+        }
+
+        // Update the state to reflect this auto-selection
+        _selectedStorePrices[index] = selectedStore;
+
+        // Return the product name of the cheapest store
+        if (selectedStore == "Coles") {
           return product['coles']['product_name'];
-        } else if (manuallySelectedStore == "Woolworths") {
+        } else if (selectedStore == "Woolworths") {
           return product['woolworths']['product_name'];
-        } else if (manuallySelectedStore == "Aldi") {
+        } else if (selectedStore == "Aldi") {
           return product['aldi']['product_name'];
         }
-      } else if (cheapestOption) {
-        double? colesPrice = removedStores.contains("Coles")
-            ? null
-            : double.tryParse(product['coles']['price']);
-        double? woolworthsPrice = removedStores.contains("Woolworths")
-            ? null
-            : double.tryParse(product['woolworths']['price']);
-        double? aldiPrice =
-            removedStores.contains("Aldi") || product['aldi']['price'] == "NONE"
-                ? null
-                : double.tryParse(product['aldi']['price']);
-
-        List<double?> validPrices = [colesPrice, woolworthsPrice, aldiPrice]
-            .where((price) => price != null && price > 0)
-            .toList();
-
-        if (validPrices.isNotEmpty) {
-          double? lowestPrice = validPrices.reduce((a, b) => a! < b! ? a : b);
-
-          if (lowestPrice == colesPrice) {
-            return product['coles']['product_name'];
-          } else if (lowestPrice == woolworthsPrice) {
-            return product['woolworths']['product_name'];
-          } else if (lowestPrice == aldiPrice) {
-            return product['aldi']['product_name'];
-          }
-        }
       }
-      return ingredientName; // Default to ingredient name if no manual or cheapest selection
-    } else if (selectedTab == "Coles" && !removedStores.contains("Coles")) {
+    }
+
+    // If a store has been manually selected, display its product name
+    if (selectedStore == "Coles") {
       return product['coles']['product_name'];
-    } else if (selectedTab == "Woolworths" &&
-        !removedStores.contains("Woolworths")) {
+    } else if (selectedStore == "Woolworths") {
       return product['woolworths']['product_name'];
-    } else if (selectedTab == "Aldi" && !removedStores.contains("Aldi")) {
+    } else if (selectedStore == "Aldi") {
       return product['aldi']['product_name'];
     }
 
-    return 'Product name $index'; // Fallback if no tab is selected
+    // Default to ingredient name if no store is selected
+    return ingredientName;
   }
 
 // Helper method to build the list tile
@@ -745,70 +738,88 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  Widget _buildAllTabPriceDisplay(
-      int index,
-      double? lowestPrice,
-      double? colesPrice,
-      double? woolworthsPrice,
-      double? aldiPrice,
-      bool isSelected) {
-    // Get the manually selected store for this product, if any
-    String? manuallySelectedStore = _manuallySelectedPrices[index];
+  Widget _buildAllTabPriceDisplay(int index, double? colesPrice,
+      double? woolworthsPrice, double? aldiPrice) {
+    String? selectedStore =
+        _selectedStorePrices[index]; // Get the manually selected store (if any)
+
+    // If the cheapest option is enabled and no manual selection, auto-select the cheapest price
+    if (cheapestOption && selectedStore == null) {
+      double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+          .where((price) => price != null && price > 0)
+          .reduce((a, b) => a! < b! ? a : b);
+
+      // Automatically select the store with the lowest price
+      if (lowestPrice == colesPrice) {
+        selectedStore = "Coles";
+      } else if (lowestPrice == woolworthsPrice) {
+        selectedStore = "Woolworths";
+      } else if (lowestPrice == aldiPrice) {
+        selectedStore = "Aldi";
+      }
+
+      // Update the state to reflect this auto-selection
+      _selectedStorePrices[index] = selectedStore;
+    }
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Coles price, but only if Coles is not removed
-        if (!removedStores.contains("Coles"))
-          GestureDetector(
-            onTap: () {
-              // When user clicks on Coles price, manually select it
-              setState(() {
-                _manuallySelectedPrices[index] = "Coles";
-              });
-            },
-            child: _buildPriceColumn(
-                colesPrice,
-                (manuallySelectedStore == "Coles") ||
-                    (manuallySelectedStore == null &&
-                        lowestPrice == colesPrice),
-                isSelected),
+        // Coles price
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (selectedStore == "Coles") {
+                _selectedStorePrices[index] =
+                    null; // Deselect if Coles was already selected
+              } else {
+                _selectedStorePrices[index] = "Coles"; // Select Coles
+              }
+            });
+          },
+          child: _buildPriceColumn(
+            colesPrice,
+            selectedStore == "Coles", // Show in black if selected
           ),
+        ),
         SizedBox(width: 10), // Space between columns
 
-        // Woolworths price, but only if Woolworths is not removed
-        if (!removedStores.contains("Woolworths"))
-          GestureDetector(
-            onTap: () {
-              // When user clicks on Woolworths price, manually select it
-              setState(() {
-                _manuallySelectedPrices[index] = "Woolworths";
-              });
-            },
-            child: _buildPriceColumn(
-                woolworthsPrice,
-                (manuallySelectedStore == "Woolworths") ||
-                    (manuallySelectedStore == null &&
-                        lowestPrice == woolworthsPrice),
-                isSelected),
+        // Woolworths price
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (selectedStore == "Woolworths") {
+                _selectedStorePrices[index] =
+                    null; // Deselect if Woolworths was already selected
+              } else {
+                _selectedStorePrices[index] = "Woolworths"; // Select Woolworths
+              }
+            });
+          },
+          child: _buildPriceColumn(
+            woolworthsPrice,
+            selectedStore == "Woolworths", // Show in black if selected
           ),
+        ),
         SizedBox(width: 10), // Space between columns
 
-        // Aldi price, but only if Aldi is not removed
-        if (!removedStores.contains("Aldi"))
-          GestureDetector(
-            onTap: () {
-              // When user clicks on Aldi price, manually select it
-              setState(() {
-                _manuallySelectedPrices[index] = "Aldi";
-              });
-            },
-            child: _buildPriceColumn(
-                aldiPrice,
-                (manuallySelectedStore == "Aldi") ||
-                    (manuallySelectedStore == null && lowestPrice == aldiPrice),
-                isSelected),
+        // Aldi price
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (selectedStore == "Aldi") {
+                _selectedStorePrices[index] =
+                    null; // Deselect if Aldi was already selected
+              } else {
+                _selectedStorePrices[index] = "Aldi"; // Select Aldi
+              }
+            });
+          },
+          child: _buildPriceColumn(
+            aldiPrice,
+            selectedStore == "Aldi", // Show in black if selected
           ),
+        ),
       ],
     );
   }
@@ -821,20 +832,15 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  // Helper method to build the price column (highlighting the selected price in black)
-  Widget _buildPriceColumn(
-      double? storePrice, bool isSelectedStore, bool isSelected) {
+  Widget _buildPriceColumn(double? storePrice, bool isSelected) {
     return SizedBox(
       width: proportionalWidth(context, 50), // Fixed width for store price
       child: Text(
         formatPrice(storePrice?.toString()),
         style: TextStyle(
           color: isSelected
-              ? Colors.grey
-              : (isSelectedStore
-                  ? Colors.black
-                  : Colors
-                      .grey), // Highlight the selected store's price in black
+              ? Colors.black
+              : Colors.grey, // Black if selected, grey otherwise
         ),
         textAlign: TextAlign.end, // Align to the right for consistency
       ),
