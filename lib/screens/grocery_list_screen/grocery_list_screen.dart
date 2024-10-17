@@ -262,6 +262,21 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return totalCost;
   }
 
+  // Function to calculate the total cost for a specific store
+  double calculateTotalCostForStore(String store) {
+    double totalCost = 0.0;
+
+    for (var product in ingredientPrices) {
+      double? storePrice = product[store.toLowerCase()]['price'];
+
+      if (storePrice != null) {
+        totalCost += storePrice;
+      }
+    }
+
+    return totalCost;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -951,15 +966,24 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
   // Method for the rounded rectangle information box
+  // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
     int totalItems =
         ingredientPrices.length; // Get the total number of items dynamically
-    double totalCheapestCost =
-        calculateTotalCheapestCost(); // Calculate the total cheapest cost
-    double totalHighestCost =
-        calculateTotalHighestCost(); // Calculate the total highest cost
-    double totalSaveAmount =
-        totalHighestCost - totalCheapestCost; // Calculate the amount saved
+
+    // Calculate the total cost based on the selected tab and the cheapest toggle
+    double totalCost = cheapestOption
+        ? calculateTotalCheapestCost() // Use the cheapest items' total when the toggle is on
+        : selectedTab == "All"
+            ? calculateTotalCheapestCost() // Use cheapest items' total for "All" tab
+            : calculateTotalCostForStore(
+                selectedTab); // Use specific store's total cost for individual store tabs
+
+    double budget = _userBudget != null
+        ? double.tryParse(_userBudget!) ?? 0.0
+        : 150.0; // Use user's budget or default to $150
+    double savings =
+        budget - totalCost; // Calculate savings as "budget - total cost"
 
     return Container(
       margin:
@@ -1006,7 +1030,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$${totalCheapestCost.toStringAsFixed(2)}', // Display the calculated total cheapest cost
+                      '\$${totalCost.toStringAsFixed(2)}', // Display the calculated total cost
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
@@ -1026,9 +1050,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      _userBudget != null
-                          ? '\$$_userBudget'
-                          : 'Loading...', // Display the user's budget or show loading
+                      '\$${budget.toStringAsFixed(2)}', // Display the user's budget or a default
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
@@ -1048,7 +1070,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$${totalSaveAmount.toStringAsFixed(2)}', // Display the calculated save amount
+                      '\$${savings.toStringAsFixed(2)}', // Display the calculated savings
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 20),
                         fontWeight: FontWeight.bold,
