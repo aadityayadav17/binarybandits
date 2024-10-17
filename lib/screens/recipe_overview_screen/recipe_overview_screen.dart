@@ -89,7 +89,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
         }
       });
     } else {
-      print('No weekly menu data available.');
+      print('No meal plan data available.');
     }
   }
 
@@ -211,7 +211,7 @@ class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'You successfully added ${_recipes.length} recipes to the My Menu!',
+                      'You successfully added ${_recipes.length} recipes to the My Meal Plan!',
                       style: TextStyle(
                         fontSize: proportionalFontSize(context, 20),
                         fontWeight: FontWeight.bold,

@@ -686,7 +686,7 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Discover\nRecipe",
+                                    "Discover\nRecipes",
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
@@ -792,14 +792,19 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
                       ),
                       SizedBox(width: proportionalWidth(context, 16)),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const RecipeOverviewScreen(),
-                          ));
-                        },
+                        onPressed: _selectedCount > 0
+                            ? () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const RecipeOverviewScreen(),
+                                ));
+                              }
+                            : null, // Disable button if no recipes are selected
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromRGBO(73, 160, 120, 1),
+                          backgroundColor: _selectedCount > 0
+                              ? const Color.fromRGBO(
+                                  73, 160, 120, 1) // Active color
+                              : Colors.grey, // Inactive color
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 proportionalWidth(context, 10)),

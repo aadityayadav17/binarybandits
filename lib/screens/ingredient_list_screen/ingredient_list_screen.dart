@@ -86,7 +86,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
       await updateAllIngredientQuantities();
       _updateAllIngredients();
     } else {
-      print('No weekly menu data available.');
+      print('No meal plan data available.');
     }
   }
 
