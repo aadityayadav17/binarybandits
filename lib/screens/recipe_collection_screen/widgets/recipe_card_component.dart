@@ -70,7 +70,7 @@ class RecipeImageCard extends StatelessWidget {
               borderRadius:
                   BorderRadius.circular(proportionalWidth(context, 20)),
               child: Image.asset(
-                recipe.image,
+                recipe.image, // Image generated using DALL·E 3
                 width: double.infinity,
                 height: proportionalHeight(context, 320),
                 fit: BoxFit.cover,

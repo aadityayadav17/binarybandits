@@ -285,7 +285,8 @@ class RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
                                         borderRadius: BorderRadius.circular(
                                             proportionalWidth(context, 15)),
                                         child: Image.asset(
-                                          recipe.image,
+                                          recipe
+                                              .image, // Image generated using DALL·E 3
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height:
