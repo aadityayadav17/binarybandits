@@ -1,3 +1,38 @@
+/// HomeScreen is the main screen of the application that displays a greeting,
+/// a search bar for recipes, and various feature buttons for navigation.
+///
+/// This screen fetches the user's name from Firebase and loads recipes from a
+/// JSON file. It also provides a search functionality to filter recipes based
+/// on the user's input.
+///
+/// The screen includes the following features:
+/// - Greeting message with the user's name
+/// - Search bar to filter recipes
+/// - Feature buttons for creating meal plans, viewing meal plans, grocery lists,
+///   saved recipes, and recipe history
+/// - Bottom navigation bar for quick access to different sections of the app
+///
+/// The layout is responsive and adjusts based on the screen size.
+///
+/// State Management:
+/// - _allRecipes: List of all recipes loaded from the JSON file
+/// - _filteredRecipes: List of recipes filtered based on the search query
+/// - _searchFocusNode: FocusNode for managing the focus state of the search bar
+/// - userName: The name of the user fetched from Firebase
+///
+/// Methods:
+/// - initState: Initializes the screen by loading recipes and fetching the user's name
+/// - _fetchUserName: Fetches the user's name from Firebase
+/// - dispose: Disposes the FocusNode when the widget is removed from the widget tree
+/// - _loadRecipes: Loads recipes from a JSON file
+/// - _filterRecipes: Filters recipes based on the search query
+/// - _buildFeatureButton: Builds a feature button with an image, text, and onTap action
+/// - _buildBottomNavigationBar: Builds the bottom navigation bar
+///
+/// The screen uses the GoogleFonts package for custom fonts and the Firebase
+/// packages for authentication and database access.
+library home_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
