@@ -1,3 +1,37 @@
+/// A custom widget that provides a phone number input field with country code picker.
+///
+/// The `PhoneNumberField` widget is a stateless widget that includes a text field for
+/// phone number input and a country code picker. It also formats the phone number input
+/// according to specified rules.
+///
+/// The widget takes the following parameters:
+/// - `labelText`: A string that represents the label text for the input field.
+/// - `controller`: A `TextEditingController` to manage the phone number input.
+/// - `onChanged`: A callback function that is called whenever the phone number input changes.
+///
+/// The widget uses the `CountryCodePicker` package to provide a country code picker
+/// and the `google_fonts` package to apply custom fonts.
+///
+/// Example usage:
+/// ```dart
+/// PhoneNumberField(
+///   labelText: 'Phone Number',
+///   controller: _phoneController,
+///   onChanged: (value) {
+///     // Handle phone number change
+///   },
+/// )
+/// ```
+///
+/// The `PhoneNumberFormatter` class is a custom `TextInputFormatter` that formats
+/// the phone number input by adding spaces at appropriate positions.
+///
+/// The formatting rules are:
+/// - If the input length is greater than 4 and less than or equal to 7, a space is added after the 4th digit.
+/// - If the input length is greater than 7 and less than or equal to 10, spaces are added after the 4th and 7th digits.
+/// - If the input length is greater than 10 and less than or equal to 15, spaces are added after the 4th, 7th, and 10th digits.
+library phone_number_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -8,12 +42,13 @@ class PhoneNumberField extends StatelessWidget {
   final TextEditingController controller; // Controller to manage phone input
   final Function(String) onChanged;
 
+  // Add controller to constructor
   const PhoneNumberField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.controller, // Pass the controller as a required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +140,7 @@ class PhoneNumberField extends StatelessWidget {
   }
 }
 
+// Custom formatter to format phone number input
 class PhoneNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
