@@ -38,6 +38,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   List<String> removedStores = [];
   List<Map<String, dynamic>> ingredientPrices = [];
   String? _userBudget;
+  Map<int, bool> _showIngredientName = {};
   Map<String, List<String>> storeProductNames = {
     'Coles': [],
     'Woolworths': [],
@@ -707,6 +708,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Widget _buildGroceryListItem(int index, bool isSelected) {
     String itemLabel = _getItemLabel(index);
 
+    // Check if the ingredient name should be displayed (based on long press)
+    if (_showIngredientName[index] ?? false) {
+      itemLabel =
+          ingredientPrices[index]['ingredient_name']; // Display ingredient name
+    }
+
     if (selectedTab == "All") {
       double? colesPrice = removedStores.contains("Coles")
           ? null
@@ -722,21 +729,36 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           .where((price) => price != null)
           .reduce((a, b) => a! < b! ? a : b);
 
-      return _buildListTile(
-        index,
-        itemLabel,
-        isSelected,
-        _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
-            woolworthsPrice, aldiPrice, isSelected),
+      return GestureDetector(
+        onLongPress: () {
+          setState(() {
+            _showIngredientName[index] = !(_showIngredientName[index] ?? false);
+          });
+        },
+        child: _buildListTile(
+          index,
+          itemLabel,
+          isSelected,
+          _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
+              woolworthsPrice, aldiPrice, isSelected),
+        ),
       );
     } else {
       String displayedPrice = formatPrice(
           ingredientPrices[index][selectedTab.toLowerCase()]['price']);
-      return _buildListTile(
-        index,
-        itemLabel,
-        isSelected,
-        _buildIndividualTabPriceDisplay(displayedPrice),
+
+      return GestureDetector(
+        onLongPress: () {
+          setState(() {
+            _showIngredientName[index] = !(_showIngredientName[index] ?? false);
+          });
+        },
+        child: _buildListTile(
+          index,
+          itemLabel,
+          isSelected,
+          _buildIndividualTabPriceDisplay(displayedPrice),
+        ),
       );
     }
   }
