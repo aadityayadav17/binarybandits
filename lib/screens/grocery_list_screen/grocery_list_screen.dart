@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -28,6 +30,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   bool cheapestOption = false;
   Map<int, bool> _selectedIngredients = {};
   List<String> removedStores = [];
+  List<dynamic> products = [];
 
   // Define product names for each store
   List<String> colesProductNames = [
@@ -54,10 +57,11 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the selection map with false (unchecked) for each ingredient
-    for (int i = 0; i < 10; i++) {
-      _selectedIngredients[i] = false;
-    }
+    loadProducts().then((loadedProducts) {
+      setState(() {
+        products = loadedProducts;
+      });
+    });
   }
 
   // Prices are now stored as Strings, not doubles
@@ -72,6 +76,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   String formatPrice(String? price) {
     if (price == null || price.isEmpty) return "None";
     return "\$$price"; // Add the dollar sign before the price
+  }
+
+  Future<List<dynamic>> loadProducts() async {
+    final String response =
+        await rootBundle.loadString('assets/recipes/products/products.json');
+    final data = json.decode(response);
+    return data['products'];
   }
 
   @override
@@ -561,37 +572,42 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
 // Helper method to build the grocery list item
   Widget _buildGroceryListItem(int index, bool isSelected) {
-    String itemLabel = _getItemLabel(index);
+    if (products.isEmpty) return Text('Loading...');
 
-    // Check if "All" tab is selected, display prices for all stores in aligned columns
+    final product = products[index];
+
+    // "All" tab: Display ingredient names or the cheapest product name
     if (selectedTab == "All") {
-      double? colesPrice = removedStores.contains("Coles")
-          ? null // If Coles is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
-      double? woolworthsPrice = removedStores.contains("Woolworths")
-          ? null // If Woolworths is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
-      double? aldiPrice = removedStores.contains("Aldi")
-          ? null // If Aldi is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+      double? colesPrice = double.tryParse(product['coles']['price']);
+      double? woolworthsPrice = double.tryParse(product['woolworths']['price']);
+      double? aldiPrice = product['aldi']['price'] != "NONE"
+          ? double.tryParse(product['aldi']['price'])
+          : null;
 
-      // Find the lowest price (ignoring removed stores)
       double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
           .reduce((a, b) => a! < b! ? a : b);
 
       return _buildListTile(
         index,
-        itemLabel,
+        _getItemLabel(
+            index), // Dynamically display ingredient or cheapest product name
         isSelected,
         _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
             woolworthsPrice, aldiPrice, isSelected),
       );
     } else {
-      String displayedPrice = formatPrice(ingredientPrices[index][selectedTab]);
+      // Individual store tabs: Display product names and their prices
+      String displayedPrice = selectedTab == "Coles"
+          ? product['coles']['price']
+          : selectedTab == "Woolworths"
+              ? product['woolworths']['price']
+              : product['aldi']['price'];
+
       return _buildListTile(
         index,
-        itemLabel,
+        _getItemLabel(
+            index), // Dynamically display the product name for the selected store
         isSelected,
         _buildIndividualTabPriceDisplay(displayedPrice),
       );
@@ -600,42 +616,48 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   /// Helper method to get the item label (ingredient or product name)
   String _getItemLabel(int index) {
+    if (products.isEmpty)
+      return 'Loading...'; // Handle case when data is not loaded
+
+    final product = products[index];
+    final ingredientName = product['ingredient_name'];
+
     if (selectedTab == "All") {
-      double? colesPrice = removedStores.contains("Coles")
-          ? null // Ignore Coles if removed
-          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
-      double? woolworthsPrice = removedStores.contains("Woolworths")
-          ? null // Ignore Woolworths if removed
-          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
-      double? aldiPrice = removedStores.contains("Aldi")
-          ? null // Ignore Aldi if removed
-          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
-
-      // Find the lowest price
-      double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
-          .where((price) => price != null && price > 0)
-          .reduce((a, b) => a! < b! ? a : b);
-
-      // If the cheapest toggle is on, replace the ingredient name with the cheapest product's name
       if (cheapestOption) {
+        // Find the cheapest product name based on price
+        double? colesPrice = double.tryParse(product['coles']['price']);
+        double? woolworthsPrice =
+            double.tryParse(product['woolworths']['price']);
+        double? aldiPrice = product['aldi']['price'] != "NONE"
+            ? double.tryParse(product['aldi']['price'])
+            : null;
+
+        double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+            .where((price) => price != null && price > 0)
+            .reduce((a, b) => a! < b! ? a : b);
+
         if (lowestPrice == colesPrice) {
-          return colesProductNames[index];
+          return product['coles']['product_name'];
         } else if (lowestPrice == woolworthsPrice) {
-          return woolworthsProductNames[index];
+          return product['woolworths']['product_name'];
         } else if (lowestPrice == aldiPrice) {
-          return aldiProductNames[index];
+          return product['aldi']['product_name'];
         }
       }
-      return 'Ingredient name $index'; // Default ingredient name if no match
+      // If the cheapest toggle is off, return the ingredient name
+      return ingredientName;
     } else if (selectedTab == "Coles" && !removedStores.contains("Coles")) {
-      return colesProductNames[index]; // Use Coles product names if not removed
+      // Display Coles product name in Coles tab
+      return product['coles']['product_name'];
     } else if (selectedTab == "Woolworths" &&
         !removedStores.contains("Woolworths")) {
-      return woolworthsProductNames[
-          index]; // Use Woolworths product names if not removed
+      // Display Woolworths product name in Woolworths tab
+      return product['woolworths']['product_name'];
     } else if (selectedTab == "Aldi" && !removedStores.contains("Aldi")) {
-      return aldiProductNames[index]; // Use Aldi product names if not removed
+      // Display Aldi product name in Aldi tab
+      return product['aldi']['product_name'];
     }
+
     return 'Product name $index'; // Fallback if no tab is selected
   }
 
