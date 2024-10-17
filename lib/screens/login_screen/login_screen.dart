@@ -1,3 +1,38 @@
+/// A stateful widget that represents the login screen of the application.
+///
+/// This screen allows users to sign in using their email and password. It also
+/// provides options to keep the user signed in and to toggle the visibility of
+/// the password. The screen includes navigation to the sign-up screen and the
+/// home screen upon successful login.
+///
+/// The `LoginScreen` widget manages the following states:
+/// - `_keepMeSignedIn`: A boolean indicating whether the user wants to stay signed in.
+/// - `_showPassword`: A boolean indicating whether the password should be visible.
+///
+/// The widget uses the following controllers and focus nodes:
+/// - `_emailController`: A controller for the email text field.
+/// - `_passwordController`: A controller for the password text field.
+/// - `_emailFocusNode`: A focus node for the email text field.
+/// - `_passwordFocusNode`: A focus node for the password text field.
+///
+/// The widget performs the following actions:
+/// - Loads the "keep me signed in" preference when the screen is created.
+/// - Saves the "keep me signed in" preference when the user signs in.
+/// - Signs in the user using Firebase authentication.
+/// - Displays appropriate error messages if the sign-in fails.
+/// - Navigates to the home screen upon successful login.
+/// - Navigates to the sign-up screen when the "Sign Up" button is pressed.
+///
+/// The UI of the login screen includes:
+/// - An app logo.
+/// - Text fields for email and password input.
+/// - A checkbox for the "keep me signed in" option.
+/// - A button to toggle password visibility.
+/// - A "Forgot Password?" button (currently not implemented).
+/// - A "Sign In" button that triggers the sign-in process.
+/// - A "Sign Up" button that navigates to the sign-up screen.
+library login_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/sign_up_screen/sign_up_screen.dart';
