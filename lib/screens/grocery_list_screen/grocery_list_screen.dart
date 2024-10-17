@@ -31,6 +31,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Map<int, bool> _selectedIngredients = {};
   List<String> removedStores = [];
   List<dynamic> products = [];
+  Map<int, bool> _expandedItems = {};
+  int? _expandedIndex;
 
   // Define product names for each store
   List<String> colesProductNames = [
@@ -59,16 +61,16 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     super.initState();
     loadProducts().then((loadedProducts) {
       setState(() {
-        // Sort the products alphabetically by ingredient name
         products = loadedProducts;
         products.sort((a, b) => a['ingredient_name']
             .toString()
             .compareTo(b['ingredient_name'].toString()));
 
-        // Initialize the selection map with false (unchecked) for each ingredient
+        // Initialize the selection map
         for (int i = 0; i < products.length; i++) {
           _selectedIngredients[i] = false;
         }
+        _expandedIndex = null; // No item is expanded initially
       });
     });
   }
@@ -692,9 +694,11 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
 // Helper method to build the list tile
-  // Helper method to build the list tile
   Widget _buildListTile(
       int index, String itemLabel, bool isSelected, Widget trailing) {
+    bool isExpanded =
+        _expandedIndex == index; // Check if the current item is expanded
+
     return Padding(
       padding: const EdgeInsets.symmetric(
           vertical: 4.0), // Reduce vertical padding between items
@@ -716,21 +720,38 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             size: proportionalFontSize(context, 24),
           ),
         ),
-        title: Text(
-          '$itemLabel', // Dynamically display the label based on the selected tab
-          style: GoogleFonts.robotoFlex(
-            fontSize:
-                proportionalFontSize(context, 14), // Font size for ingredients
-            color: isSelected
-                ? Colors.grey
-                : Colors.black, // Grey out text when checked
-            height: 1.5, // Adjust the line height to fit 2 lines consistently
-            decoration: isSelected
-                ? TextDecoration.lineThrough
-                : null, // Strikethrough when checked
+        title: GestureDetector(
+          onTap: () {
+            // Toggle the expanded state when the user taps the item name
+            setState(() {
+              if (_expandedIndex == index) {
+                // If the current item is already expanded, collapse it
+                _expandedIndex = null;
+              } else {
+                // Otherwise, expand the new item and collapse the previous one
+                _expandedIndex = index;
+              }
+            });
+          },
+          child: Text(
+            '$itemLabel', // Dynamically display the label based on the selected tab
+            style: GoogleFonts.robotoFlex(
+              fontSize: proportionalFontSize(
+                  context, 14), // Smaller font size for ingredients
+              color: isSelected
+                  ? Colors.grey
+                  : Colors.black, // Grey out text when checked
+              decoration: isSelected
+                  ? TextDecoration.lineThrough
+                  : null, // Strikethrough when checked
+            ),
+            maxLines: isExpanded
+                ? null
+                : 2, // Show full text if expanded, otherwise limit to 2 lines
+            overflow: isExpanded
+                ? TextOverflow.visible
+                : TextOverflow.ellipsis, // Show ellipsis if collapsed
           ),
-          maxLines: 2, // Fixed to two lines
-          overflow: TextOverflow.ellipsis, // Add ellipsis if the text overflows
         ),
         trailing: trailing,
       ),
