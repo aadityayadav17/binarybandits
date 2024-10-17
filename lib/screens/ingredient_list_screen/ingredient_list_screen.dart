@@ -273,42 +273,14 @@ class _IngredientListPageState extends State<IngredientListPage> {
       }
 
       final ingredientRef = ingredientsRef.child(ingredientKey);
-      final snapshot = await ingredientRef.get();
 
       Map<String, dynamic> updateData = {
         'name': ingredient,
+        'quantity': quantity,
         'unit': 'g',
+        'accepted': false,
+        'recipes': {recipe.id: true},
       };
-
-      if (snapshot.exists) {
-        final currentData = snapshot.value as Map<dynamic, dynamic>;
-        updateData['accepted'] = currentData['accepted'] ?? false;
-
-        // Calculate total quantity considering all recipes
-        double totalQuantity = quantity;
-        Map<String, bool> recipes =
-            Map<String, bool>.from(currentData['recipes'] ?? {});
-        for (var recipeId in recipes.keys) {
-          if (recipeId != recipe.id) {
-            var recipeIngredients = parseIngredientsQuantity(this
-                .recipes
-                .firstWhere((r) => r.id == recipeId)
-                .ingredientsQuantityInGrams);
-            if (recipeIngredients.containsKey(ingredient)) {
-              int recipeServings = this.recipeServings[recipeId] ?? 1;
-              totalQuantity += recipeIngredients[ingredient]! * recipeServings;
-            }
-          }
-        }
-
-        updateData['quantity'] = totalQuantity;
-        recipes[recipe.id] = true;
-        updateData['recipes'] = recipes;
-      } else {
-        updateData['accepted'] = false;
-        updateData['quantity'] = quantity;
-        updateData['recipes'] = {recipe.id: true};
-      }
 
       await ingredientRef.update(updateData);
     }
