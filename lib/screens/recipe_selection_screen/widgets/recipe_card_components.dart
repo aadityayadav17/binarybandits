@@ -1,3 +1,27 @@
+/// A widget that displays an image card for a recipe.
+///
+/// The [RecipeImageCard] widget shows an image of the recipe inside a card
+/// with rounded corners and a shadow effect. The size of the card and the
+/// image are proportional to the screen size.
+///
+/// The [recipe] parameter is the recipe object containing the image path.
+/// The [screenWidth] parameter is the width of the screen.
+
+/// A widget that displays a stack of recipe cards, including an image card
+/// and an information card.
+///
+/// The [RecipeCardStack] widget arranges the [RecipeImageCard] and
+/// [RecipeInformationCard] in a stack. The image card is positioned at the
+/// top, and the information card is positioned below it with a slight overlap.
+///
+/// The [recipe] parameter is the recipe object containing the details.
+/// The [screenWidth] parameter is the width of the screen.
+/// The [cardTopPosition] parameter is the top position of the image card.
+/// The [cardHeight] parameter is the height of the information card.
+/// The [scrollController] parameter is the controller for scrolling the
+/// information card.
+library recipe_card_components;
+
 import 'package:flutter/material.dart';
 import 'package:binarybandits/models/recipe.dart';
 import 'package:binarybandits/screens/recipe_selection_screen/widgets/recipe_information_card.dart';
