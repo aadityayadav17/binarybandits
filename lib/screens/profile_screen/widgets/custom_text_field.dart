@@ -8,12 +8,12 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller; // Add controller parameter
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.labelText,
     this.isLocationField = false,
     required this.onChanged,
     this.controller, // Add controller to constructor
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

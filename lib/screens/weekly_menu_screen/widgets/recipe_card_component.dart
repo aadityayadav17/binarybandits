@@ -20,10 +20,10 @@ class RecipeImageCard extends StatelessWidget {
   final double screenWidth;
 
   const RecipeImageCard({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +65,13 @@ class RecipeCardStack extends StatelessWidget {
   final ScrollController scrollController;
 
   const RecipeCardStack({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.screenWidth,
     required this.cardTopPosition,
     required this.cardHeight,
     required this.scrollController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

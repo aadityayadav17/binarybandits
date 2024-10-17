@@ -8,11 +8,11 @@ class BudgetField extends StatelessWidget {
   final Function(String) onChanged;
 
   const BudgetField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.controller, // Add controller as required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class BudgetField extends StatelessWidget {
                 ),
               ),
               SizedBox(width: proportionalWidth(8)),
-              Container(
+              SizedBox(
                 width: proportionalWidth(
                     50), // Proportional width for the underline
                 child: TextField(

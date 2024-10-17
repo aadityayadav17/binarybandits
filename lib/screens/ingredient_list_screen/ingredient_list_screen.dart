@@ -10,6 +10,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class IngredientListPage extends StatefulWidget {
+  const IngredientListPage({super.key});
+
   @override
   _IngredientListPageState createState() => _IngredientListPageState();
 }
@@ -449,7 +451,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
                       onPressed: () async {
@@ -579,7 +581,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
   }
 
   Widget _buildRecipeTabs(double screenWidth) {
-    return Container(
+    return SizedBox(
       height: proportionalHeight(40),
       child: ListView(
         scrollDirection: Axis.horizontal,

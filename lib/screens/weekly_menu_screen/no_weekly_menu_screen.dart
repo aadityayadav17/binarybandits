@@ -5,6 +5,8 @@ import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_s
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class NoWeeklyMenuScreen extends StatelessWidget {
+  const NoWeeklyMenuScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;

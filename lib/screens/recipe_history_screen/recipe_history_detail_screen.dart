@@ -26,8 +26,7 @@ double proportionalFontSize(BuildContext context, double size) {
 class RecipeHistoryDetailScreen extends StatefulWidget {
   final Recipe recipe;
 
-  const RecipeHistoryDetailScreen({Key? key, required this.recipe})
-      : super(key: key);
+  const RecipeHistoryDetailScreen({super.key, required this.recipe});
 
   @override
   _RecipeHistoryDetailScreenState createState() =>

@@ -9,11 +9,11 @@ class PhoneNumberField extends StatelessWidget {
   final Function(String) onChanged;
 
   const PhoneNumberField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.controller, // Pass the controller as a required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -19,6 +19,8 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class NoRecipeSelectionScreen extends StatelessWidget {
+  const NoRecipeSelectionScreen({super.key});
+
   // Updated class name
   @override
   Widget build(BuildContext context) {

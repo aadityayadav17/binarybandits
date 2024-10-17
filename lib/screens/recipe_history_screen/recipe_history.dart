@@ -25,6 +25,8 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeHistoryPage extends StatefulWidget {
+  const RecipeHistoryPage({super.key});
+
   @override
   _RecipeHistoryPageState createState() => _RecipeHistoryPageState();
 }

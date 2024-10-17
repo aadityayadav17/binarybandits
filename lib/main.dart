@@ -28,7 +28,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   final FirebaseAuth auth;
 
-  const MyApp({Key? key, required this.auth}) : super(key: key);
+  const MyApp({super.key, required this.auth});
 
   @override
   _MyAppState createState() => _MyAppState();

@@ -10,12 +10,12 @@ class HeightWeightField extends StatelessWidget {
   final Function(String) onChanged;
 
   const HeightWeightField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.unit,
     required this.controller, // Add controller as a required parameter
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

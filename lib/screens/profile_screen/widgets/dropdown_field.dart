@@ -9,12 +9,12 @@ class DropdownField extends StatefulWidget {
   final ValueChanged<String?> onChanged;
 
   const DropdownField({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.currentValue,
     required this.items,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _DropdownFieldState createState() => _DropdownFieldState();
@@ -127,8 +127,8 @@ class _DropdownFieldState extends State<DropdownField> {
                 ),
                 scrollbarTheme: ScrollbarThemeData(
                   radius: Radius.circular(proportionalWidth(40)),
-                  thickness: MaterialStateProperty.all(proportionalWidth(6)),
-                  thumbVisibility: MaterialStateProperty.all(true),
+                  thickness: WidgetStateProperty.all(proportionalWidth(6)),
+                  thumbVisibility: WidgetStateProperty.all(true),
                 ),
               ),
               menuItemStyleData: MenuItemStyleData(
