@@ -25,11 +25,13 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeHistoryPage extends StatefulWidget {
+  const RecipeHistoryPage({super.key});
+
   @override
-  _RecipeHistoryPageState createState() => _RecipeHistoryPageState();
+  RecipeHistoryPageState createState() => RecipeHistoryPageState();
 }
 
-class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
+class RecipeHistoryPageState extends State<RecipeHistoryPage> {
   List<Recipe> acceptedRecipes = [];
 
   @override
@@ -38,6 +40,7 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
     _loadAcceptedRecipes();
   }
 
+  // Load accepted recipes from Firebase
   Future<void> _loadAcceptedRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -129,6 +132,7 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
     );
   }
 
+  // Build the list of accepted recipes
   Widget _buildRecipeList(BuildContext context) {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
@@ -139,6 +143,7 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
     );
   }
 
+  // Build the recipe item
   Widget _buildRecipeItem(BuildContext context, Recipe recipe) {
     return Padding(
       padding: EdgeInsets.only(
@@ -186,6 +191,7 @@ class _RecipeHistoryPageState extends State<RecipeHistoryPage> {
     );
   }
 
+  // Build the bottom navigation bar
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
