@@ -1,3 +1,30 @@
+/// RecipeCollectionPage is a StatefulWidget that displays a collection of saved recipes.
+///
+/// This page fetches saved recipes from Firebase and displays them in a list. Users can
+/// tap on a recipe to view its details. The page also includes a bottom navigation bar
+/// for navigating to other screens in the app.
+///
+/// Proportional helper functions are used to ensure consistent sizing across different
+/// screen sizes.
+///
+/// The main components of this page include:
+/// - An AppBar with a back button.
+/// - A title "Saved Recipes".
+/// - A list of saved recipes.
+/// - A bottom navigation bar for navigating to other screens.
+///
+/// The saved recipes are loaded from Firebase in the `_loadSavedRecipes` method, which
+/// is called during the `initState` lifecycle method. The recipes are filtered to only
+/// include those that are marked as saved.
+///
+/// The `_buildRecipeList` method builds the list of saved recipes, and the `_buildRecipeItem`
+/// method builds each individual recipe item in the list. Tapping on a recipe item navigates
+/// to the `RecipeCollectionDetailScreen` to view the recipe details.
+///
+/// The `_buildBottomNavigationBar` method builds the bottom navigation bar, which allows
+/// users to navigate to the Home, Recipe Selection, Grocery List, and Weekly Menu screens.
+library recipe_collection_screen;
+
 import 'dart:convert';
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,19 +52,23 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeCollectionPage extends StatefulWidget {
+  const RecipeCollectionPage({super.key});
+
   @override
-  _RecipeCollectionPageState createState() => _RecipeCollectionPageState();
+  RecipeCollectionPageState createState() => RecipeCollectionPageState();
 }
 
-class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
+class RecipeCollectionPageState extends State<RecipeCollectionPage> {
   List<Recipe> savedRecipes = [];
 
+  // Load saved recipes on initialization
   @override
   void initState() {
     super.initState();
     _loadSavedRecipes();
   }
 
+  // Method to load saved recipes
   Future<void> _loadSavedRecipes() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -130,6 +161,7 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
     );
   }
 
+  // Method to build the recipe list
   Widget _buildRecipeList() {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: proportionalWidth(context, 16)),
@@ -140,6 +172,7 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
     );
   }
 
+  // Method to build the recipe item
   Widget _buildRecipeItem(Recipe recipe) {
     return Padding(
       padding: EdgeInsets.only(
@@ -190,6 +223,7 @@ class _RecipeCollectionPageState extends State<RecipeCollectionPage> {
     );
   }
 
+  // Bottom Navigation Bar
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
