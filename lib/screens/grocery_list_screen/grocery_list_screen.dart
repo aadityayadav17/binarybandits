@@ -173,20 +173,19 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       context, 6), // Smaller space between text and switch
                 ),
                 Transform.scale(
-                  scale: 0.7, // Further reduce the size of the switch
-                  child: Switch(
-                    value: cheapestOption,
-                    onChanged: selectedTab == "All"
-                        ? (value) {
-                            setState(() {
-                              cheapestOption = value;
-                            });
-                          }
-                        : null, // Disable for individual tabs
-                    activeColor: const Color.fromRGBO(
-                        73, 160, 120, 1), // Set the active color
-                  ),
-                ),
+                    scale: 0.7, // Further reduce the size of the switch
+                    child: Switch(
+                      value: cheapestOption,
+                      onChanged: selectedTab == "All"
+                          ? (value) {
+                              setState(() {
+                                cheapestOption = value;
+                              });
+                            }
+                          : null, // Disable the switch for individual tabs
+                      activeColor: const Color.fromRGBO(
+                          73, 160, 120, 1), // Set the active color
+                    )),
               ],
             ),
           ),
@@ -637,31 +636,39 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   String _getItemLabel(int index) {
     if (selectedTab == "All") {
-      double? colesPrice = removedStores.contains("Coles")
-          ? null
-          : ingredientPrices[index]['coles']['price'];
-      double? woolworthsPrice = removedStores.contains("Woolworths")
-          ? null
-          : ingredientPrices[index]['woolworths']['price'];
-      double? aldiPrice = removedStores.contains("Aldi")
-          ? null
-          : ingredientPrices[index]['aldi']['price'];
+      if (!cheapestOption) {
+        return ingredientPrices[index]
+            ['ingredient_name']; // Show ingredient name when toggle is off
+      } else {
+        double? colesPrice = removedStores.contains("Coles")
+            ? null
+            : ingredientPrices[index]['coles']['price'];
+        double? woolworthsPrice = removedStores.contains("Woolworths")
+            ? null
+            : ingredientPrices[index]['woolworths']['price'];
+        double? aldiPrice = removedStores.contains("Aldi")
+            ? null
+            : ingredientPrices[index]['aldi']['price'];
 
-      if (cheapestOption) {
-        if (colesPrice != null &&
-            (woolworthsPrice == null || colesPrice < woolworthsPrice) &&
-            (aldiPrice == null || colesPrice < aldiPrice)) {
+        double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+            .where((price) => price != null)
+            .reduce((a, b) => a! < b! ? a : b);
+
+        if (lowestPrice == colesPrice) {
           return ingredientPrices[index]['coles']['product_name'];
-        } else if (woolworthsPrice != null &&
-            (aldiPrice == null || woolworthsPrice < aldiPrice)) {
+        } else if (lowestPrice == woolworthsPrice) {
           return ingredientPrices[index]['woolworths']['product_name'];
-        } else if (aldiPrice != null) {
+        } else if (lowestPrice == aldiPrice) {
           return ingredientPrices[index]['aldi']['product_name'];
         }
       }
-      return ingredientPrices[index]['ingredient_name'];
+    } else {
+      return ingredientPrices[index][selectedTab.toLowerCase()]
+          ['product_name']; // Show product name for store tabs
     }
-    return ingredientPrices[index]['ingredient_name'];
+
+    // Default return in case none of the conditions above are met
+    return "Unknown Product"; // or any other fallback value
   }
 
 // Helper method to build the list tile
