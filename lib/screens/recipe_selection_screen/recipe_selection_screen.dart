@@ -120,7 +120,8 @@ class RecipeSelectionScreenState extends State<RecipeSelectionScreen>
       });
     }
 
-    if (_recipes.isEmpty) {
+    // Check if widget is still mounted before using context
+    if (_recipes.isEmpty && mounted) {
       Navigator.pushReplacementNamed(context, '/no_recipe_selection_screen');
     }
   }
