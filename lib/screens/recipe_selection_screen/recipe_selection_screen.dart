@@ -1,3 +1,40 @@
+/// A screen that allows users to select recipes for their meal plan.
+///
+/// This screen displays a list of recipes that the user can swipe through and
+/// either accept or reject. Accepted recipes are added to the user's weekly
+/// menu and recipe history in Firebase. Users can also save recipes to their
+/// collection.
+///
+/// The screen uses proportional sizing for UI elements to ensure consistent
+/// appearance across different screen sizes.
+///
+/// The screen also handles loading recipes from a local JSON file and Firebase,
+/// and updates the UI accordingly.
+///
+/// The screen includes the following features:
+/// - Load recipes from a local JSON file and Firebase.
+/// - Display recipes in a swipeable card stack.
+/// - Accept or reject recipes.
+/// - Save recipes to the user's collection.
+/// - Undo the last accepted or rejected recipe.
+/// - Navigate to the recipe overview screen when at least one recipe is selected.
+/// - Display a bottom navigation bar for navigating to other screens.
+///
+/// The screen uses the following widgets:
+/// - `RecipeCardStack`: Displays the current recipe in a swipeable card stack.
+/// - `RecipeInformationCard`: Displays detailed information about the current recipe.
+/// - `BottomNavigationBar`: Provides navigation to other screens.
+///
+/// The screen uses the following helper functions:
+/// - `proportionalWidth`: Calculates width based on screen size.
+/// - `proportionalHeight`: Calculates height based on screen size.
+/// - `proportionalFontSize`: Calculates font size based on screen size.
+///
+/// The screen uses Firebase for authentication and database operations.
+///
+/// The screen uses the `GoogleFonts` package for custom fonts.
+library recipe_selection_screen;
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
