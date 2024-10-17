@@ -121,6 +121,32 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return productName;
   }
 
+  double calculateTotalCheapestCost() {
+    double totalCost = 0.0;
+
+    for (var product in ingredientPrices) {
+      double? colesPrice =
+          removedStores.contains("Coles") ? null : product['coles']['price'];
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null
+          : product['woolworths']['price'];
+      double? aldiPrice =
+          removedStores.contains("Aldi") ? null : product['aldi']['price'];
+
+      // Get the lowest price among the available stores
+      double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+          .where((price) => price != null)
+          .reduce((a, b) => a! < b! ? a : b);
+
+      // Add the lowest price to the total cost
+      if (lowestPrice != null) {
+        totalCost += lowestPrice;
+      }
+    }
+
+    return totalCost;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -792,6 +818,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Widget buildInfoBox(BuildContext context) {
     int totalItems =
         ingredientPrices.length; // Get the total number of items dynamically
+    double totalCost =
+        calculateTotalCheapestCost(); // Calculate the total cost of the cheapest items
 
     return Container(
       margin:
@@ -838,7 +866,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$XXXXX', // Placeholder for total cost
+                      '\$${totalCost.toStringAsFixed(2)}', // Display the calculated total cost
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
