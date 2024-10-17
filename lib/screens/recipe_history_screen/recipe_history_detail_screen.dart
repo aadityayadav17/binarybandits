@@ -1,3 +1,39 @@
+/// A screen that displays the details of a recipe from the recipe history.
+///
+/// This screen shows detailed information about a specific recipe and allows
+/// the user to add the recipe to their weekly menu. It also checks if the
+/// recipe is already in the weekly menu and updates the UI accordingly.
+///
+/// The screen consists of:
+/// - An app bar with a back button.
+/// - A scrollable body that displays the recipe details.
+/// - A button to add the recipe to the weekly menu.
+///
+/// The screen interacts with Firebase to fetch and update the user's weekly
+/// menu and recipe history.
+///
+/// Proportional helper functions are used to adjust the UI elements based on
+/// the screen size.
+///
+/// The main components of the screen are:
+/// - `RecipeCardStack`: Displays the recipe card.
+/// - `RecipeInformationCard`: Displays detailed information about the recipe.
+///
+/// The screen also includes a bottom navigation bar for navigation between
+/// different screens.
+///
+/// The `RecipeHistoryDetailScreen` is a `StatefulWidget` that manages its state
+/// using the `RecipeHistoryDetailScreenState` class.
+///
+/// The state class handles:
+/// - Checking if the recipe is in the weekly menu.
+/// - Adding the recipe to the weekly menu and history.
+/// - Updating the UI based on the state.
+///
+/// The screen uses Firebase Authentication to get the current user and Firebase
+/// Realtime Database to fetch and update the user's data.
+library recipe_history_detail_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/models/recipe.dart';
@@ -26,15 +62,14 @@ double proportionalFontSize(BuildContext context, double size) {
 class RecipeHistoryDetailScreen extends StatefulWidget {
   final Recipe recipe;
 
-  const RecipeHistoryDetailScreen({Key? key, required this.recipe})
-      : super(key: key);
+  const RecipeHistoryDetailScreen({super.key, required this.recipe});
 
   @override
-  _RecipeHistoryDetailScreenState createState() =>
-      _RecipeHistoryDetailScreenState();
+  RecipeHistoryDetailScreenState createState() =>
+      RecipeHistoryDetailScreenState();
 }
 
-class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
+class RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
   bool addedToMenu = false;
   final ScrollController _scrollController =
       ScrollController(); // Initially false
@@ -45,13 +80,13 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
     _checkRecipeInWeeklyMenu(); // Check if the recipe is in the weekly menu
   }
 
+  // Check if the recipe is in the weekly menu
   Future<void> _checkRecipeInWeeklyMenu() async {
     // Get the current user
     final User? user = FirebaseAuth.instance.currentUser;
 
     // Ensure the user is authenticated
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -75,15 +110,13 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
           break;
         }
       }
-    } else {
-      print('No meal plan data available.');
-    }
+    } else {}
   }
 
+  // Add the recipe to the weekly menu and history
   Future<void> _addToMenu() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -143,7 +176,6 @@ class _RecipeHistoryDetailScreenState extends State<RecipeHistoryDetailScreen> {
       setState(() {
         addedToMenu = true;
       });
-      print('Recipe added to menu and history successfully');
     } catch (e) {
       print('Error adding recipe to menu and history: $e');
     }
