@@ -76,29 +76,70 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
   Future<List<String>> _fetchAcceptedIngredients() async {
-    User? user = _auth.currentUser; // Get the currently authenticated user
+    User? user = _auth.currentUser;
 
     if (user == null) {
       return [];
     }
 
     List<String> acceptedIngredients = [];
-    DatabaseReference ingredientsRef = _database
-        .child('users/${user.uid}/ingredients'); // Path to the ingredients node
+    DatabaseReference ingredientsRef =
+        _database.child('users/${user.uid}/ingredients');
+    DatabaseReference weeklyMenuRef =
+        _database.child('users/${user.uid}/recipeWeeklyMenu');
 
-    final snapshot = await ingredientsRef.once();
+    final ingredientsSnapshot = await ingredientsRef.once();
+    final weeklyMenuSnapshot = await weeklyMenuRef.once();
 
-    if (snapshot.snapshot.value == null) {
-      return []; // If there are no ingredients, return an empty list
+    if (ingredientsSnapshot.snapshot.value == null ||
+        weeklyMenuSnapshot.snapshot.value == null) {
+      print('No data found in ingredients or weekly menu');
+      return [];
     }
 
-    final ingredientsData = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+    final ingredientsData =
+        ingredientsSnapshot.snapshot.value as Map<dynamic, dynamic>?;
+    final weeklyMenuData =
+        weeklyMenuSnapshot.snapshot.value as Map<dynamic, dynamic>?;
 
-    if (ingredientsData != null) {
+    if (ingredientsData != null && weeklyMenuData != null) {
       ingredientsData.forEach((key, value) {
+        // Step 1: Check if the ingredient itself is accepted
         if (value['accepted'] == true) {
-          acceptedIngredients
-              .add(value['name']); // Collect accepted ingredient names
+          Map<dynamic, dynamic> ingredientRecipes = value['recipes'] ?? {};
+
+          // Step 2: Check if any recipe linked to this ingredient is accepted in the recipeWeeklyMenu
+          bool shouldAccept = ingredientRecipes.keys.any((recipeId) {
+            print(
+                'Checking recipe ID $recipeId for ingredient ${value['name']}');
+
+            // Check the recipeWeeklyMenu for the recipe's "id" field instead of using the key directly
+            bool recipeFoundAndAccepted =
+                weeklyMenuData.values.any((weeklyMenuEntry) {
+              return weeklyMenuEntry['id'] == recipeId &&
+                  weeklyMenuEntry['accepted'] == true;
+            });
+
+            if (recipeFoundAndAccepted) {
+              print('Recipe $recipeId is accepted in weekly menu.');
+              return true;
+            } else {
+              print(
+                  'Recipe $recipeId is not accepted or not found in weekly menu.');
+              return false;
+            }
+          });
+
+          // Step 3: If a valid recipe is accepted, add the ingredient to the accepted list
+          if (shouldAccept) {
+            acceptedIngredients.add(value['name']);
+            print('Ingredient ${value['name']} accepted.');
+          } else {
+            print('Ingredient ${value['name']} skipped (no accepted recipe).');
+          }
+        } else {
+          print(
+              'Ingredient ${value['name']} skipped (ingredient not accepted).');
         }
       });
     }
@@ -111,7 +152,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         await rootBundle.loadString('assets/recipes/products/products.json');
     final data = await json.decode(response);
 
-    // Fetch accepted ingredients from Firebase
+    // Fetch accepted ingredients from Firebase after checking the recipeWeeklyMenu
     List<String> acceptedIngredients = await _fetchAcceptedIngredients();
 
     List<Map<String, dynamic>> filteredProducts = [];
@@ -126,17 +167,16 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
 
     if (filteredProducts.isEmpty) {
-      // Use a post-frame callback to navigate after the build method finishes
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NoGroceryListScreen()),
         );
       });
-      return; // Stop further execution
+      return;
     }
 
-    // Sort filtered products by ingredient name in alphabetical order
+    // Sort and update the UI with filtered products
     filteredProducts.sort((a, b) => a['ingredient_name']
         .toString()
         .toLowerCase()
