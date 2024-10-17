@@ -10,11 +10,13 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:binarybandits/screens/grocery_list_screen/grocery_list_screen.dart';
 
 class IngredientListPage extends StatefulWidget {
+  const IngredientListPage({super.key});
+
   @override
-  _IngredientListPageState createState() => _IngredientListPageState();
+  IngredientListPageState createState() => IngredientListPageState();
 }
 
-class _IngredientListPageState extends State<IngredientListPage> {
+class IngredientListPageState extends State<IngredientListPage> {
   List<Recipe> recipes = [];
   Recipe? selectedRecipe;
   bool isAllSelected = true;
@@ -23,16 +25,17 @@ class _IngredientListPageState extends State<IngredientListPage> {
   Map<String, String> ingredientKeys = {};
   Map<String, int> recipeServings = {};
 
+  // Init state
   @override
   void initState() {
     super.initState();
     _loadRecipes();
   }
 
+  // Method to load recipes
   Future<void> _loadRecipes() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('User is not authenticated');
       return;
     }
 
@@ -85,11 +88,10 @@ class _IngredientListPageState extends State<IngredientListPage> {
 
       await updateAllIngredientQuantities();
       _updateAllIngredients();
-    } else {
-      print('No meal plan data available.');
-    }
+    } else {}
   }
 
+  // Method to update all ingredients
   void _updateAllIngredients() {
     Set<String> allIngredients = {};
     for (var recipe in recipes) {
@@ -103,6 +105,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
   }
 
+  // Method to toggle ingredient
   Future<void> _toggleIngredient(String ingredient) async {
     final newState = !(selectedIngredients[ingredient] ?? false);
     setState(() {
@@ -111,6 +114,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     await _updateIngredientInFirebase(ingredient, newState);
   }
 
+  // Update ingredient in Firebase
   Future<void> _updateIngredientInFirebase(
       String ingredient, bool isSelected) async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -150,6 +154,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     });
   }
 
+  // Update all ingredients in Firebase
   Future<void> _updateAllIngredientsInFirebase(bool selectAll) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -203,10 +208,12 @@ class _IngredientListPageState extends State<IngredientListPage> {
     setState(() {});
   }
 
+  // Get count of selected items
   int _getSelectedItemsCount() {
     return selectedIngredients.values.where((isSelected) => isSelected).length;
   }
 
+  // Parse ingredients quantity in grams
   List<String> _parseIngredientsQuantityInG(String ingredientsQuantityInGrams) {
     return ingredientsQuantityInGrams
         .split('\n')
@@ -214,6 +221,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
         .toList();
   }
 
+  // Get list of ingredients
   List<String> _getIngredientsList() {
     List<String> ingredients;
     if (isAllSelected) {
@@ -233,6 +241,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     return ingredients;
   }
 
+  // Parse ingredients quantity in grams
   Map<String, double> parseIngredientsQuantity(
       String ingredientsQuantityInGrams) {
     Map<String, double> result = {};
@@ -249,6 +258,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     return result;
   }
 
+  // Update ingredient quantities for a recipe
   Future<void> updateIngredientQuantities(Recipe recipe) async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -286,6 +296,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     }
   }
 
+  // Update all ingredient quantities
   Future<void> updateAllIngredientQuantities() async {
     for (var recipe in recipes) {
       await updateIngredientQuantities(recipe);
@@ -396,6 +407,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build ingredient card
   Widget _buildIngredientCard(double screenWidth, double screenHeight) {
     List<String> ingredients = _getIngredientsList();
 
@@ -421,7 +433,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     height: proportionalHeight(36),
                     child: ElevatedButton(
                       onPressed: () async {
@@ -477,6 +489,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build ingredient item
   Widget _buildIngredientItem(
       String ingredient, double screenWidth, double screenHeight) {
     bool isSelected = selectedIngredients[ingredient] ?? false;
@@ -550,8 +563,9 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build recipe tabs
   Widget _buildRecipeTabs(double screenWidth) {
-    return Container(
+    return SizedBox(
       height: proportionalHeight(40),
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -580,6 +594,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build tab with shadow
   Widget _buildTabWithShadow(Widget tab) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: proportionalWidth(8)),
@@ -599,6 +614,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Method to build recipe tab
   Widget _buildRecipeTab(String title, bool isSelected, VoidCallback onTap) {
     return ElevatedButton(
       onPressed: onTap,
@@ -621,6 +637,7 @@ class _IngredientListPageState extends State<IngredientListPage> {
     );
   }
 
+  // Bottom Navigation Bar
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
