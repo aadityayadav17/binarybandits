@@ -27,19 +27,25 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class GroceryListScreen extends StatefulWidget {
+  const GroceryListScreen({super.key});
+
   @override
-  _GroceryListScreenState createState() => _GroceryListScreenState();
+  GroceryListScreenState createState() => GroceryListScreenState();
 }
 
-class _GroceryListScreenState extends State<GroceryListScreen> {
-  String selectedTab = "All";
-  bool cheapestOption = false;
-  Map<int, bool> _selectedIngredients = {};
-  List<String> removedStores = [];
-  List<Map<String, dynamic>> ingredientPrices = [];
-  String? _userBudget;
-  Map<int, bool> _showIngredientName = {};
+class GroceryListScreenState extends State<GroceryListScreen> {
+  String selectedTab = "All"; // Default selected tab is "All"
+  bool cheapestOption = false; // Default cheapest option is off
+  final Map<int, bool> _selectedIngredients =
+      {}; // Map to track selected ingredients
+  List<String> removedStores = []; // List to track removed stores
+  List<Map<String, dynamic>> ingredientPrices =
+      []; // List to store ingredient prices
+  String? _userBudget; // Variable to store the user's budget
+  final Map<int, bool> _showIngredientName =
+      {}; // Map to track ingredient name visibility
   Map<String, List<String>> storeProductNames = {
+    // Map to store product names for each store
     'Coles': [],
     'Woolworths': [],
     'Aldi': [],
@@ -52,6 +58,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     _fetchUserBudget(); // Fetch the user's budget
   }
 
+  // Fetch the user's budget from Firebase
   Future<void> _fetchUserBudget() async {
     User? user = _auth.currentUser; // Get the currently authenticated user
 
@@ -75,6 +82,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
+  // Fetch the accepted ingredients from Firebase
   Future<List<String>> _fetchAcceptedIngredients() async {
     User? user = _auth.currentUser;
 
@@ -93,7 +101,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
     if (ingredientsSnapshot.snapshot.value == null ||
         weeklyMenuSnapshot.snapshot.value == null) {
-      print('No data found in ingredients or weekly menu');
       return [];
     }
 
@@ -110,36 +117,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
           // Step 2: Check if any recipe linked to this ingredient is accepted in the recipeWeeklyMenu
           bool shouldAccept = ingredientRecipes.keys.any((recipeId) {
-            print(
-                'Checking recipe ID $recipeId for ingredient ${value['name']}');
-
             // Check the recipeWeeklyMenu for the recipe's "id" field instead of using the key directly
-            bool recipeFoundAndAccepted =
-                weeklyMenuData.values.any((weeklyMenuEntry) {
+            return weeklyMenuData.values.any((weeklyMenuEntry) {
               return weeklyMenuEntry['id'] == recipeId &&
                   weeklyMenuEntry['accepted'] == true;
             });
-
-            if (recipeFoundAndAccepted) {
-              print('Recipe $recipeId is accepted in weekly menu.');
-              return true;
-            } else {
-              print(
-                  'Recipe $recipeId is not accepted or not found in weekly menu.');
-              return false;
-            }
           });
 
           // Step 3: If a valid recipe is accepted, add the ingredient to the accepted list
           if (shouldAccept) {
             acceptedIngredients.add(value['name']);
-            print('Ingredient ${value['name']} accepted.');
-          } else {
-            print('Ingredient ${value['name']} skipped (no accepted recipe).');
           }
-        } else {
-          print(
-              'Ingredient ${value['name']} skipped (ingredient not accepted).');
         }
       });
     }
@@ -147,6 +135,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return acceptedIngredients;
   }
 
+  // Load the product data from the JSON file
   Future<void> _loadProductData() async {
     final String response =
         await rootBundle.loadString('assets/recipes/products/products.json');
@@ -195,7 +184,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     });
   }
 
-// Since the prices are stored as Strings, just return the string values as they are
+  // Since the prices are stored as Strings, just return the string values as they are
   String formatPrice(double? price) {
     if (price == null) {
       return "None"; // or another placeholder for unavailable prices
@@ -203,6 +192,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return "\$${price.toStringAsFixed(2)}"; // Display price with two decimal points
   }
 
+  // Function to format the product name for display
   String formatProductName(String? productName, String ingredientName) {
     if (productName == null || productName.toLowerCase() == "none") {
       return "No Product Available for $ingredientName";
@@ -210,6 +200,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return productName;
   }
 
+  // Function to calculate the total cost for the cheapest items
   double calculateTotalCheapestCost() {
     double totalCost = 0.0;
 
@@ -236,6 +227,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return totalCost;
   }
 
+  // Function to calculate the total cost for the highest price among the available stores
   double calculateTotalHighestCost() {
     double totalCost = 0.0;
 
@@ -316,7 +308,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               ),
             ),
           ),
-// Cheapest Switch Row
+          // Cheapest Switch Row
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: proportionalWidth(context, 16)),
@@ -537,9 +529,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                         onPressed: () {
                           setState(() {
                             removedStores.add(store);
-                            if (selectedTab == store)
+                            if (selectedTab == store) {
                               selectedTab =
                                   "All"; // Switch back to "All" if the removed tab was selected
+                            }
                           });
                           Navigator.of(context).pop(); // Close the dialog
                         },
@@ -759,7 +752,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-// Helper method to build the grocery list item
+  // Helper method to build the grocery list item
   Widget _buildGroceryListItem(int index, bool isSelected) {
     String itemLabel = _getItemLabel(index);
 
@@ -818,6 +811,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
+  // Helper method to get the item label based on the selected tab
   String _getItemLabel(int index) {
     if (selectedTab == "All") {
       // In the All tab, display ingredient names when cheapestOption is off
@@ -857,7 +851,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return "Unknown Product"; // or any other fallback value
   }
 
-// Helper method to build the list tile
+  // Helper method to build the list tile
   Widget _buildListTile(
       int index, String itemLabel, bool isSelected, Widget trailing) {
     return Padding(
@@ -882,7 +876,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           ),
         ),
         title: Text(
-          '$itemLabel', // Dynamically display the label based on the selected tab
+          itemLabel, // Dynamically display the label based on the selected tab
           style: GoogleFonts.robotoFlex(
             fontSize: proportionalFontSize(
                 context, 14), // Smaller font size for ingredients
@@ -902,7 +896,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-// Helper method to build price display for the "All" tab
+  // Helper method to build price display for the "All" tab
   Widget _buildAllTabPriceDisplay(
       int index,
       double? lowestPrice,
@@ -925,7 +919,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-// Helper method to build price display for individual tabs
+  // Helper method to build price display for individual tabs
   Widget _buildIndividualTabPriceDisplay(String displayedPrice) {
     return Text(
       displayedPrice, // Display the price for the selected store
@@ -933,8 +927,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-// Helper method to build the price column (highlighting the cheapest price in black if applicable)
-  // Example in _buildPriceColumn where the price is displayed
+  // Helper method to build the price column (highlighting the cheapest price in black if applicable)
   Widget _buildPriceColumn(
       double? storePrice, double? lowestPrice, bool isSelected) {
     return SizedBox(
@@ -965,7 +958,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  // Method for the rounded rectangle information box
   // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
     // Calculate the total number of items based on the selected tab
