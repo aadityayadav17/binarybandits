@@ -968,8 +968,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   // Method for the rounded rectangle information box
   // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
-    int totalItems =
-        ingredientPrices.length; // Get the total number of items dynamically
+    // Calculate the total number of items based on the selected tab
+    int totalItems = selectedTab == "All"
+        ? ingredientPrices
+            .length // All ingredients are counted for the "All" tab
+        : ingredientPrices.where((product) {
+            return product[selectedTab.toLowerCase()]['price'] != null;
+          }).length; // Count only the items available for the selected store
 
     // Calculate the total cost based on the selected tab and the cheapest toggle
     double totalCost = cheapestOption
@@ -980,7 +985,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                 selectedTab); // Use specific store's total cost for individual store tabs
 
     double budget = _userBudget != null
-        ? double.tryParse(_userBudget!) ?? 0.0
+        ? double.tryParse(_userBudget!) ?? 150.0
         : 150.0; // Use user's budget or default to $150
     double savings =
         budget - totalCost; // Calculate savings as "budget - total cost"
@@ -1023,7 +1028,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Total $totalItems items', // Display the total number of items
+                      'Total $totalItems items', // Display the total number of items available in the selected tab/store
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
@@ -1050,7 +1055,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$${budget.toStringAsFixed(2)}', // Display the user's budget or a default
+                      '\$${budget.toStringAsFixed(2)}', // Display the user's budget or default
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
