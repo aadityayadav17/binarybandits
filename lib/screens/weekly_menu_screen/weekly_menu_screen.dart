@@ -66,7 +66,7 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
           }
         }
       });
-
+      matchedRecipes.sort((a, b) => a.name.compareTo(b.name));
       setState(() {
         _recipes = matchedRecipes;
         _savedRecipes = List.generate(
