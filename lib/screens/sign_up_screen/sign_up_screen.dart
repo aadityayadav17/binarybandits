@@ -96,11 +96,14 @@ class SignUpScreenState extends State<SignUpScreen> {
         _showSnackBar(
             'A verification email has been sent. Please check your email.');
 
-        // Navigate to the VerificationScreen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const VerificationScreen()),
-        );
+        // Check if the widget is still mounted before using context
+        if (mounted) {
+          // Navigate to the VerificationScreen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const VerificationScreen()),
+          );
+        }
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
