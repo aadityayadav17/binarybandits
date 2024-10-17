@@ -6,6 +6,8 @@ import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart
 import 'package:binarybandits/screens/recipe_selection_screen/recipe_selection_screen.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // Proportional helper functions
 double proportionalWidth(BuildContext context, double size) {
@@ -36,37 +38,106 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Map<int, String> _manuallySelectedPrices = {};
   Map<int, bool> _showIngredientNames = {};
   Map<int, String?> _selectedStorePrices = {};
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  List<Map<String, dynamic>> acceptedIngredients = [];
+  List<String> unavailableProducts = [];
 
   @override
   void initState() {
     super.initState();
-    loadProducts().then((loadedProducts) {
-      setState(() {
-        products = loadedProducts;
-        products.sort((a, b) => a['ingredient_name']
-            .toString()
-            .compareTo(b['ingredient_name'].toString()));
+    _loadData();
+  }
 
-        // Initialize the selection and display states
-        for (int i = 0; i < products.length; i++) {
-          _selectedStorePrices[i] = null; // No store is selected by default
-        }
-      });
-    });
+  Future<void> _loadData() async {
+    await _loadAcceptedIngredients();
+    await loadProducts();
+    _matchProductsWithIngredients();
+    setState(() {});
+  }
+
+  Future<void> _loadAcceptedIngredients() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DataSnapshot snapshot =
+          await _database.child('users/${user.uid}/ingredients').get();
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> ingredients =
+            snapshot.value as Map<dynamic, dynamic>;
+        acceptedIngredients = ingredients.entries
+            .where((entry) => entry.value['accepted'] == true)
+            .map((entry) => Map<String, dynamic>.from(entry.value))
+            .toList();
+      }
+    }
   }
 
 // Since the prices are stored as Strings, just return the string values as they are
-  String formatPrice(String? price) {
-    if (price == null || price.isEmpty) return "None";
-    return "\$$price"; // Add the dollar sign before the price
+  String formatPrice(String price) {
+    if (price == '' || price == 'NONE') return 'N/A';
+    return '\$$price';
   }
 
-  Future<List<dynamic>> loadProducts() async {
+  Future<void> loadProducts() async {
     final String response =
         await rootBundle.loadString('assets/recipes/products/products.json');
     final data = json.decode(response);
-    return data[
-        'products']; // Ensure you are accessing the correct field for the product list
+    products = data['products'];
+    products.sort((a, b) => a['ingredient_name']
+        .toString()
+        .compareTo(b['ingredient_name'].toString()));
+  }
+
+  void _matchProductsWithIngredients() {
+    List<dynamic> matchedProducts = [];
+    for (var ingredient in acceptedIngredients) {
+      var matchedProduct = products.firstWhere(
+          (product) =>
+              product['ingredient_name'].toLowerCase() ==
+              ingredient['name'].toLowerCase(),
+          orElse: () => null);
+
+      if (matchedProduct != null) {
+        matchedProducts.add({
+          ...matchedProduct,
+          'quantity': ingredient['quantity'],
+          'unit': ingredient['unit']
+        });
+      } else {
+        unavailableProducts.add(ingredient['name']);
+      }
+    }
+    products = matchedProducts;
+
+    // Initialize the selection and display states
+    for (int i = 0; i < products.length; i++) {
+      _selectedStorePrices[i] = null; // No store is selected by default
+    }
+  }
+
+  Widget _buildGroceryList() {
+    return ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        bool isSelected = _selectedIngredients[index] ?? false;
+        return Column(
+          children: [
+            _buildGroceryListItem(index, isSelected),
+            _buildDivider(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildUnavailableProductsDropdown() {
+    if (unavailableProducts.isEmpty) return SizedBox.shrink();
+    return ExpansionTile(
+      title: Text('Products unavailable for:'),
+      children: unavailableProducts
+          .map((product) => ListTile(title: Text('• $product')))
+          .toList(),
+    );
   }
 
   @override
@@ -185,6 +256,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           Expanded(
             child: _buildGroceryList(),
           ),
+          _buildUnavailableProductsDropdown(),
           buildInfoBox(context),
         ],
       ),
@@ -539,25 +611,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
   }
 
-  // Helper method to build the grocery list
-  Widget _buildGroceryList() {
-    // Ensure that the item count matches the number of products loaded from the JSON
-    return ListView.builder(
-      itemCount: products.length, // Use the length of the products list
-      itemBuilder: (context, index) {
-        bool isSelected = _selectedIngredients[index] ?? false;
-
-        // Build the grocery list item for each product
-        return Column(
-          children: [
-            _buildGroceryListItem(index, isSelected),
-            _buildDivider(),
-          ],
-        );
-      },
-    );
-  }
-
 // Helper method to build the grocery list item
   Widget _buildGroceryListItem(int index, bool isSelected) {
     if (products.isEmpty) return Text('Loading...');
@@ -567,26 +620,23 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     if (selectedTab == "All") {
       double? colesPrice = removedStores.contains("Coles")
           ? null
-          : double.tryParse(product['coles']['price']);
+          : _parsePrice(product['coles']['price']);
       double? woolworthsPrice = removedStores.contains("Woolworths")
           ? null
-          : double.tryParse(product['woolworths']['price']);
+          : _parsePrice(product['woolworths']['price']);
       double? aldiPrice =
           removedStores.contains("Aldi") || product['aldi']['price'] == "NONE"
               ? null
-              : double.tryParse(product['aldi']['price']);
+              : _parsePrice(product['aldi']['price']);
 
       List<double?> validPrices = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
           .toList();
 
       if (validPrices.isNotEmpty) {
-        double? lowestPrice = validPrices.reduce((a, b) => a! < b! ? a : b);
-
         return _buildListTile(
           index,
-          _getItemLabel(
-              index), // Dynamically display the product name based on selection
+          _getItemLabel(index),
           isSelected,
           _buildAllTabPriceDisplay(
               index, colesPrice, woolworthsPrice, aldiPrice),
@@ -595,21 +645,27 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     } else {
       // Individual store tabs: Display product names and their prices
       String displayedPrice = selectedTab == "Coles"
-          ? product['coles']['price']
+          ? product['coles']['price'].toString()
           : selectedTab == "Woolworths"
-              ? product['woolworths']['price']
-              : product['aldi']['price'];
+              ? product['woolworths']['price'].toString()
+              : product['aldi']['price'].toString();
 
       return _buildListTile(
         index,
-        _getItemLabel(
-            index), // Dynamically display the product name for the selected store
+        _getItemLabel(index),
         isSelected,
         _buildIndividualTabPriceDisplay(displayedPrice),
       );
     }
 
     return SizedBox.shrink(); // In case no valid product is found
+  }
+
+  double? _parsePrice(dynamic price) {
+    if (price is double) return price;
+    if (price is int) return price.toDouble();
+    if (price is String) return double.tryParse(price);
+    return null;
   }
 
   String _getItemLabel(int index) {
@@ -850,7 +906,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return SizedBox(
       width: proportionalWidth(context, 50), // Fixed width for store price
       child: Text(
-        formatPrice(storePrice?.toString()),
+        formatPrice(storePrice?.toString() ?? ''),
         style: TextStyle(
           color: isSelected
               ? Colors.black
