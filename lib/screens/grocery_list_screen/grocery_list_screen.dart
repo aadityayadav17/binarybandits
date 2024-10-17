@@ -576,26 +576,36 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
     final product = products[index];
 
-    // "All" tab: Display ingredient names or the cheapest product name
     if (selectedTab == "All") {
-      double? colesPrice = double.tryParse(product['coles']['price']);
-      double? woolworthsPrice = double.tryParse(product['woolworths']['price']);
-      double? aldiPrice = product['aldi']['price'] != "NONE"
-          ? double.tryParse(product['aldi']['price'])
-          : null;
+      // Exclude prices from removed stores
+      double? colesPrice = removedStores.contains("Coles")
+          ? null
+          : double.tryParse(product['coles']['price']);
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null
+          : double.tryParse(product['woolworths']['price']);
+      double? aldiPrice =
+          removedStores.contains("Aldi") || product['aldi']['price'] == "NONE"
+              ? null
+              : double.tryParse(product['aldi']['price']);
 
-      double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+      // Find the next cheapest price excluding removed stores
+      List<double?> validPrices = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
-          .reduce((a, b) => a! < b! ? a : b);
+          .toList();
 
-      return _buildListTile(
-        index,
-        _getItemLabel(
-            index), // Dynamically display ingredient or cheapest product name
-        isSelected,
-        _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
-            woolworthsPrice, aldiPrice, isSelected),
-      );
+      if (validPrices.isNotEmpty) {
+        double? lowestPrice = validPrices.reduce((a, b) => a! < b! ? a : b);
+
+        return _buildListTile(
+          index,
+          _getItemLabel(
+              index), // Dynamically display the cheapest product name or ingredient
+          isSelected,
+          _buildAllTabPriceDisplay(index, lowestPrice, colesPrice,
+              woolworthsPrice, aldiPrice, isSelected),
+        );
+      }
     } else {
       // Individual store tabs: Display product names and their prices
       String displayedPrice = selectedTab == "Coles"
@@ -612,6 +622,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         _buildIndividualTabPriceDisplay(displayedPrice),
       );
     }
+
+    return SizedBox.shrink(); // In case no valid product is found
   }
 
   /// Helper method to get the item label (ingredient or product name)
@@ -624,37 +636,44 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
     if (selectedTab == "All") {
       if (cheapestOption) {
-        // Find the cheapest product name based on price
-        double? colesPrice = double.tryParse(product['coles']['price']);
-        double? woolworthsPrice =
-            double.tryParse(product['woolworths']['price']);
-        double? aldiPrice = product['aldi']['price'] != "NONE"
-            ? double.tryParse(product['aldi']['price'])
-            : null;
+        // Find the cheapest price excluding removed stores
+        double? colesPrice = removedStores.contains("Coles")
+            ? null
+            : double.tryParse(product['coles']['price']);
+        double? woolworthsPrice = removedStores.contains("Woolworths")
+            ? null
+            : double.tryParse(product['woolworths']['price']);
+        double? aldiPrice =
+            removedStores.contains("Aldi") || product['aldi']['price'] == "NONE"
+                ? null
+                : double.tryParse(product['aldi']['price']);
 
-        double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+        List<double?> validPrices = [colesPrice, woolworthsPrice, aldiPrice]
             .where((price) => price != null && price > 0)
-            .reduce((a, b) => a! < b! ? a : b);
+            .toList();
 
-        if (lowestPrice == colesPrice) {
-          return product['coles']['product_name'];
-        } else if (lowestPrice == woolworthsPrice) {
-          return product['woolworths']['product_name'];
-        } else if (lowestPrice == aldiPrice) {
-          return product['aldi']['product_name'];
+        if (validPrices.isNotEmpty) {
+          // Find the lowest price among valid (non-removed) stores
+          double? lowestPrice = validPrices.reduce((a, b) => a! < b! ? a : b);
+
+          // Return the product name corresponding to the lowest price
+          if (lowestPrice == colesPrice) {
+            return product['coles']['product_name'];
+          } else if (lowestPrice == woolworthsPrice) {
+            return product['woolworths']['product_name'];
+          } else if (lowestPrice == aldiPrice) {
+            return product['aldi']['product_name'];
+          }
         }
       }
       // If the cheapest toggle is off, return the ingredient name
       return ingredientName;
     } else if (selectedTab == "Coles" && !removedStores.contains("Coles")) {
-      // Display Coles product name in Coles tab
       return product['coles']['product_name'];
     } else if (selectedTab == "Woolworths" &&
         !removedStores.contains("Woolworths")) {
-      // Display Woolworths product name in Woolworths tab
       return product['woolworths']['product_name'];
     } else if (selectedTab == "Aldi" && !removedStores.contains("Aldi")) {
-      // Display Aldi product name in Aldi tab
       return product['aldi']['product_name'];
     }
 
