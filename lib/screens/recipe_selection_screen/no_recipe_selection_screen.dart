@@ -1,3 +1,17 @@
+/// A stateless widget that represents a screen displayed when no recipes are selected.
+///
+/// This screen provides the user with options to navigate to different parts of the app
+/// and informs them that all recipes have been added.
+///
+/// The screen includes:
+/// - An AppBar with a back button.
+/// - A message indicating that all recipes have been added.
+/// - A button to navigate to the Recipe Overview Screen.
+/// - A BottomNavigationBar to navigate to other screens in the app.
+///
+/// The layout and styling are responsive to the screen size using proportional helper functions.
+library no_recipe_selection_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
@@ -19,6 +33,8 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class NoRecipeSelectionScreen extends StatelessWidget {
+  const NoRecipeSelectionScreen({super.key});
+
   // Updated class name
   @override
   Widget build(BuildContext context) {
