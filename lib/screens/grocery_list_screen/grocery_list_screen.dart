@@ -36,6 +36,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Map<int, bool> _selectedIngredients = {};
   List<String> removedStores = [];
   List<Map<String, dynamic>> ingredientPrices = [];
+  String? _userBudget;
   Map<String, List<String>> storeProductNames = {
     'Coles': [],
     'Woolworths': [],
@@ -46,8 +47,30 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   void initState() {
     super.initState();
     _loadProductData();
-    // Initialize the selection map with false (unchecked) for each ingredient
-    // This will be updated once we have the actual number of ingredients
+    _fetchUserBudget(); // Fetch the user's budget
+  }
+
+  Future<void> _fetchUserBudget() async {
+    User? user = _auth.currentUser; // Get the currently authenticated user
+
+    if (user == null) {
+      return;
+    }
+
+    DatabaseReference userBudgetRef =
+        _database.child('users/${user.uid}/budget');
+    final snapshot = await userBudgetRef.get();
+
+    if (snapshot.exists) {
+      setState(() {
+        _userBudget =
+            snapshot.value.toString(); // Convert the value to a String
+      });
+    } else {
+      setState(() {
+        _userBudget = 'No budget set'; // Handle if there's no budget set
+      });
+    }
   }
 
   Future<List<String>> _fetchAcceptedIngredients() async {
@@ -916,7 +939,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$XXXXX', // Placeholder for budget
+                      _userBudget != null
+                          ? '\$$_userBudget'
+                          : 'Loading...', // Display the user's budget or show loading
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
