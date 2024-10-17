@@ -135,6 +135,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       return; // Stop further execution
     }
 
+    // Sort filtered products by ingredient name in alphabetical order
+    filteredProducts.sort((a, b) => a['ingredient_name']
+        .toString()
+        .toLowerCase()
+        .compareTo(b['ingredient_name'].toString().toLowerCase()));
+
     setState(() {
       ingredientPrices = filteredProducts;
       _selectedIngredients.clear();
