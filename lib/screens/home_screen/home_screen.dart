@@ -17,15 +17,16 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   List<Recipe> _allRecipes = [];
   List<Recipe> _filteredRecipes = [];
   final FocusNode _searchFocusNode = FocusNode();
   String userName = "User"; // Default value // Create a FocusNode
 
+  // Load recipes and fetch user's name from Firebase when the widget is created
   @override
   void initState() {
     super.initState();
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUserName(); // Fetch user's name from Firebase
   }
 
+  // Fetch user's name from Firebase
   Future<void> _fetchUserName() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
@@ -52,12 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Dispose the FocusNode when the widget is removed from the widget tree
   @override
   void dispose() {
     _searchFocusNode.dispose(); // Dispose the FocusNode
     super.dispose();
   }
 
+  // Load recipes from JSON file
   Future<void> _loadRecipes() async {
     String data = await rootBundle
         .loadString('assets/recipes/D3801 Recipes - Recipes.json');
@@ -70,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Filter recipes based on search query
   void _filterRecipes(String query) {
     if (query.isEmpty) {
       setState(() {
@@ -432,6 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Feature Button Widget
   Widget _buildFeatureButton(
     BuildContext context,
     String imagePath,
@@ -475,6 +481,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Bottom Navigation Bar
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
       backgroundColor: Colors.white,

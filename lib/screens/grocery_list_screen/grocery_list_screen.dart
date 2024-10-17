@@ -152,6 +152,7 @@ class GroceryListScreenState extends State<GroceryListScreen> {
     'Aldi': [],
   };
 
+  // Initialize the state
   @override
   void initState() {
     super.initState();
