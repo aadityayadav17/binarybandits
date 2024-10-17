@@ -13,13 +13,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  WeeklyMenuScreen({Key? key}) : super(key: key);
+  const WeeklyMenuScreen({super.key});
 
   @override
-  _WeeklyMenuScreenState createState() => _WeeklyMenuScreenState();
+  WeeklyMenuScreenState createState() => WeeklyMenuScreenState();
 }
 
-class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
+class WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
   late int _currentIndex;
   final ScrollController _scrollController = ScrollController();
   late List<Recipe> _recipes = [];
@@ -46,7 +46,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         });
         return;
       }
-      String userId = user.uid;
 
       await _loadRecipeCollection(user);
       await _loadRecipeWeeklyMenu(user);
@@ -77,7 +76,6 @@ class _WeeklyMenuScreenState extends State<WeeklyMenuScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading recipes: $e');
       setState(() {
         _isLoading = false;
       });
