@@ -1,3 +1,42 @@
+/// The `ProfileScreen` widget displays and manages the user's profile information.
+/// It allows users to view, edit, and save their profile details, including personal
+/// information, dietary preferences, and dietary restrictions. The profile data is
+/// stored and retrieved from Firebase Realtime Database.
+///
+/// The screen also provides functionality to calculate the user's daily calorie
+/// requirements based on their weight, height, and dietary preferences. Additionally,
+/// it filters and uploads possible recipes that match the user's dietary needs.
+///
+/// The `ProfileScreen` widget is a stateful widget that maintains the state of the
+/// profile form fields and handles various actions such as saving the profile,
+/// loading profile data, and logging out the user.
+///
+/// Properties:
+/// - `fromSignup`: A boolean indicating whether the screen is accessed from the signup
+///   process.
+///
+/// State:
+/// - `ProfileScreenState`: The state class for `ProfileScreen` that manages the profile
+///   form fields, handles data loading and saving, and provides UI elements for the
+///   profile screen.
+///
+/// Methods:
+/// - `initState`: Initializes the state and loads the user's profile data if the user
+///   is logged in.
+/// - `_saveProfile`: Validates and saves the profile data to Firebase Realtime Database,
+///   calculates the user's calorie requirements, and filters possible recipes based on
+///   the user's preferences.
+/// - `_loadProfile`: Loads the user's profile data from Firebase Realtime Database.
+/// - `_logout`: Logs out the user and redirects to the login screen.
+/// - `_updateSaveStatus`: Updates the save status of the profile form.
+/// - `_validateName`: Validates the name field to ensure it is not empty.
+/// - `_showInvalidInputDialog`: Displays a dialog indicating invalid input if the name
+///   field is empty.
+///
+/// The `ProfileScreen` widget uses various other widgets such as `ProfileFormFields`
+/// and `SaveButton` to build the profile form and handle user interactions.
+library profile_screen;
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -134,7 +173,9 @@ class ProfileScreenState extends State<ProfileScreen> {
             .child('users/${user!.uid}/PossibleRecipes')
             .set(possibleRecipes);
         _updateSaveStatus(true);
-        if (widget.fromSignup) {
+
+        // Check if widget is still mounted before navigating
+        if (widget.fromSignup && mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -184,12 +225,14 @@ class ProfileScreenState extends State<ProfileScreen> {
   void _logout() async {
     try {
       await FirebaseAuth.instance.signOut(); // Log out from Firebase
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ), // Redirect to login
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ), // Redirect to login
+        );
+      }
     } catch (e) {
       print(e);
     }
