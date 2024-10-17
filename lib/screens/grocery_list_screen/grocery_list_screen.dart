@@ -692,6 +692,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
 // Helper method to build the list tile
+  // Helper method to build the list tile
   Widget _buildListTile(
       int index, String itemLabel, bool isSelected, Widget trailing) {
     return Padding(
@@ -718,18 +719,18 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         title: Text(
           '$itemLabel', // Dynamically display the label based on the selected tab
           style: GoogleFonts.robotoFlex(
-            fontSize: proportionalFontSize(
-                context, 14), // Smaller font size for ingredients
+            fontSize:
+                proportionalFontSize(context, 14), // Font size for ingredients
             color: isSelected
                 ? Colors.grey
                 : Colors.black, // Grey out text when checked
+            height: 1.5, // Adjust the line height to fit 2 lines consistently
             decoration: isSelected
                 ? TextDecoration.lineThrough
                 : null, // Strikethrough when checked
           ),
-          maxLines: null, // Allows text to wrap to a new line if necessary
-          overflow:
-              TextOverflow.visible, // Ensures text is visible when wrapped
+          maxLines: 2, // Fixed to two lines
+          overflow: TextOverflow.ellipsis, // Add ellipsis if the text overflows
         ),
         trailing: trailing,
       ),
