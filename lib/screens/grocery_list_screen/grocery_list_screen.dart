@@ -27,8 +27,6 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class GroceryListScreen extends StatefulWidget {
-  const GroceryListScreen({super.key});
-
   @override
   _GroceryListScreenState createState() => _GroceryListScreenState();
 }
@@ -36,11 +34,11 @@ class GroceryListScreen extends StatefulWidget {
 class _GroceryListScreenState extends State<GroceryListScreen> {
   String selectedTab = "All";
   bool cheapestOption = false;
-  final Map<int, bool> _selectedIngredients = {};
+  Map<int, bool> _selectedIngredients = {};
   List<String> removedStores = [];
   List<Map<String, dynamic>> ingredientPrices = [];
   String? _userBudget;
-  final Map<int, bool> _showIngredientName = {};
+  Map<int, bool> _showIngredientName = {};
   Map<String, List<String>> storeProductNames = {
     'Coles': [],
     'Woolworths': [],
@@ -539,10 +537,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                         onPressed: () {
                           setState(() {
                             removedStores.add(store);
-                            if (selectedTab == store) {
+                            if (selectedTab == store)
                               selectedTab =
                                   "All"; // Switch back to "All" if the removed tab was selected
-                            }
                           });
                           Navigator.of(context).pop(); // Close the dialog
                         },
@@ -885,7 +882,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           ),
         ),
         title: Text(
-          itemLabel, // Dynamically display the label based on the selected tab
+          '$itemLabel', // Dynamically display the label based on the selected tab
           style: GoogleFonts.robotoFlex(
             fontSize: proportionalFontSize(
                 context, 14), // Smaller font size for ingredients

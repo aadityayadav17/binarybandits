@@ -27,7 +27,7 @@ class ProfileFormFields extends StatelessWidget {
   final Function(String?) onNameValidated; // Callback for name validation
 
   const ProfileFormFields({
-    super.key,
+    Key? key,
     required this.nameController,
     required this.phoneNumberController,
     required this.budgetController,
@@ -41,7 +41,7 @@ class ProfileFormFields extends StatelessWidget {
     this.dietaryPreference,
     required this.dietaryRestrictions,
     required this.onNameValidated,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -25,8 +25,6 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeCollectionPage extends StatefulWidget {
-  const RecipeCollectionPage({super.key});
-
   @override
   _RecipeCollectionPageState createState() => _RecipeCollectionPageState();
 }

@@ -23,7 +23,7 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class RecipeOverviewScreen extends StatefulWidget {
-  const RecipeOverviewScreen({super.key});
+  const RecipeOverviewScreen({Key? key}) : super(key: key);
 
   @override
   _RecipeOverviewScreenState createState() => _RecipeOverviewScreenState();
@@ -31,10 +31,10 @@ class RecipeOverviewScreen extends StatefulWidget {
 
 class _RecipeOverviewScreenState extends State<RecipeOverviewScreen> {
   List<Recipe> _recipes = [];
-  final Map<String, int> _servings = {}; // Map for servings
+  Map<String, int> _servings = {}; // Map for servings
   int _currentRecipeIndex = 0;
   PageController? _pageController;
-  final Map<String, dynamic> _recipeWeeklyMenu = {};
+  Map<String, dynamic> _recipeWeeklyMenu = {};
 
   @override
   void initState() {

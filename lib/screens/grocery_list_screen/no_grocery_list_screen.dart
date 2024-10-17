@@ -18,8 +18,6 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class NoGroceryListScreen extends StatefulWidget {
-  const NoGroceryListScreen({super.key});
-
   @override
   _NoGroceryListScreenState createState() => _NoGroceryListScreenState();
 }

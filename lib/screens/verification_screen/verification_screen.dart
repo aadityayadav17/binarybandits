@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:binarybandits/screens/profile_screen/profile.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+  const VerificationScreen({Key? key}) : super(key: key);
 
   @override
   _VerificationScreenState createState() => _VerificationScreenState();

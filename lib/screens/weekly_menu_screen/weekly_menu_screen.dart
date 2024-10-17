@@ -13,7 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class WeeklyMenuScreen extends StatefulWidget {
-  const WeeklyMenuScreen({super.key});
+  WeeklyMenuScreen({Key? key}) : super(key: key);
 
   @override
   _WeeklyMenuScreenState createState() => _WeeklyMenuScreenState();

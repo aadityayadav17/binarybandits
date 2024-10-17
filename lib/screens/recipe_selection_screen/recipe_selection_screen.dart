@@ -41,11 +41,11 @@ class _RecipeSelectionScreenState extends State<RecipeSelectionScreen>
   int _selectedCount = 0;
   final ScrollController _scrollController = ScrollController();
   Map<String, dynamic> _recipeWeeklyMenu = {};
-  final Map<String, String> _recipeWeeklyMenuKeys = {};
+  Map<String, String> _recipeWeeklyMenuKeys = {};
   Map<String, dynamic> _recipeHistory = {};
-  final Map<String, String> _recipeHistoryKeys = {};
+  Map<String, String> _recipeHistoryKeys = {};
   Map<String, dynamic> _recipeCollection = {};
-  final Map<String, String> _recipeCollectionKeys = {};
+  Map<String, String> _recipeCollectionKeys = {};
 
   late AnimationController _swipeController;
   late Animation<Offset> _swipeAnimation;

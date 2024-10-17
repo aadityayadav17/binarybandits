@@ -21,13 +21,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Controllers for each field
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _budgetController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _expectedWeightController = TextEditingController();
-  final TextEditingController _homeDistrictController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
+  TextEditingController _budgetController = TextEditingController();
+  TextEditingController _heightController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _expectedWeightController = TextEditingController();
+  TextEditingController _homeDistrictController = TextEditingController();
  
   double calories = 0;
   String? dietaryPreference = 'No Preference';
