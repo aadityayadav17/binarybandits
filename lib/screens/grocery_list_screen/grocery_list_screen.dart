@@ -147,6 +147,32 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return totalCost;
   }
 
+  double calculateTotalHighestCost() {
+    double totalCost = 0.0;
+
+    for (var product in ingredientPrices) {
+      double? colesPrice =
+          removedStores.contains("Coles") ? null : product['coles']['price'];
+      double? woolworthsPrice = removedStores.contains("Woolworths")
+          ? null
+          : product['woolworths']['price'];
+      double? aldiPrice =
+          removedStores.contains("Aldi") ? null : product['aldi']['price'];
+
+      // Get the highest price among the available stores
+      double? highestPrice = [colesPrice, woolworthsPrice, aldiPrice]
+          .where((price) => price != null)
+          .reduce((a, b) => a! > b! ? a : b);
+
+      // Add the highest price to the total cost
+      if (highestPrice != null) {
+        totalCost += highestPrice;
+      }
+    }
+
+    return totalCost;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -818,8 +844,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Widget buildInfoBox(BuildContext context) {
     int totalItems =
         ingredientPrices.length; // Get the total number of items dynamically
-    double totalCost =
-        calculateTotalCheapestCost(); // Calculate the total cost of the cheapest items
+    double totalCheapestCost =
+        calculateTotalCheapestCost(); // Calculate the total cheapest cost
+    double totalHighestCost =
+        calculateTotalHighestCost(); // Calculate the total highest cost
+    double totalSaveAmount =
+        totalHighestCost - totalCheapestCost; // Calculate the amount saved
 
     return Container(
       margin:
@@ -866,7 +896,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$${totalCost.toStringAsFixed(2)}', // Display the calculated total cost
+                      '\$${totalCheapestCost.toStringAsFixed(2)}', // Display the calculated total cheapest cost
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
@@ -906,7 +936,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                       ),
                     ),
                     Text(
-                      '\$XXXXX', // Placeholder for amount to be saved
+                      '\$${totalSaveAmount.toStringAsFixed(2)}', // Display the calculated save amount
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 20),
                         fontWeight: FontWeight.bold,
