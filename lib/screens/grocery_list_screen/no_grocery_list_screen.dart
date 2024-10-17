@@ -1,3 +1,16 @@
+/// A screen that displays a message indicating that no grocery list is available.
+///
+/// This screen is shown when the user has not added any recipes to their grocery list.
+/// It provides options to navigate to other screens such as Home, Recipe Selection, and Weekly Menu.
+///
+/// The screen consists of:
+/// - An AppBar with a back button.
+/// - A message indicating that no recipes have been added.
+/// - A bottom navigation bar for navigating to other screens.
+///
+/// The layout and font sizes are adjusted proportionally based on the screen size.
+library no_grocery_list_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
@@ -18,11 +31,13 @@ double proportionalFontSize(BuildContext context, double size) {
 }
 
 class NoGroceryListScreen extends StatefulWidget {
+  const NoGroceryListScreen({super.key});
+
   @override
-  _NoGroceryListScreenState createState() => _NoGroceryListScreenState();
+  NoGroceryListScreenState createState() => NoGroceryListScreenState();
 }
 
-class _NoGroceryListScreenState extends State<NoGroceryListScreen> {
+class NoGroceryListScreenState extends State<NoGroceryListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +113,7 @@ class _NoGroceryListScreenState extends State<NoGroceryListScreen> {
     );
   }
 
+  // Bottom Navigation Bar
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
