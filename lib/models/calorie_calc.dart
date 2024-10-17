@@ -1,3 +1,24 @@
+/// A Flutter application for calculating calorie and protein requirements based on user input.
+///
+/// The application consists of the following main components:
+/// - `CalorieCalculatorApp`: The main application widget.
+/// - `CalorieCalculatorScreen`: A stateful widget that provides the UI for user input and displays the calculated results.
+/// - `CalorieCalculatorScreenState`: The state class for `CalorieCalculatorScreen` that handles user input and performs the calculations.
+///
+/// The application allows users to input their height, weight, age, gender, goal (lose weight, gain weight, maintain), and dietary preference (normal, vegetarian, vegan).
+/// Based on the input, it calculates the daily calorie and protein requirements using the Harris-Benedict formula for BMR (Basal Metabolic Rate) and adjusts the values based on the selected goal and dietary preference.
+///
+/// The main methods and properties include:
+/// - `calculateRequirements()`: A method that performs the calculations for calorie and protein requirements based on user input.
+/// - `heightController`, `weightController`, `ageController`: Text editing controllers for capturing user input.
+/// - `selectedGender`, `selectedGoal`, `selectedDietaryPreference`: Variables to store the selected options for gender, goal, and dietary preference.
+/// - `calories`, `protein`: Variables to store the calculated calorie and protein requirements.
+/// - `goals`, `dietaryPreferences`, `genders`: Lists of options for goals, dietary preferences, and genders.
+///
+/// The UI consists of text fields for height, weight, and age input, dropdown menus for selecting gender, goal, and dietary preference, and a button to trigger the calculation.
+/// The calculated results are displayed below the button if the input is valid.
+library calorie_calculator;
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,11 +44,10 @@ class CalorieCalculatorScreen extends StatefulWidget {
   const CalorieCalculatorScreen({super.key});
 
   @override
-  _CalorieCalculatorScreenState createState() =>
-      _CalorieCalculatorScreenState();
+  CalorieCalculatorScreenState createState() => CalorieCalculatorScreenState();
 }
 
-class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
+class CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
@@ -42,6 +62,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
   final List<String> dietaryPreferences = ['Normal', 'Vegetarian', 'Vegan'];
   final List<String> genders = ['Male', 'Female'];
 
+  // Method to calculate calorie and protein requirements based on user input
   void calculateRequirements() {
     double height = double.tryParse(heightController.text) ?? 0;
     double weight = double.tryParse(weightController.text) ?? 0;

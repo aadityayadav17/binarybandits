@@ -121,6 +121,9 @@ flutter:
     - assets/recipes/products/Aldi.json
     - assets/recipes/products/Coles.json
     - assets/recipes/products/Woolworths.json
+    - assets/recipes/products/supermarket/old_csv/Aldi.csv
+    - assets/recipes/products/supermarket/old_csv/Coles.csv
+    - assets/recipes/products/supermarket/old_csv/Woolworths.csv
     - assets/recipes/products/products.json
     - assets/recipes/D3801 Recipes - Recipes.json
     - assets/recipes/images/AlmondMilkPorridge.jpeg
