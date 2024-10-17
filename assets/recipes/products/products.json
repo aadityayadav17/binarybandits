@@ -4,17 +4,17 @@
             "ingredient_name": "Oyster Sauce",
             "coles": {
                 "product_name": "Maggi Oyster Sauce 150mL",
-                "price": "3.2",
+                "price": 3.2,
                 "quantity": "150mL"
             },
             "woolworths": {
                 "product_name": "Lee Kum Kee Oyster Sauce 150g",
-                "price": "1.70",
+                "price": 1.7,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -22,17 +22,17 @@
             "ingredient_name": "Dried Cranberries",
             "coles": {
                 "product_name": "Coles Sweetened Dried Cranberries 150g",
-                "price": "2.4",
+                "price": 2.4,
                 "quantity": "150g"
             },
             "woolworths": {
                 "product_name": "Ocean Spray Craisins Dried Cranberries 170g",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "170g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -40,17 +40,17 @@
             "ingredient_name": "Red Wine",
             "coles": {
                 "product_name": "Coles Red Wine 750mL",
-                "price": "7.5",
+                "price": 7.5,
                 "quantity": "750mL"
             },
             "woolworths": {
                 "product_name": "Jacob's Creek Shiraz 750mL",
-                "price": "10.00",
+                "price": 10.0,
                 "quantity": "750mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -58,17 +58,17 @@
             "ingredient_name": "Arugula",
             "coles": {
                 "product_name": "Coles Rocket (Arugula) 100g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "100g"
             },
             "woolworths": {
                 "product_name": "Obela Hommus Roasted Capsicum",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "220g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -76,17 +76,17 @@
             "ingredient_name": "Stock",
             "coles": {
                 "product_name": "Campbell's Real Chicken Stock 1L",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "1L"
             },
             "woolworths": {
                 "product_name": "Campbell's Real Vegetable Stock",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "1L"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -94,17 +94,17 @@
             "ingredient_name": "Peas",
             "coles": {
                 "product_name": "Birds Eye Frozen Green Peas 1kg",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Birds Eye Country Harvest Peas 1kg",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "Market Fare Baby Peas 1kg",
-                "price": "2.99",
+                "price": 2.99,
                 "quantity": "1kg"
             }
         },
@@ -112,17 +112,17 @@
             "ingredient_name": "Diced Cucumber",
             "coles": {
                 "product_name": "Coles Diced Cucumber 200g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Diced Cucumber",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -130,17 +130,17 @@
             "ingredient_name": "Maple Syrup",
             "coles": {
                 "product_name": "Queen Pure Canadian Maple Syrup 250mL",
-                "price": "9",
+                "price": 9.0,
                 "quantity": "250mL"
             },
             "woolworths": {
                 "product_name": "Woolworths 100% Canadian Maple Syrup",
-                "price": "6.00",
+                "price": 6.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -148,17 +148,17 @@
             "ingredient_name": "Cauliflower",
             "coles": {
                 "product_name": "Coles Fresh Cauliflower each",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Cauliflower Whole",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -166,17 +166,17 @@
             "ingredient_name": "Almonds",
             "coles": {
                 "product_name": "Coles Natural Almonds 800g",
-                "price": "12",
+                "price": 12.0,
                 "quantity": "800g"
             },
             "woolworths": {
                 "product_name": "Woolworths Almonds Flaked",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "120g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -184,17 +184,17 @@
             "ingredient_name": "Leeks",
             "coles": {
                 "product_name": "Coles Leeks each",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Leeks",
-                "price": "2.70",
+                "price": 2.7,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -202,17 +202,17 @@
             "ingredient_name": "Ripe Avocado",
             "coles": {
                 "product_name": "Coles Ripe Avocados each",
-                "price": "2.0",
+                "price": 2.0,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Avocado",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "Each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -220,17 +220,17 @@
             "ingredient_name": "Rack of Chickpeas",
             "coles": {
                 "product_name": "Coles Chickpeas 400g",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Chickpeas 400g",
-                "price": "1.50",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -238,17 +238,17 @@
             "ingredient_name": "Chipotle Powder",
             "coles": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chipotle Powder",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -256,17 +256,17 @@
             "ingredient_name": "Lentils",
             "coles": {
                 "product_name": "Royal Fields Whole Red Lentils 1kg",
-                "price": "3.6",
+                "price": 3.6,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Puresoul Red Lentils Split",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -274,17 +274,17 @@
             "ingredient_name": "Whole Grain Bread",
             "coles": {
                 "product_name": "Burgen Wholegrain & Oats Bread 700g",
-                "price": "5.0",
+                "price": 5.0,
                 "quantity": "700g"
             },
             "woolworths": {
                 "product_name": "Helga's Whole Grain Bread 680g",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "680g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -292,17 +292,17 @@
             "ingredient_name": "Eggs",
             "coles": {
                 "product_name": "Coles Free Range Eggs 12 pack",
-                "price": "6.5",
+                "price": 6.5,
                 "quantity": "12 pack"
             },
             "woolworths": {
                 "product_name": "Woolworths Free Range Eggs",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "600g"
             },
             "aldi": {
                 "product_name": "Just Organic Free Range Eggs 6 Pack 300g",
-                "price": "3.99",
+                "price": 3.99,
                 "quantity": "6pk"
             }
         },
@@ -310,17 +310,17 @@
             "ingredient_name": "Sliced Mushrooms",
             "coles": {
                 "product_name": "Coles Fresh Sliced Button Mushrooms 250g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Woolworths Sliced Button Mushrooms 200g",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "200g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -328,17 +328,17 @@
             "ingredient_name": "Sun-dried Tomatoes",
             "coles": {
                 "product_name": "Continental Sun-Dried Tomatoes 200g",
-                "price": "3.8",
+                "price": 3.8,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Solaris Sun Dried Tomatoes Semi-dried 400g",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -346,17 +346,17 @@
             "ingredient_name": "Artichokes",
             "coles": {
                 "product_name": "Coles Artichoke Hearts 400g",
-                "price": "2.6",
+                "price": 2.6,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Always Fresh Artichoke Hearts 400g",
-                "price": "3.8",
+                "price": 3.8,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -364,17 +364,17 @@
             "ingredient_name": "Butternut Squash",
             "coles": {
                 "product_name": "Coles Kitchen Butternut Pumpkin Soup 300g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Pumpkin Butternut Whole",
-                "price": "5.20",
+                "price": 5.2,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -382,17 +382,17 @@
             "ingredient_name": "Couscous",
             "coles": {
                 "product_name": "San Remo CousCous 500g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Second House Pearl Couscous Moghrabiyeh",
-                "price": "5.25",
+                "price": 5.25,
                 "quantity": "907g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -400,17 +400,17 @@
             "ingredient_name": "Walnuts",
             "coles": {
                 "product_name": "Coles Californian Walnuts 350g",
-                "price": "8.8",
+                "price": 8.8,
                 "quantity": "350g"
             },
             "woolworths": {
                 "product_name": "Woolworths Walnuts 150g",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -418,17 +418,17 @@
             "ingredient_name": "Feta Cheese",
             "coles": {
                 "product_name": "Coles Greek Feta Cheese 200g",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Bio Cheese Feta",
-                "price": "6.75",
+                "price": 6.75,
                 "quantity": "200g"
             },
             "aldi": {
                 "product_name": "Emporium Selection Greek Style Fetta Cheese 200g",
-                "price": "2.69",
+                "price": 2.69,
                 "quantity": "200g"
             }
         },
@@ -436,17 +436,17 @@
             "ingredient_name": "Thyme",
             "coles": {
                 "product_name": "Hoyts Thyme 15g",
-                "price": "1.3",
+                "price": 1.3,
                 "quantity": "15g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Thyme 10g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "10g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -454,17 +454,17 @@
             "ingredient_name": "Flour",
             "coles": {
                 "product_name": "The Good Harvest Plain Flour 1kg",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Plain Flour",
-                "price": "2.10",
+                "price": 2.1,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "Gluten Free Plain Flour 500g",
-                "price": "2.29",
+                "price": 2.29,
                 "quantity": "500g"
             }
         },
@@ -472,17 +472,17 @@
             "ingredient_name": "Asparagus",
             "coles": {
                 "product_name": "Coles Green Asparagus 1 bunch",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "1 bunch"
             },
             "woolworths": {
                 "product_name": "Birds Eye Deli Seasoned Roast Potatoes Rosemary & Garlic",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "600g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -490,17 +490,17 @@
             "ingredient_name": "Cream",
             "coles": {
                 "product_name": "Coles Pure Cream 300mL",
-                "price": "2.15",
+                "price": 2.15,
                 "quantity": "300mL"
             },
             "woolworths": {
                 "product_name": "Woolworths Thickened Cream",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "300mL"
             },
             "aldi": {
                 "product_name": "Farmdale Thickened Cream 600ml",
-                "price": "2.99",
+                "price": 2.99,
                 "quantity": "600ml"
             }
         },
@@ -508,17 +508,17 @@
             "ingredient_name": "Black Beans",
             "coles": {
                 "product_name": "Coles Black Beans 400g",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Edgell Black Beans",
-                "price": "1.50",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -526,17 +526,17 @@
             "ingredient_name": "Polenta",
             "coles": {
                 "product_name": "Siena Fine Polenta 1kg",
-                "price": "4.15",
+                "price": 4.15,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Instant Polenta 400g",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -544,17 +544,17 @@
             "ingredient_name": "Tortillas",
             "coles": {
                 "product_name": "Old El Paso Soft Taco Tortillas 8 pack",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "8 pack"
             },
             "woolworths": {
                 "product_name": "Old El Paso Taco Kits",
-                "price": "6.00",
+                "price": 6.0,
                 "quantity": "12 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -562,17 +562,17 @@
             "ingredient_name": "Broccoli",
             "coles": {
                 "product_name": "Coles Broccoli each",
-                "price": "1.8",
+                "price": 1.8,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Broccoli",
-                "price": "2.30",
+                "price": 2.3,
                 "quantity": "1 bunch"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -580,17 +580,17 @@
             "ingredient_name": "Cheddar Cheese",
             "coles": {
                 "product_name": "Coles Tasty Cheese Block 500g",
-                "price": "8",
+                "price": 8.0,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Cheddar Cheese Block",
-                "price": "6.00",
+                "price": 6.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "Emporium Selection Cheddar Cheese Aged 20 Months 250g",
-                "price": "3.99",
+                "price": 3.99,
                 "quantity": "250g"
             }
         },
@@ -598,17 +598,17 @@
             "ingredient_name": "Chopped Rosemary",
             "coles": {
                 "product_name": "Coles Rosemary Punnet 10g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "10g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chopped Rosemary",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -616,17 +616,17 @@
             "ingredient_name": "Arborio Rice",
             "coles": {
                 "product_name": "Riviana Arborio Medium Grain Risotto Rice 1kg",
-                "price": "3.8",
+                "price": 3.8,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Arborio Rice",
-                "price": "2.7",
+                "price": 2.7,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -634,17 +634,17 @@
             "ingredient_name": "Cocoa Powder",
             "coles": {
                 "product_name": "Red Tractor Organic Cacao Powder 300g",
-                "price": "8",
+                "price": 8.0,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Cadbury Baking Cocoa Powder",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -652,17 +652,17 @@
             "ingredient_name": "Taco Shells",
             "coles": {
                 "product_name": "Old El Paso Stand & Stuff Taco Shells 10 pack",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Old El Paso Taco Shells Original 12 pack",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "12 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -670,17 +670,17 @@
             "ingredient_name": "Sesame Oil",
             "coles": {
                 "product_name": "MasterFoods Sesame Oil 210mL",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "210mL"
             },
             "woolworths": {
                 "product_name": "Ayam Pure Sesame Oil 210mL",
-                "price": "3.15",
+                "price": 3.15,
                 "quantity": "210mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -688,17 +688,17 @@
             "ingredient_name": "Chopped Mint",
             "coles": {
                 "product_name": "Hoyts Mint Leaves 10g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "10g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chopped Mint",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -706,17 +706,17 @@
             "ingredient_name": "Parmesan",
             "coles": {
                 "product_name": "Coles Grated Parmesan Cheese 200g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Perfect Italiano Shredded Parmesan",
-                "price": "3.25",
+                "price": 3.25,
                 "quantity": "125g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -724,17 +724,17 @@
             "ingredient_name": "Pita Bread",
             "coles": {
                 "product_name": "MEB White Khobz Pita 5 Pack 500g",
-                "price": "3.2",
+                "price": 3.2,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Mission Pita Bread 6 pack",
-                "price": "2.90",
+                "price": 2.9,
                 "quantity": "6 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -742,17 +742,17 @@
             "ingredient_name": "Romaine Lettuce",
             "coles": {
                 "product_name": "Coles Cos Lettuce each",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Romaine Lettuce",
-                "price": "2.70",
+                "price": 2.7,
                 "quantity": "Each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -760,17 +760,17 @@
             "ingredient_name": "Steak",
             "coles": {
                 "product_name": "Coles Rump Steak 1kg",
-                "price": "22.5",
+                "price": 22.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Beef Rump Steak",
-                "price": "12.00",
+                "price": 12.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -778,17 +778,17 @@
             "ingredient_name": "Sage Leaves",
             "coles": {
                 "product_name": "Coles Sage Leaves 10g",
-                "price": "3.0",
+                "price": 3.0,
                 "quantity": "10g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Sage 15g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -796,17 +796,17 @@
             "ingredient_name": "Minced Garlic",
             "coles": {
                 "product_name": "Pure Harvest Organic Minced Garlic 200g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Minced Garlic",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "190g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -814,17 +814,17 @@
             "ingredient_name": "Dressing",
             "coles": {
                 "product_name": "Coles Italian Dressing 300mL",
-                "price": "1.8",
+                "price": 1.8,
                 "quantity": "300mL"
             },
             "woolworths": {
                 "product_name": "Praise Creamy Black Pepper Dressing 250mL",
-                "price": "2.95",
+                "price": 2.95,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -832,17 +832,17 @@
             "ingredient_name": "Vinaigrette",
             "coles": {
                 "product_name": "Praise Vinaigrette Dressing 445mL",
-                "price": "5.0",
+                "price": 5.0,
                 "quantity": "445mL"
             },
             "woolworths": {
                 "product_name": "Praise Creamy Balsamic Vinaigrette 250mL",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -850,17 +850,17 @@
             "ingredient_name": "Acorn Squashes",
             "coles": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             },
             "woolworths": {
                 "product_name": "Woolworths Yellow Squash 250g punnet",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -868,17 +868,17 @@
             "ingredient_name": "Pizza Dough",
             "coles": {
                 "product_name": "Coles Pizza Dough Balls 250g",
-                "price": "2.0",
+                "price": 2.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Pampas Pizza Dough 400g",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -886,17 +886,17 @@
             "ingredient_name": "Chickpeas",
             "coles": {
                 "product_name": "Coles Chickpeas 400g",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Katoomba Ord River Chickpeas",
-                "price": "6.50",
+                "price": 6.5,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -904,17 +904,17 @@
             "ingredient_name": "Chicken",
             "coles": {
                 "product_name": "Coles Free Range RSPCA Approved Chicken Thigh Fillets approx. 600g",
-                "price": "10.5",
+                "price": 10.5,
                 "quantity": "approx. 600g"
             },
             "woolworths": {
                 "product_name": "Ingham's Chicken Breast Supreme Shaved From The Deli",
-                "price": "19.00",
+                "price": 19.0,
                 "quantity": "per kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -922,17 +922,17 @@
             "ingredient_name": "Paprika",
             "coles": {
                 "product_name": "MasterFoods Paprika 50g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Paprika 50g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -940,17 +940,17 @@
             "ingredient_name": "Pork",
             "coles": {
                 "product_name": "Coles Free Range Pork Fillet approx. 389g each",
-                "price": "14.4",
+                "price": 14.4,
                 "quantity": "approx. 389g"
             },
             "woolworths": {
                 "product_name": "Woolworths Pork Mince",
-                "price": "12.00",
+                "price": 12.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -958,17 +958,17 @@
             "ingredient_name": "Breadcrumbs",
             "coles": {
                 "product_name": "Coles Breadcrumbs 500g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Breadcrumbs Panko",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -976,17 +976,17 @@
             "ingredient_name": "Pine Nuts",
             "coles": {
                 "product_name": "Coles Pine Nuts 100g",
-                "price": "10.5",
+                "price": 10.5,
                 "quantity": "100g"
             },
             "woolworths": {
                 "product_name": "Woolworths Pine Nuts 150g",
-                "price": "8.00",
+                "price": 8.0,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -994,17 +994,17 @@
             "ingredient_name": "Onions",
             "coles": {
                 "product_name": "Coles Brown Onions 1kg",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Brown Onions",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1012,17 +1012,17 @@
             "ingredient_name": "Tofu",
             "coles": {
                 "product_name": "Soyco Tofu Firm 500g",
-                "price": "2.7",
+                "price": 2.7,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Macro Firm Tofu",
-                "price": "3.30",
+                "price": 3.3,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1030,17 +1030,17 @@
             "ingredient_name": "Soy Sauce",
             "coles": {
                 "product_name": "Kikkoman Soy Sauce 600mL",
-                "price": "6.3",
+                "price": 6.3,
                 "quantity": "600mL"
             },
             "woolworths": {
                 "product_name": "Kikkoman Soy Sauce 250mL",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1048,17 +1048,17 @@
             "ingredient_name": "Pastry Dough",
             "coles": {
                 "product_name": "Coles Frozen Shortcrust Pastry Ready Rolled 1kg",
-                "price": "3.2",
+                "price": 3.2,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Pampas Puff Pastry 6 Sheets 1kg",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1066,17 +1066,17 @@
             "ingredient_name": "Diced Tomatoes",
             "coles": {
                 "product_name": "Coles Diced Tomatoes Mexican Style 400g",
-                "price": "1.1",
+                "price": 1.1,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Annalisa Diced Tomatoes 400g",
-                "price": "1.45",
+                "price": 1.45,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1084,17 +1084,17 @@
             "ingredient_name": "Fish",
             "coles": {
                 "product_name": "Coles Deli Thawed Basa Fillets approx. 200g each",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Freshwater Basa Fillets Thawed Per Kg",
-                "price": "10.00",
+                "price": 10.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1102,17 +1102,17 @@
             "ingredient_name": "Apple Cider Vinegar",
             "coles": {
                 "product_name": "Coles Organic Apple Cider Vinegar 500mL",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "500mL"
             },
             "woolworths": {
                 "product_name": "Macro Apple Cider Vinegar 500ml",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "500ml"
             },
             "aldi": {
                 "product_name": "Just Organic Apple Cider Vinegar 500ml",
-                "price": "3.29",
+                "price": 3.29,
                 "quantity": "500ml"
             }
         },
@@ -1120,17 +1120,17 @@
             "ingredient_name": "Crumbled Blue Cheese",
             "coles": {
                 "product_name": "King Island Dairy Roaring Forties Blue Cheese 120g",
-                "price": "8.5",
+                "price": 8.5,
                 "quantity": "120g"
             },
             "woolworths": {
                 "product_name": "Castello Soft Mild Blue Cheese",
-                "price": "11.50",
+                "price": 11.5,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1138,17 +1138,17 @@
             "ingredient_name": "Lemon",
             "coles": {
                 "product_name": "Coles Fresh Lemons each",
-                "price": "0.5",
+                "price": 0.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Lemons",
-                "price": "1.00",
+                "price": 1.0,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1156,17 +1156,17 @@
             "ingredient_name": "Sausages",
             "coles": {
                 "product_name": "Coles Fresh Pork Sausages 500g",
-                "price": "6.5",
+                "price": 6.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Sausages 500g",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1174,17 +1174,17 @@
             "ingredient_name": "Marinara Sauce",
             "coles": {
                 "product_name": "Lieber's Classic Marinara Pasta Sauce 680g",
-                "price": "7",
+                "price": 7.0,
                 "quantity": "680g"
             },
             "woolworths": {
                 "product_name": "Dolmio Marinara Pasta Sauce",
-                "price": "3.20",
+                "price": 3.2,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1192,17 +1192,17 @@
             "ingredient_name": "Teriyaki Sauce",
             "coles": {
                 "product_name": "Kikkoman Teriyaki Marinade 250mL",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "250mL"
             },
             "woolworths": {
                 "product_name": "Woolworths Teriyaki Marinade 250mL",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1210,17 +1210,17 @@
             "ingredient_name": "Sugar",
             "coles": {
                 "product_name": "Coles Raw Sugar 1kg",
-                "price": "2.1",
+                "price": 2.1,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "CSR White Sugar",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1228,17 +1228,17 @@
             "ingredient_name": "Beef",
             "coles": {
                 "product_name": "Coles No Added Hormone Beef Brisket Slow Cook approx. 1.2kg each",
-                "price": "19.2",
+                "price": 19.2,
                 "quantity": "1.2kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Cook Slow Cooked Butterflied Beef",
-                "price": "16.00",
+                "price": 16.0,
                 "quantity": "700g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1246,17 +1246,17 @@
             "ingredient_name": "Olive Oil",
             "coles": {
                 "product_name": "La Espanola Olive Oil Light & Mild 4L",
-                "price": "27",
+                "price": 27.0,
                 "quantity": "4L"
             },
             "woolworths": {
                 "product_name": "Cobram Estate Extra Virgin Olive Oil 500mL",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "500mL"
             },
             "aldi": {
                 "product_name": "Just Organic Extra Virgin Olive Oil 500ml",
-                "price": "4.69",
+                "price": 4.69,
                 "quantity": "500ml"
             }
         },
@@ -1264,7 +1264,7 @@
             "ingredient_name": "Spices",
             "coles": {
                 "product_name": "MasterFoods Mixed Herbs 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
@@ -1274,7 +1274,7 @@
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1282,17 +1282,17 @@
             "ingredient_name": "Chia Seeds",
             "coles": {
                 "product_name": "Coles Chia Seeds 250g",
-                "price": "6",
+                "price": 6.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Macro Organic Chia Seeds",
-                "price": "10.00",
+                "price": 10.0,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1300,17 +1300,17 @@
             "ingredient_name": "Duck Breasts",
             "coles": {
                 "product_name": "Coles Duck Breast Fillet frozen approx. 400g",
-                "price": "14.4",
+                "price": 14.4,
                 "quantity": "approx. 400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Duck Breasts",
-                "price": "29.00",
+                "price": 29.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1318,17 +1318,17 @@
             "ingredient_name": "Brown Sugar",
             "coles": {
                 "product_name": "Coles Soft Brown Sugar 1kg",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Essentials Brown Sugar 1kg",
-                "price": "2.65",
+                "price": 2.65,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1336,17 +1336,17 @@
             "ingredient_name": "Jerk Seasoning",
             "coles": {
                 "product_name": "MasterFoods Jerk Seasoning 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Jerk Seasoning",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1354,17 +1354,17 @@
             "ingredient_name": "Balsamic Vinegar",
             "coles": {
                 "product_name": "Coles Balsamic Vinegar 500mL",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "500mL"
             },
             "woolworths": {
                 "product_name": "Woolworths Vinegar Balsamic White",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "Just Organic Extra Virgin Olive Oil 500ml",
-                "price": "4.69",
+                "price": 4.69,
                 "quantity": "500ml"
             }
         },
@@ -1372,17 +1372,17 @@
             "ingredient_name": "Cod Fillets",
             "coles": {
                 "product_name": "Coles Thawed Seafood MSC Blue Grenadier Fillet approx. 200g",
-                "price": "2.8",
+                "price": 2.8,
                 "quantity": "approx. 200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Cod Fillets",
-                "price": "22.00",
+                "price": 22.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1390,17 +1390,17 @@
             "ingredient_name": "White Wine",
             "coles": {
                 "product_name": "Coles White Wine 750mL",
-                "price": "7.5",
+                "price": 7.5,
                 "quantity": "750mL"
             },
             "woolworths": {
                 "product_name": "Jacob's Creek Chardonnay 750mL",
-                "price": "10.00",
+                "price": 10.0,
                 "quantity": "750mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1408,17 +1408,17 @@
             "ingredient_name": "Pomegranate Seeds",
             "coles": {
                 "product_name": "Coles Frozen Pomegranate Arils 250g",
-                "price": "4.0",
+                "price": 4.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Woolworths Pomegranate Seeds 150g",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1426,17 +1426,17 @@
             "ingredient_name": "Dried Seaweed",
             "coles": {
                 "product_name": "Sun Valley Dried Seaweed 50g",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Wel Pac Dried Cut Seaweed 56.7g",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "56.7g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1444,17 +1444,17 @@
             "ingredient_name": "Pepper",
             "coles": {
                 "product_name": "MasterFoods Whole Black Peppercorns 200g",
-                "price": "7.5",
+                "price": 7.5,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Black Pepper Ground 50g",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1462,17 +1462,17 @@
             "ingredient_name": "Shrimp",
             "coles": {
                 "product_name": "Coles Cooked South Australian Green Prawns 250g",
-                "price": "12",
+                "price": 12.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Woolworths Green Shrimp 300g",
-                "price": "15.00",
+                "price": 15.0,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1480,17 +1480,17 @@
             "ingredient_name": "Caesar Dressing",
             "coles": {
                 "product_name": "Coles Caesar Dressing 300mL",
-                "price": "1.8",
+                "price": 1.8,
                 "quantity": "300mL"
             },
             "woolworths": {
                 "product_name": "Praise Caesar Salad Dressing",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "445g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1498,17 +1498,17 @@
             "ingredient_name": "Chili Powder",
             "coles": {
                 "product_name": "MasterFoods Chili Powder 50g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chilli Powder",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1516,17 +1516,17 @@
             "ingredient_name": "Lettuce",
             "coles": {
                 "product_name": "Coles Red Oak Lettuce each",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Little Gem Lettuce",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "2 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1534,17 +1534,17 @@
             "ingredient_name": "Corn Tortillas",
             "coles": {
                 "product_name": "Coles Mexico Corn Tortillas De Maiz 10 pack 280g",
-                "price": "3.2",
+                "price": 3.2,
                 "quantity": "280g"
             },
             "woolworths": {
                 "product_name": "Woolworths Free From Gluten Ingredients Tortilla Corn",
-                "price": "3.20",
+                "price": 3.2,
                 "quantity": "280g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1552,17 +1552,17 @@
             "ingredient_name": "Tomatoes",
             "coles": {
                 "product_name": "Coles Tomatoes Kumato 500g",
-                "price": "6.9",
+                "price": 6.9,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Tomatoes",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1570,17 +1570,17 @@
             "ingredient_name": "Red Pepper Flakes",
             "coles": {
                 "product_name": "MasterFoods Chilli Flakes 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chilli Flakes 50g",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1588,17 +1588,17 @@
             "ingredient_name": "Banana",
             "coles": {
                 "product_name": "Coles Red Tipped Eco Bananas approx. 180g each",
-                "price": "0.9",
+                "price": 0.9,
                 "quantity": "approx. 180g"
             },
             "woolworths": {
                 "product_name": "Cavendish Bananas each",
-                "price": "0.81",
+                "price": 0.81,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1606,17 +1606,17 @@
             "ingredient_name": "Cajun Seasoning",
             "coles": {
                 "product_name": "MasterFoods Cajun Seasoning 30g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "30g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Cajun Seasoning",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1624,17 +1624,17 @@
             "ingredient_name": "Mixed Vegetables",
             "coles": {
                 "product_name": "Coles Frozen Mixed Vegetables 1kg",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Birds Eye Mixed Vegetables",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1642,17 +1642,17 @@
             "ingredient_name": "Pasta",
             "coles": {
                 "product_name": "Barilla Penne Rigate Pasta 500g",
-                "price": "2.8",
+                "price": 2.8,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Vetta Rural Aid Spaghetti Pasta 500g",
-                "price": "1.80",
+                "price": 1.8,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "Just Organic Penne Pasta 500g",
-                "price": "1.59",
+                "price": 1.59,
                 "quantity": "500g"
             }
         },
@@ -1660,17 +1660,17 @@
             "ingredient_name": "Vegetable Stock",
             "coles": {
                 "product_name": "Massel Vegetable Stock Powder 168g",
-                "price": "3.4",
+                "price": 3.4,
                 "quantity": "168g"
             },
             "woolworths": {
                 "product_name": "Campbell's Real Vegetable Stock 1L",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "1L"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1678,17 +1678,17 @@
             "ingredient_name": "Melted Vegan Butter",
             "coles": {
                 "product_name": "Coles Vegan Buttery Spread 400g",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Nuttelex Original Vegan Spread",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1696,17 +1696,17 @@
             "ingredient_name": "Scallops",
             "coles": {
                 "product_name": "Coles Fresh Scallops 200g",
-                "price": "9.9",
+                "price": 9.9,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Scallops 200g",
-                "price": "12.00",
+                "price": 12.0,
                 "quantity": "200g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1714,17 +1714,17 @@
             "ingredient_name": "Acorn Squash",
             "coles": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             },
             "woolworths": {
                 "product_name": "Woolworths Yellow Squash 250g punnet",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1732,17 +1732,17 @@
             "ingredient_name": "Moroccan Spices",
             "coles": {
                 "product_name": "MasterFoods Moroccan Spice Blend 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Moroccan Spice Blend",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1750,17 +1750,17 @@
             "ingredient_name": "Crab Meat",
             "coles": {
                 "product_name": "Coles Fresh Seafood Blue Swimmer Crab Raw approx. 275g",
-                "price": "10.175",
+                "price": 10.175,
                 "quantity": "approx. 275g"
             },
             "woolworths": {
                 "product_name": "Continental Liquid Crab Meat",
-                "price": "8.00",
+                "price": 8.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1768,17 +1768,17 @@
             "ingredient_name": "Pork Loin",
             "coles": {
                 "product_name": "Coles Pork Loin Roast approx. 1.5kg",
-                "price": "25.5",
+                "price": 25.5,
                 "quantity": "approx. 1.5kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Pork Loin Chops",
-                "price": "15.00",
+                "price": 15.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1786,17 +1786,17 @@
             "ingredient_name": "Salsa",
             "coles": {
                 "product_name": "Old El Paso Salsa Medium 300g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Old El Paso Mild Salsa 300g",
-                "price": "3.20",
+                "price": 3.2,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1804,17 +1804,17 @@
             "ingredient_name": "Noodles",
             "coles": {
                 "product_name": "Jinmailang Ramen Noodle 1kg",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Maggi Fusian Soupy Noodles Korean Style Kimchi 5 pack",
-                "price": "3.95",
+                "price": 3.95,
                 "quantity": "5 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1822,17 +1822,17 @@
             "ingredient_name": "Cherry Tomatoes",
             "coles": {
                 "product_name": "Coles Cherry Burst Tomatoes Prepacked 200g",
-                "price": "3.9",
+                "price": 3.9,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Cherry Tomatoes",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1840,17 +1840,17 @@
             "ingredient_name": "Bell Peppers",
             "coles": {
                 "product_name": "Coles Mixed Capsicum 500g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Bell Peppers Mixed",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1858,17 +1858,17 @@
             "ingredient_name": "Curry Powder",
             "coles": {
                 "product_name": "MasterFoods Curry Powder 50g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Curry Powder",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1876,17 +1876,17 @@
             "ingredient_name": "Cabbage",
             "coles": {
                 "product_name": "Coles Fresh Red Cabbage Half each",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Cabbage Green Whole",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1894,17 +1894,17 @@
             "ingredient_name": "Saffron",
             "coles": {
                 "product_name": "McKenzie\u2019s Saffron 100mg",
-                "price": "13",
+                "price": 13.0,
                 "quantity": "100mg"
             },
             "woolworths": {
                 "product_name": "Masterfoods Saffron Threads 0.5g",
-                "price": "7.10",
+                "price": 7.1,
                 "quantity": "0.5g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1912,17 +1912,17 @@
             "ingredient_name": "Barbecue Sauce",
             "coles": {
                 "product_name": "Coles Barbecue Sauce 2L",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "2L"
             },
             "woolworths": {
                 "product_name": "Bull's-eye Original Bbq Sauce",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "300mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1930,17 +1930,17 @@
             "ingredient_name": "Curry Paste",
             "coles": {
                 "product_name": "Patak's Tikka Masala Cooking Sauce Pouch 400g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Patak's Tikka Masala Curry Paste",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1948,17 +1948,17 @@
             "ingredient_name": "Pork Chops",
             "coles": {
                 "product_name": "Coles Pork Shoulder Chops 600g",
-                "price": "9.9",
+                "price": 9.9,
                 "quantity": "600g"
             },
             "woolworths": {
                 "product_name": "Woolworths Pork Chops",
-                "price": "16.00",
+                "price": 16.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -1966,17 +1966,17 @@
             "ingredient_name": "Butter",
             "coles": {
                 "product_name": "Devondale Regular Butter 500g",
-                "price": "5.7",
+                "price": 5.7,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Devondale Extra Soft Butter Blend",
-                "price": "5.70",
+                "price": 5.7,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "Beautifully Butterfully Butter 250g",
-                "price": "2.79",
+                "price": 2.79,
                 "quantity": "250g"
             }
         },
@@ -1984,17 +1984,17 @@
             "ingredient_name": "Rigatoni",
             "coles": {
                 "product_name": "Barilla Rigatoni Pasta 500g",
-                "price": "2.8",
+                "price": 2.8,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "San Remo Rigatoni Pasta 500g",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2002,17 +2002,17 @@
             "ingredient_name": "Yogurt",
             "coles": {
                 "product_name": "Farmers Union Greek Style Natural Yogurt 1kg",
-                "price": "5.5",
+                "price": 5.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Dairy Farmers Thick & Creamy Yoghurt 600g",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "600g"
             },
             "aldi": {
                 "product_name": "Just Organic Natural Yogurt 1kg",
-                "price": "4.99",
+                "price": 4.99,
                 "quantity": "1kg"
             }
         },
@@ -2020,17 +2020,17 @@
             "ingredient_name": "Raisins",
             "coles": {
                 "product_name": "Coles Raisins Prepacked 375g",
-                "price": "3.75",
+                "price": 3.75,
                 "quantity": "375g"
             },
             "woolworths": {
                 "product_name": "Macro Organic Raisins 400g",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "Just Organic Sun-Dried Thompson Seedless Raisins 375g",
-                "price": "3.99",
+                "price": 3.99,
                 "quantity": "375g"
             }
         },
@@ -2038,17 +2038,17 @@
             "ingredient_name": "Sour Cream",
             "coles": {
                 "product_name": "Coles Sour Cream 300g",
-                "price": "2.6",
+                "price": 2.6,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Dairy Farmers Sour Cream 300g",
-                "price": "2.80",
+                "price": 2.8,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "Farmdale Sour Cream 300ml",
-                "price": "2.09",
+                "price": 2.09,
                 "quantity": "300ml"
             }
         },
@@ -2056,17 +2056,17 @@
             "ingredient_name": "Miso Paste",
             "coles": {
                 "product_name": "Kewpie Miso Paste 300g",
-                "price": "3.75",
+                "price": 3.75,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Organic Miso Co. Miso Paste",
-                "price": "7.50",
+                "price": 7.5,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2074,17 +2074,17 @@
             "ingredient_name": "Diced Onion",
             "coles": {
                 "product_name": "Coles Diced Onion 400g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Diced Onion",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2092,17 +2092,17 @@
             "ingredient_name": "Tempeh",
             "coles": {
                 "product_name": "Coles Nature's Kitchen Tempeh 300g",
-                "price": "5.0",
+                "price": 5.0,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Macro Plain Tempeh",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2110,17 +2110,17 @@
             "ingredient_name": "Tilapia Fillets",
             "coles": {
                 "product_name": "I&J Frozen Tilapia Fillets 500g",
-                "price": "11.5",
+                "price": 11.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Tilapia Fillets",
-                "price": "15.00",
+                "price": 15.0,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2128,17 +2128,17 @@
             "ingredient_name": "Pesto",
             "coles": {
                 "product_name": "Sacla Classic Pesto 190g",
-                "price": "5.5",
+                "price": 5.5,
                 "quantity": "190g"
             },
             "woolworths": {
                 "product_name": "Basil Pesto by Barilla 190g",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "190g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2146,17 +2146,17 @@
             "ingredient_name": "Salmon Fillets",
             "coles": {
                 "product_name": "Coles Fresh Salmon Fillet 300g",
-                "price": "10.2",
+                "price": 10.2,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Tasmanian Salmon Fillets 300g",
-                "price": "12.00",
+                "price": 12.0,
                 "quantity": "300g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2164,17 +2164,17 @@
             "ingredient_name": "Sesame Seeds",
             "coles": {
                 "product_name": "Coles Sesame Seeds 150g",
-                "price": "1.6",
+                "price": 1.6,
                 "quantity": "150g"
             },
             "woolworths": {
                 "product_name": "Woolworths Sesame Seeds 100g",
-                "price": "1.10",
+                "price": 1.1,
                 "quantity": "100g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2182,17 +2182,17 @@
             "ingredient_name": "Honey",
             "coles": {
                 "product_name": "Capilano Pure Honey Squeeze 500g",
-                "price": "8.6",
+                "price": 8.6,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Honey Twist And Squeeze",
-                "price": "5.50",
+                "price": 5.5,
                 "quantity": "375g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2200,17 +2200,17 @@
             "ingredient_name": "Pecans",
             "coles": {
                 "product_name": "Coles Pecan Nuts 200g",
-                "price": "8.5",
+                "price": 8.5,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Pecans 150g",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2218,17 +2218,17 @@
             "ingredient_name": "Ground Beef",
             "coles": {
                 "product_name": "Coles Beef Mince 500g",
-                "price": "8.5",
+                "price": 8.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Ground Beef Mince",
-                "price": "12.00",
+                "price": 12.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2236,17 +2236,17 @@
             "ingredient_name": "Vegetable Broth",
             "coles": {
                 "product_name": "Campbell's Real Vegetable Broth 1L",
-                "price": "3.6",
+                "price": 3.6,
                 "quantity": "1L"
             },
             "woolworths": {
                 "product_name": "Massel Vegetable Liquid Stock 1L",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "1L"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2254,17 +2254,17 @@
             "ingredient_name": "Pastry Shell",
             "coles": {
                 "product_name": "Patties Pastry Shells 10 pack 450g",
-                "price": "6",
+                "price": 6.0,
                 "quantity": "450g"
             },
             "woolworths": {
                 "product_name": "Cesterfield Savory Pastry Shells 275g",
-                "price": "7.00",
+                "price": 7.0,
                 "quantity": "275g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2272,17 +2272,17 @@
             "ingredient_name": "Chicken Breast",
             "coles": {
                 "product_name": "Coles Free Range RSPCA Approved Chicken Breast Fillet Small approx. 600g",
-                "price": "9.6",
+                "price": 9.6,
                 "quantity": "approx. 600g"
             },
             "woolworths": {
                 "product_name": "Macro Free Range Chicken Breast",
-                "price": "10.00",
+                "price": 10.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2290,17 +2290,17 @@
             "ingredient_name": "Chili Flakes",
             "coles": {
                 "product_name": "MasterFoods Chili Flakes 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chilli Flakes",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2308,17 +2308,17 @@
             "ingredient_name": "Hot Sauce",
             "coles": {
                 "product_name": "ABC Original Chili Sauce 335mL",
-                "price": "2.75",
+                "price": 2.75,
                 "quantity": "335mL"
             },
             "woolworths": {
                 "product_name": "Byron Bay Chilli Co. Heavenly Habanero Hot Sauce",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "150mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2326,17 +2326,17 @@
             "ingredient_name": "Beef Short Ribs",
             "coles": {
                 "product_name": "Coles Beef Short Ribs 1kg",
-                "price": "15",
+                "price": 15.0,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Beef Short Ribs",
-                "price": "20.00",
+                "price": 20.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2344,17 +2344,17 @@
             "ingredient_name": "Fresh Basil Leaves",
             "coles": {
                 "product_name": "Coles Basil Leaves 14g",
-                "price": "1.95",
+                "price": 1.95,
                 "quantity": "14g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Basil 15g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2362,17 +2362,17 @@
             "ingredient_name": "Coleslaw",
             "coles": {
                 "product_name": "Coles Superfood Crunchy Coleslaw 400g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Coleslaw Mix",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2380,17 +2380,17 @@
             "ingredient_name": "Hamburger Bun",
             "coles": {
                 "product_name": "Coles Hamburger Rolls 6 pack",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "6 pack"
             },
             "woolworths": {
                 "product_name": "Woolworths Hamburger Rolls",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "6 pack"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2398,17 +2398,17 @@
             "ingredient_name": "Kale",
             "coles": {
                 "product_name": "Coles Organic Kale 150g",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "150g"
             },
             "woolworths": {
                 "product_name": "Woolworths Single Leaf Baby Kale",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "60g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2416,17 +2416,17 @@
             "ingredient_name": "Kidney Beans",
             "coles": {
                 "product_name": "Coles Red Kidney Beans 400g",
-                "price": "1.2",
+                "price": 1.2,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Red Kidney Beans",
-                "price": "1.50",
+                "price": 1.5,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2434,17 +2434,17 @@
             "ingredient_name": "Olives",
             "coles": {
                 "product_name": "Coles Pitted Green Olives 200g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Green Stuffed Olives 935g",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "935g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2452,17 +2452,17 @@
             "ingredient_name": "Ricotta",
             "coles": {
                 "product_name": "Coles Smooth Ricotta 375g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "375g"
             },
             "woolworths": {
                 "product_name": "Bulla Ricotta Cheese 375g",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "375g"
             },
             "aldi": {
                 "product_name": "Emporium Selection Smooth Ricotta 375g",
-                "price": "2.69",
+                "price": 2.69,
                 "quantity": "375g"
             }
         },
@@ -2470,17 +2470,17 @@
             "ingredient_name": "Tikka Spices",
             "coles": {
                 "product_name": "Patak's Tikka Masala Paste 300g",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "300g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Tikka Seasoning",
-                "price": "2.75",
+                "price": 2.75,
                 "quantity": "50g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2488,17 +2488,17 @@
             "ingredient_name": "Almond Milk",
             "coles": {
                 "product_name": "Coles Organic Unsweetened Almond Milk 1L",
-                "price": "2.8",
+                "price": 2.8,
                 "quantity": "1L"
             },
             "woolworths": {
                 "product_name": "Woolworths Unsweetened Almond Milk 1l",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "1L"
             },
             "aldi": {
                 "product_name": "Just Organic UHT Soy Milk 1L",
-                "price": "1.49",
+                "price": 1.49,
                 "quantity": "1L"
             }
         },
@@ -2506,17 +2506,17 @@
             "ingredient_name": "Carrots",
             "coles": {
                 "product_name": "Coles Carrots 1kg",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Carrots",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2524,17 +2524,17 @@
             "ingredient_name": "Chopped Parsley",
             "coles": {
                 "product_name": "Hoyts Parsley Leaves 10g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "10g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Chopped Parsley",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2542,17 +2542,17 @@
             "ingredient_name": "Eggplant",
             "coles": {
                 "product_name": "Coles Fresh Eggplant each",
-                "price": "1.99",
+                "price": 1.99,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Eggplant",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2560,17 +2560,17 @@
             "ingredient_name": "Fresh Mozzarella",
             "coles": {
                 "product_name": "Coles Fresh Mozzarella 250g",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Burrata Fresh Mozzarella",
-                "price": "7.50",
+                "price": 7.5,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2578,17 +2578,17 @@
             "ingredient_name": "Lamb",
             "coles": {
                 "product_name": "Coles Lamb Leg Roast Boneless Approx. 1.4kg",
-                "price": "23.4",
+                "price": 23.4,
                 "quantity": "approx. 1.4kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Lamb Mince",
-                "price": "14.00",
+                "price": 14.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2596,17 +2596,17 @@
             "ingredient_name": "Paneer",
             "coles": {
                 "product_name": "Madhur Paneer 250g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "250g"
             },
             "woolworths": {
                 "product_name": "Perfect Italiano Paneer 400g",
-                "price": "6.00",
+                "price": 6.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2614,17 +2614,17 @@
             "ingredient_name": "Plums",
             "coles": {
                 "product_name": "Coles Black Plums approx. 130g each",
-                "price": "0.5",
+                "price": 0.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Plums",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2632,17 +2632,17 @@
             "ingredient_name": "Puff Pastry",
             "coles": {
                 "product_name": "Pampas Frozen Puff Pastry 1kg",
-                "price": "6.85",
+                "price": 6.85,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Pampas Puff Pastry Sheets 500g",
-                "price": "5.35",
+                "price": 5.35,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2650,17 +2650,17 @@
             "ingredient_name": "Rice",
             "coles": {
                 "product_name": "Coles Long Grain White Rice 2kg",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "2kg"
             },
             "woolworths": {
                 "product_name": "Sunrice Long Grain White Rice 2kg",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "2kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2668,17 +2668,17 @@
             "ingredient_name": "Broth",
             "coles": {
                 "product_name": "Campbell's Real Salt Reduced Chicken Stock 1L",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "1L"
             },
             "woolworths": {
                 "product_name": "Campbell's Chicken Broth",
-                "price": "1.80",
+                "price": 1.8,
                 "quantity": "420g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2686,17 +2686,17 @@
             "ingredient_name": "Dried Apricots",
             "coles": {
                 "product_name": "Coles Turkish Dried Apricots 200g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Dried Apricots",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2704,17 +2704,17 @@
             "ingredient_name": "Sliced Almonds",
             "coles": {
                 "product_name": "Coles Sliced Almonds 200g",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Sliced Almonds 150g",
-                "price": "4.50",
+                "price": 4.5,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2722,17 +2722,17 @@
             "ingredient_name": "Quinoa",
             "coles": {
                 "product_name": "Red Tractor Quinoa 700g",
-                "price": "10",
+                "price": 10.0,
                 "quantity": "700g"
             },
             "woolworths": {
                 "product_name": "San Remo Quinoa 500g",
-                "price": "5.50",
+                "price": 5.5,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "Just Organic Quinoa \u2013 White or Tricolour 500g",
-                "price": "6.49",
+                "price": 6.49,
                 "quantity": "500g"
             }
         },
@@ -2740,17 +2740,17 @@
             "ingredient_name": "Grated Parmesan",
             "coles": {
                 "product_name": "Coles 100% Grated Parmesan Cheese 200g",
-                "price": "5.5",
+                "price": 5.5,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Perfect Italiano Grated Parmesan Cheese",
-                "price": "5.50",
+                "price": 5.5,
                 "quantity": "200g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2758,17 +2758,17 @@
             "ingredient_name": "Spinach",
             "coles": {
                 "product_name": "Coles Fresh Baby Spinach 120g",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "120g"
             },
             "woolworths": {
                 "product_name": "Woolworths Baby Spinach",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "120g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2776,17 +2776,17 @@
             "ingredient_name": "Coconut Milk",
             "coles": {
                 "product_name": "Coles Coconut Milk 400mL",
-                "price": "1.9",
+                "price": 1.9,
                 "quantity": "400mL"
             },
             "woolworths": {
                 "product_name": "Ayam Coconut Milk",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "400mL"
             },
             "aldi": {
                 "product_name": "Just Organic Extra Virgin Coconut Oil 300g",
-                "price": "3.99",
+                "price": 3.99,
                 "quantity": "300g"
             }
         },
@@ -2794,17 +2794,17 @@
             "ingredient_name": "Tuna Steaks",
             "coles": {
                 "product_name": "Sirena Tuna Steaks in Olive Oil 150g",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "150g"
             },
             "woolworths": {
                 "product_name": "John West Tuna Steaks in Spring Water",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "185g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2812,17 +2812,17 @@
             "ingredient_name": "Sage",
             "coles": {
                 "product_name": "Coles Sage Punnet 10g",
-                "price": "3.0",
+                "price": 3.0,
                 "quantity": "10g"
             },
             "woolworths": {
                 "product_name": "Masterfoods Dried Sage 20g",
-                "price": "2.60",
+                "price": 2.6,
                 "quantity": "20g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2830,17 +2830,17 @@
             "ingredient_name": "Mushrooms",
             "coles": {
                 "product_name": "Coles Fresh Button Mushrooms 500g",
-                "price": "4",
+                "price": 4.0,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Button Mushrooms",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "200g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2848,17 +2848,17 @@
             "ingredient_name": "Potatoes",
             "coles": {
                 "product_name": "Coles Potatoes 2kg",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "2kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Washed Potatoes",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "2kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2866,17 +2866,17 @@
             "ingredient_name": "Corn",
             "coles": {
                 "product_name": "Coles Frozen Corn Kernels 1kg",
-                "price": "2.7",
+                "price": 2.7,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Corn Kernels",
-                "price": "2.20",
+                "price": 2.2,
                 "quantity": "420g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2884,17 +2884,17 @@
             "ingredient_name": "Salt",
             "coles": {
                 "product_name": "Saxa Table Salt 1kg",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Table Salt 1kg",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2902,17 +2902,17 @@
             "ingredient_name": "Tomato Sauce",
             "coles": {
                 "product_name": "Leggo's Tomato Sauce 500g",
-                "price": "2.6",
+                "price": 2.6,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Tomato Sauce",
-                "price": "1.80",
+                "price": 1.8,
                 "quantity": "700g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2920,17 +2920,17 @@
             "ingredient_name": "Pork Ribs",
             "coles": {
                 "product_name": "Coles Pork Ribs approx. 1kg",
-                "price": "14.4",
+                "price": 14.4,
                 "quantity": "approx. 1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Pork Ribs",
-                "price": "22.00",
+                "price": 22.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2938,17 +2938,17 @@
             "ingredient_name": "Sweet Potatoes",
             "coles": {
                 "product_name": "Coles Sweet Potatoes each",
-                "price": "1.20",
+                "price": 1.2,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Sweet Potatoes",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2956,17 +2956,17 @@
             "ingredient_name": "Turkey Breast",
             "coles": {
                 "product_name": "Coles Free Range Turkey Breast Fillet approx. 800g",
-                "price": "16.0",
+                "price": 16.0,
                 "quantity": "approx. 800g"
             },
             "woolworths": {
                 "product_name": "Ingham's Turkey Breast Fillet 400g",
-                "price": "8.00",
+                "price": 8.0,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2974,17 +2974,17 @@
             "ingredient_name": "Nutmeg",
             "coles": {
                 "product_name": "MasterFoods Ground Nutmeg 50g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "50g"
             },
             "woolworths": {
                 "product_name": "Woolworths Nutmeg Ground 30g",
-                "price": "2.30",
+                "price": 2.3,
                 "quantity": "30g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -2992,17 +2992,17 @@
             "ingredient_name": "Oats",
             "coles": {
                 "product_name": "Coles Instant Rolled Oats 500g",
-                "price": "2.75",
+                "price": 2.75,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Rolled Traditional Oats 750g",
-                "price": "1.4",
+                "price": 1.4,
                 "quantity": "750g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3010,17 +3010,17 @@
             "ingredient_name": "Fresh Spinach",
             "coles": {
                 "product_name": "Coles Baby Spinach 120g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "120g"
             },
             "woolworths": {
                 "product_name": "Woolworths Baby Spinach",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "280g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3028,17 +3028,17 @@
             "ingredient_name": "Herbs",
             "coles": {
                 "product_name": "Gourmet Garden Italian Herbs Cold Blended Paste 80g",
-                "price": "3.5",
+                "price": 3.5,
                 "quantity": "80g"
             },
             "woolworths": {
                 "product_name": "Woolworths Thai Basil 15g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "15g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3046,17 +3046,17 @@
             "ingredient_name": "Capers",
             "coles": {
                 "product_name": "Coles Capers 100g",
-                "price": "3",
+                "price": 3.0,
                 "quantity": "100g"
             },
             "woolworths": {
                 "product_name": "Capers 100g",
-                "price": "3.00",
+                "price": 3.0,
                 "quantity": "100g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3064,17 +3064,17 @@
             "ingredient_name": "Szechuan Sauce",
             "coles": {
                 "product_name": "Lee Kum Kee Szechuan Hot & Spicy Sauce 220g",
-                "price": "5.0",
+                "price": 5.0,
                 "quantity": "220g"
             },
             "woolworths": {
                 "product_name": "Byron Bay Chilli Co. Szechuan Sauce 250mL",
-                "price": "4.00",
+                "price": 4.0,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3082,17 +3082,17 @@
             "ingredient_name": "Zucchini",
             "coles": {
                 "product_name": "Coles Zucchini each",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Zucchini 500g",
-                "price": "2.80",
+                "price": 2.8,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3100,17 +3100,17 @@
             "ingredient_name": "Chili Sauce",
             "coles": {
                 "product_name": "Huy Fong Sriracha Hot Chilli Sauce 455g",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "455g"
             },
             "woolworths": {
                 "product_name": "Byron Bay Chilli Co. Chilli Sauce",
-                "price": "3.90",
+                "price": 3.9,
                 "quantity": "250mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3118,17 +3118,17 @@
             "ingredient_name": "Chopped Bell Peppers",
             "coles": {
                 "product_name": "Coles Deli Baby Bell Peppers with Cream Cheese approx. 125g",
-                "price": "5",
+                "price": 5.0,
                 "quantity": "approx. 125g"
             },
             "woolworths": {
                 "product_name": "Woolworths Chopped Red & Yellow Bell Peppers Frozen",
-                "price": "2.50",
+                "price": 2.5,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3136,17 +3136,17 @@
             "ingredient_name": "Lamb Shoulder",
             "coles": {
                 "product_name": "Coles Lamb Shoulder Roast Approx. 1.2kg",
-                "price": "20.4",
+                "price": 20.4,
                 "quantity": "approx. 1.2kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Lamb Shoulder Chops",
-                "price": "18.00",
+                "price": 18.0,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3154,17 +3154,17 @@
             "ingredient_name": "Cheese",
             "coles": {
                 "product_name": "Coles Tasty Cheddar Cheese Block 1kg",
-                "price": "10",
+                "price": 10.0,
                 "quantity": "1kg"
             },
             "woolworths": {
                 "product_name": "Woolworths Tasty Cheese Block 1kg",
-                "price": "8.8",
+                "price": 8.8,
                 "quantity": "1kg"
             },
             "aldi": {
                 "product_name": "Westacre Colby Cheese Block 500g",
-                "price": "4.99",
+                "price": 4.99,
                 "quantity": "500g"
             }
         },
@@ -3172,17 +3172,17 @@
             "ingredient_name": "Beans",
             "coles": {
                 "product_name": "Coles Baked Beans in Rich Tomato Sauce 420g",
-                "price": "1.2",
+                "price": 1.2,
                 "quantity": "420g"
             },
             "woolworths": {
                 "product_name": "Heinz Baked Beans Tomato Sauce",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "555g"
             },
             "aldi": {
                 "product_name": "Just Organic Baked Beans in Tomato Sauce 420g",
-                "price": "0.95",
+                "price": 0.95,
                 "quantity": "420g"
             }
         },
@@ -3190,17 +3190,17 @@
             "ingredient_name": "Ginger",
             "coles": {
                 "product_name": "Coles Fresh Ginger 200g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Ginger",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "each"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3208,17 +3208,17 @@
             "ingredient_name": "Ground Lamb",
             "coles": {
                 "product_name": "Coles Lamb Mince 500g",
-                "price": "9.5",
+                "price": 9.5,
                 "quantity": "500g"
             },
             "woolworths": {
                 "product_name": "Woolworths Ground Lamb Mince",
-                "price": "14.00",
+                "price": 14.0,
                 "quantity": "500g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3226,17 +3226,17 @@
             "ingredient_name": "Mustard",
             "coles": {
                 "product_name": "Coles Dijon Mustard 200g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "200g"
             },
             "woolworths": {
                 "product_name": "Heinz Dijon Mustard 295mL",
-                "price": "3.50",
+                "price": 3.5,
                 "quantity": "295mL"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3244,17 +3244,17 @@
             "ingredient_name": "Chili",
             "coles": {
                 "product_name": "Katoomba Green Chilli 12 Pack 312g",
-                "price": "2",
+                "price": 2.0,
                 "quantity": "312g"
             },
             "woolworths": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3262,17 +3262,17 @@
             "ingredient_name": "Scallions",
             "coles": {
                 "product_name": "Coles Shallots bunch",
-                "price": "1.5",
+                "price": 1.5,
                 "quantity": "each"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Scallions",
-                "price": "2.00",
+                "price": 2.0,
                 "quantity": "150g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3280,17 +3280,17 @@
             "ingredient_name": "Fresh Berries",
             "coles": {
                 "product_name": "Coles Mixed Fresh Berries 125g",
-                "price": "4.5",
+                "price": 4.5,
                 "quantity": "125g"
             },
             "woolworths": {
                 "product_name": "Woolworths Fresh Mixed Berries",
-                "price": "5.00",
+                "price": 5.0,
                 "quantity": "250g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         },
@@ -3298,17 +3298,17 @@
             "ingredient_name": "Sliced Tomatoes",
             "coles": {
                 "product_name": "Coles Sliced Tomatoes 400g",
-                "price": "2.5",
+                "price": 2.5,
                 "quantity": "400g"
             },
             "woolworths": {
                 "product_name": "Woolworths Sliced Tomatoes 400g",
-                "price": "2.20",
+                "price": 2.2,
                 "quantity": "400g"
             },
             "aldi": {
                 "product_name": "NONE",
-                "price": "NONE",
+                "price": null,
                 "quantity": "NONE"
             }
         }
