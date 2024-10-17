@@ -1,8 +1,40 @@
+/// A StatefulWidget that represents the sign-up screen of the application.
+///
+/// This screen allows users to create a new account by providing their email
+/// and password. It also includes options to keep the user signed in and to
+/// agree to the privacy policy. Upon successful sign-up, a verification email
+/// is sent to the user.
+///
+/// The screen includes the following features:
+/// - Email and password input fields with validation.
+/// - Checkbox to keep the user signed in.
+/// - Checkbox to agree to the privacy policy.
+/// - Toggle to show/hide the password.
+/// - Proportional sizing based on screen dimensions.
+/// - Navigation to the verification screen upon successful sign-up.
+/// - Navigation to the login screen.
+///
+/// The sign-up process is handled using Firebase Authentication.
+///
+/// The class consists of:
+/// - TextEditingController for email and password input fields.
+/// - FocusNode for managing focus on input fields.
+/// - Methods to handle sign-up, clear focus, and show snack bars.
+/// - Proportional helper functions for responsive design.
+///
+/// Example usage:
+/// ```dart
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(builder: (context) => const SignUpScreen()),
+/// );
+/// ```
+library sign_up_screen;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../login_screen/login_screen.dart';
 import 'package:binarybandits/screens/verification_screen/verification_screen.dart';
 
@@ -10,10 +42,11 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+// Proportional helper functions
+class SignUpScreenState extends State<SignUpScreen> {
   bool _keepMeSignedIn = false;
   bool _agreeToPrivacyPolicy = false;
   bool _showPassword = false;
@@ -21,7 +54,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -32,16 +64,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  // Clear focus from text fields
   void _clearFocus() {
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
   }
 
-  Future<void> _saveKeepMeSignedInPreference(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('keepMeSignedIn', value);
-  }
-
+  // Sign up method
   Future<void> _signUp() async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
@@ -95,28 +124,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  // Show a snackbar with the given message
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-      ),
-    );
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Okay'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          )
-        ],
       ),
     );
   }
