@@ -34,28 +34,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Map<int, bool> _expandedItems = {};
   int? _expandedIndex;
   Map<int, String> _manuallySelectedPrices = {};
-
-  // Define product names for each store
-  List<String> colesProductNames = [
-    "Coles Product 1",
-    "Coles Product 2",
-    "Coles Product 3",
-    // Add more product names...
-  ];
-
-  List<String> woolworthsProductNames = [
-    "Woolworths Product 1",
-    "Woolworths Product 2",
-    "Woolworths Product 3",
-    // Add more product names...
-  ];
-
-  List<String> aldiProductNames = [
-    "Aldi Product 1",
-    "Aldi Product 2",
-    "Aldi Product 3",
-    // Add more product names...
-  ];
+  Map<int, bool> _showIngredientNames = {};
 
   @override
   void initState() {
@@ -67,11 +46,11 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             .toString()
             .compareTo(b['ingredient_name'].toString()));
 
-        // Initialize the selection map
+        // Initialize the state to show product names by default
         for (int i = 0; i < products.length; i++) {
           _selectedIngredients[i] = false;
+          _showIngredientNames[i] = false; // Show product names by default
         }
-        _expandedIndex = null; // No item is expanded initially
       });
     });
   }
@@ -638,7 +617,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return SizedBox.shrink(); // In case no valid product is found
   }
 
-  /// Helper method to get the item label (ingredient or product name)
   String _getItemLabel(int index) {
     if (products.isEmpty)
       return 'Loading...'; // Handle case when data is not loaded
@@ -646,12 +624,19 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final product = products[index];
     final ingredientName = product['ingredient_name'];
 
-    // Get the manually selected store for this product, if any
+    // Check if the user has long pressed to show the ingredient name
+    bool showIngredientName = _showIngredientNames[index] ?? false;
+
+    // If the user has long pressed, show the ingredient name
+    if (showIngredientName) {
+      return ingredientName;
+    }
+
+    // Otherwise, show the product name (based on the manually selected store or cheapest)
     String? manuallySelectedStore = _manuallySelectedPrices[index];
 
     if (selectedTab == "All") {
       if (manuallySelectedStore != null) {
-        // If a store has been manually selected, show the product name from that store
         if (manuallySelectedStore == "Coles") {
           return product['coles']['product_name'];
         } else if (manuallySelectedStore == "Woolworths") {
@@ -660,7 +645,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           return product['aldi']['product_name'];
         }
       } else if (cheapestOption) {
-        // If no manual selection, find the cheapest product name based on price
         double? colesPrice = removedStores.contains("Coles")
             ? null
             : double.tryParse(product['coles']['price']);
@@ -710,38 +694,33 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(
           vertical: 4.0), // Reduce vertical padding between items
-      child: ListTile(
-        leading: GestureDetector(
-          onTap: () {
-            setState(() {
-              _selectedIngredients[index] = !isSelected;
-            });
-          },
-          child: Icon(
-            isSelected
-                ? Icons.check_circle
-                : Icons.radio_button_unchecked, // Checkmark or empty circle
-            color: isSelected
-                ? const Color.fromRGBO(
-                    73, 160, 120, 1) // Active color for checkmark
-                : Colors.grey,
-            size: proportionalFontSize(context, 24),
+      child: GestureDetector(
+        onLongPress: () {
+          // Toggle between product name and ingredient name on long press
+          setState(() {
+            _showIngredientNames[index] =
+                !(_showIngredientNames[index] ?? false); // Toggle the state
+          });
+        },
+        child: ListTile(
+          leading: GestureDetector(
+            onTap: () {
+              setState(() {
+                _selectedIngredients[index] = !isSelected;
+              });
+            },
+            child: Icon(
+              isSelected
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked, // Checkmark or empty circle
+              color: isSelected
+                  ? const Color.fromRGBO(
+                      73, 160, 120, 1) // Active color for checkmark
+                  : Colors.grey,
+              size: proportionalFontSize(context, 24),
+            ),
           ),
-        ),
-        title: GestureDetector(
-          onTap: () {
-            // Toggle the expanded state when the user taps the item name
-            setState(() {
-              if (_expandedIndex == index) {
-                // If the current item is already expanded, collapse it
-                _expandedIndex = null;
-              } else {
-                // Otherwise, expand the new item and collapse the previous one
-                _expandedIndex = index;
-              }
-            });
-          },
-          child: Text(
+          title: Text(
             '$itemLabel', // Dynamically display the label based on the selected tab
             style: GoogleFonts.robotoFlex(
               fontSize: proportionalFontSize(
@@ -760,8 +739,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                 ? TextOverflow.visible
                 : TextOverflow.ellipsis, // Show ellipsis if collapsed
           ),
+          trailing: trailing,
         ),
-        trailing: trailing,
       ),
     );
   }
