@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:binarybandits/screens/home_screen/home_screen.dart';
 import 'package:binarybandits/screens/weekly_menu_screen/weekly_menu_screen.dart';
@@ -24,49 +26,40 @@ class GroceryListScreen extends StatefulWidget {
 }
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
-  String selectedTab = "All"; // Default selected tab is "All"
+  String selectedTab = "All";
   bool cheapestOption = false;
   Map<int, bool> _selectedIngredients = {};
   List<String> removedStores = [];
-
-  // Define product names for each store
-  List<String> colesProductNames = [
-    "Coles Product 1",
-    "Coles Product 2",
-    "Coles Product 3",
-    // Add more product names...
-  ];
-
-  List<String> woolworthsProductNames = [
-    "Woolworths Product 1",
-    "Woolworths Product 2",
-    "Woolworths Product 3",
-    // Add more product names...
-  ];
-
-  List<String> aldiProductNames = [
-    "Aldi Product 1",
-    "Aldi Product 2",
-    "Aldi Product 3",
-    // Add more product names...
-  ];
+  List<Map<String, dynamic>> ingredientPrices = [];
+  Map<String, List<String>> storeProductNames = {
+    'Coles': [],
+    'Woolworths': [],
+    'Aldi': [],
+  };
 
   @override
   void initState() {
     super.initState();
+    _loadProductData();
     // Initialize the selection map with false (unchecked) for each ingredient
-    for (int i = 0; i < 10; i++) {
-      _selectedIngredients[i] = false;
-    }
+    // This will be updated once we have the actual number of ingredients
   }
 
-  // Prices are now stored as Strings, not doubles
-  List<Map<String, String>> ingredientPrices = [
-    {"Coles": "10.00", "Woolworths": "12.49", "Aldi": "8.99"},
-    {"Coles": "15.50", "Woolworths": "16.00", "Aldi": "14.75"},
-    {"Coles": "120.99", "Woolworths": "220.00", "Aldi": "180.45"},
-    // Add more items with prices for each store...
-  ];
+  Future<void> _loadProductData() async {
+    final String response =
+        await rootBundle.loadString('assets/recipes/products/products.json');
+    final data = await json.decode(response);
+    setState(() {
+      ingredientPrices = List<Map<String, dynamic>>.from(data['products']);
+      for (var product in ingredientPrices) {
+        _selectedIngredients[ingredientPrices.indexOf(product)] = false;
+        storeProductNames['Coles']!.add(product['coles']['product_name']);
+        storeProductNames['Woolworths']!
+            .add(product['woolworths']['product_name']);
+        storeProductNames['Aldi']!.add(product['aldi']['product_name']);
+      }
+    });
+  }
 
 // Since the prices are stored as Strings, just return the string values as they are
   String formatPrice(String? price) {
@@ -544,11 +537,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   // Helper method to build the grocery list
   Widget _buildGroceryList() {
     return ListView.builder(
-      itemCount: ingredientPrices.length, // Replace with your actual list count
+      itemCount: ingredientPrices.length,
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
-
-        // Build the grocery list item
         return Column(
           children: [
             _buildGroceryListItem(index, isSelected),
@@ -563,19 +554,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   Widget _buildGroceryListItem(int index, bool isSelected) {
     String itemLabel = _getItemLabel(index);
 
-    // Check if "All" tab is selected, display prices for all stores in aligned columns
     if (selectedTab == "All") {
       double? colesPrice = removedStores.contains("Coles")
-          ? null // If Coles is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['coles']['price']);
       double? woolworthsPrice = removedStores.contains("Woolworths")
-          ? null // If Woolworths is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['woolworths']['price']);
       double? aldiPrice = removedStores.contains("Aldi")
-          ? null // If Aldi is removed, set price to null
-          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['aldi']['price']);
 
-      // Find the lowest price (ignoring removed stores)
       double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
           .reduce((a, b) => a! < b! ? a : b);
@@ -588,7 +577,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             woolworthsPrice, aldiPrice, isSelected),
       );
     } else {
-      String displayedPrice = formatPrice(ingredientPrices[index][selectedTab]);
+      String displayedPrice = formatPrice(
+          ingredientPrices[index][selectedTab.toLowerCase()]['price']);
       return _buildListTile(
         index,
         itemLabel,
@@ -598,45 +588,41 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
   }
 
-  /// Helper method to get the item label (ingredient or product name)
   String _getItemLabel(int index) {
     if (selectedTab == "All") {
       double? colesPrice = removedStores.contains("Coles")
-          ? null // Ignore Coles if removed
-          : double.tryParse(ingredientPrices[index]["Coles"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['coles']['price']);
       double? woolworthsPrice = removedStores.contains("Woolworths")
-          ? null // Ignore Woolworths if removed
-          : double.tryParse(ingredientPrices[index]["Woolworths"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['woolworths']['price']);
       double? aldiPrice = removedStores.contains("Aldi")
-          ? null // Ignore Aldi if removed
-          : double.tryParse(ingredientPrices[index]["Aldi"] ?? '0');
+          ? null
+          : double.tryParse(ingredientPrices[index]['aldi']['price']);
 
-      // Find the lowest price
       double? lowestPrice = [colesPrice, woolworthsPrice, aldiPrice]
           .where((price) => price != null && price > 0)
           .reduce((a, b) => a! < b! ? a : b);
 
-      // If the cheapest toggle is on, replace the ingredient name with the cheapest product's name
       if (cheapestOption) {
         if (lowestPrice == colesPrice) {
-          return colesProductNames[index];
+          return ingredientPrices[index]['coles']['product_name'];
         } else if (lowestPrice == woolworthsPrice) {
-          return woolworthsProductNames[index];
+          return ingredientPrices[index]['woolworths']['product_name'];
         } else if (lowestPrice == aldiPrice) {
-          return aldiProductNames[index];
+          return ingredientPrices[index]['aldi']['product_name'];
         }
       }
-      return 'Ingredient name $index'; // Default ingredient name if no match
+      return ingredientPrices[index]['ingredient_name'];
     } else if (selectedTab == "Coles" && !removedStores.contains("Coles")) {
-      return colesProductNames[index]; // Use Coles product names if not removed
+      return ingredientPrices[index]['coles']['product_name'];
     } else if (selectedTab == "Woolworths" &&
         !removedStores.contains("Woolworths")) {
-      return woolworthsProductNames[
-          index]; // Use Woolworths product names if not removed
+      return ingredientPrices[index]['woolworths']['product_name'];
     } else if (selectedTab == "Aldi" && !removedStores.contains("Aldi")) {
-      return aldiProductNames[index]; // Use Aldi product names if not removed
+      return ingredientPrices[index]['aldi']['product_name'];
     }
-    return 'Product name $index'; // Fallback if no tab is selected
+    return ingredientPrices[index]['ingredient_name'];
   }
 
 // Helper method to build the list tile
@@ -695,17 +681,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Coles price, but only if Coles is not removed
         if (!removedStores.contains("Coles"))
           _buildPriceColumn(colesPrice, lowestPrice, isSelected),
-        SizedBox(width: 10), // Space between columns
-
-        // Woolworths price, but only if Woolworths is not removed
+        SizedBox(width: 10),
         if (!removedStores.contains("Woolworths"))
           _buildPriceColumn(woolworthsPrice, lowestPrice, isSelected),
-        SizedBox(width: 10), // Space between columns
-
-        // Aldi price, but only if Aldi is not removed
+        SizedBox(width: 10),
         if (!removedStores.contains("Aldi"))
           _buildPriceColumn(aldiPrice, lowestPrice, isSelected),
       ],
