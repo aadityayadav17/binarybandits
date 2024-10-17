@@ -1,3 +1,19 @@
+/// A custom dropdown field widget that allows users to select an option from a list of items.
+///
+/// The `DropdownField` widget is a stateful widget that displays a dropdown menu with a label.
+/// It supports proportional sizing based on the screen dimensions and uses custom fonts and styles.
+///
+/// The widget takes the following parameters:
+///
+/// - `labelText`: A [String] that represents the label text displayed above the dropdown.
+/// - `currentValue`: A nullable [String] that represents the currently selected value in the dropdown.
+/// - `items`: A [List<String>] that contains the items to be displayed in the dropdown menu.
+/// - `onChanged`: A [ValueChanged<String?>] callback that is called when the selected value changes.
+///
+/// The widget uses the `DropdownButton2` package for the dropdown functionality and the `google_fonts`
+/// package for custom fonts. It also includes custom styling for the dropdown menu, items, and icons.
+library dropdown_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
