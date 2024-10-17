@@ -114,6 +114,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     return "\$${price.toStringAsFixed(2)}"; // Display price with two decimal points
   }
 
+  String formatProductName(String? productName, String ingredientName) {
+    if (productName == null || productName.toLowerCase() == "none") {
+      return "No Product Available for $ingredientName";
+    }
+    return productName;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -636,9 +643,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   String _getItemLabel(int index) {
     if (selectedTab == "All") {
+      // In the All tab, display ingredient names when cheapestOption is off
       if (!cheapestOption) {
-        return ingredientPrices[index]
-            ['ingredient_name']; // Show ingredient name when toggle is off
+        return ingredientPrices[index]['ingredient_name'];
       } else {
         double? colesPrice = removedStores.contains("Coles")
             ? null
@@ -663,8 +670,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         }
       }
     } else {
-      return ingredientPrices[index][selectedTab.toLowerCase()]
-          ['product_name']; // Show product name for store tabs
+      // For individual store tabs, display the product name or fallback message
+      return formatProductName(
+          ingredientPrices[index][selectedTab.toLowerCase()]['product_name'],
+          ingredientPrices[index]['ingredient_name']);
     }
 
     // Default return in case none of the conditions above are met
