@@ -59,7 +59,16 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     super.initState();
     loadProducts().then((loadedProducts) {
       setState(() {
+        // Sort the products alphabetically by ingredient name
         products = loadedProducts;
+        products.sort((a, b) => a['ingredient_name']
+            .toString()
+            .compareTo(b['ingredient_name'].toString()));
+
+        // Initialize the selection map with false (unchecked) for each ingredient
+        for (int i = 0; i < products.length; i++) {
+          _selectedIngredients[i] = false;
+        }
       });
     });
   }
@@ -82,7 +91,8 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final String response =
         await rootBundle.loadString('assets/recipes/products/products.json');
     final data = json.decode(response);
-    return data['products'];
+    return data[
+        'products']; // Ensure you are accessing the correct field for the product list
   }
 
   @override
@@ -554,12 +564,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
   // Helper method to build the grocery list
   Widget _buildGroceryList() {
+    // Ensure that the item count matches the number of products loaded from the JSON
     return ListView.builder(
-      itemCount: ingredientPrices.length, // Replace with your actual list count
+      itemCount: products.length, // Use the length of the products list
       itemBuilder: (context, index) {
         bool isSelected = _selectedIngredients[index] ?? false;
 
-        // Build the grocery list item
+        // Build the grocery list item for each product
         return Column(
           children: [
             _buildGroceryListItem(index, isSelected),
@@ -795,13 +806,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   // Method for the rounded rectangle information box
   Widget buildInfoBox(BuildContext context) {
     int totalItems =
-        ingredientPrices.length; // Get the total number of items dynamically
+        products.length; // Dynamically get the total number of items
 
     return Container(
       margin:
           EdgeInsets.only(bottom: 0), // Align with the bottom navigation bar
       child: ClipRRect(
-        // Clip the blur effect to the rounded corners
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(proportionalWidth(context, 10)),
           topRight: Radius.circular(proportionalWidth(context, 10)),
@@ -835,7 +845,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Total $totalItems items', // Display the total number of items
+                      'Total $totalItems items', // Dynamically display total number of items
                       style: GoogleFonts.robotoFlex(
                         fontSize: proportionalFontSize(context, 16),
                         fontWeight: FontWeight.w600,
