@@ -1,3 +1,32 @@
+/// A custom text field widget that provides a styled input field with optional location icon.
+///
+/// This widget is designed to be responsive to different screen sizes by using proportional
+/// dimensions for various UI elements. It also supports an optional text editing controller
+/// for managing the input text.
+///
+/// The [CustomTextField] widget takes the following parameters:
+///
+/// * [labelText]: A required string that specifies the label text displayed above the text field.
+/// * [isLocationField]: An optional boolean that determines whether a location icon should be
+///   displayed as a suffix icon in the text field. Defaults to `false`.
+/// * [onChanged]: A required callback function that is called whenever the text in the text field
+///   changes. The function takes the new text as a parameter.
+/// * [controller]: An optional [TextEditingController] that can be used to control the text being
+///   edited. If not provided, the text field will manage its own text state.
+///
+/// Example usage:
+/// ```dart
+/// CustomTextField(
+///   labelText: 'Enter your location',
+///   isLocationField: true,
+///   onChanged: (text) {
+///     print('Location: $text');
+///   },
+///   controller: myController,
+/// )
+/// ```
+library custom_text_field;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,13 +36,14 @@ class CustomTextField extends StatelessWidget {
   final Function(String) onChanged;
   final TextEditingController? controller; // Add controller parameter
 
+  // Add controller to constructor
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.labelText,
     this.isLocationField = false,
     required this.onChanged,
     this.controller, // Add controller to constructor
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
