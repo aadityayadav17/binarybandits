@@ -91,7 +91,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     } else {}
   }
 
-  // Save profile data to Firebase Realtime Database
   void _saveProfile() async {
     _validateName(
         _nameController.text); // Ensure validation is called before checking
@@ -101,40 +100,60 @@ class ProfileScreenState extends State<ProfileScreen> {
     double expectedWeight =
         double.tryParse(_expectedWeightController.text) ?? 0;
 
-    if (weight == 0 || height == 0) {
-      return;
-    }
+    if (weight > 0 && height > 0) {
+      // Using a general estimation formula
+      calories = ((10 * weight) + (6.25 * height)) * 1.55;
 
-    // Using a general estimation formula
-    calories = ((10 * weight) + (6.25 * height)) * 1.55;
+      if (weight < expectedWeight) {
+        calories += 500;
+      } else if (weight > expectedWeight) {
+        calories -= 500;
+      }
 
-    if (weight < expectedWeight) {
-      calories += 500;
-    } else if (weight > expectedWeight) {
-      calories -= 500;
-    }
-
-    // Adjust calories based on dietary preference
-    if (dietaryPreference == 'Vegetarian') {
-      calories *= 0.9;
-    } else if (dietaryPreference == 'Vegan') {
-      calories *= 0.85;
+      // Adjust calories based on dietary preference
+      if (dietaryPreference == 'Vegetarian') {
+        calories *= 0.9;
+      } else if (dietaryPreference == 'Vegan') {
+        calories *= 0.85;
+      }
     }
 
     if (_isNameValid && user != null) {
       try {
-        await databaseRef.child('users/${user!.uid}').set({
+        Map<String, dynamic> profileData = {
           'name': _nameController.text,
-          'phoneNumber': _phoneNumberController.text,
-          'budget': _budgetController.text,
-          'height': _heightController.text,
-          'weight': _weightController.text,
-          'expectedWeight': _expectedWeightController.text,
-          'homeDistrict': _homeDistrictController.text,
-          'dietaryPreference': dietaryPreference,
-          'dietaryRestrictions': dietaryRestrictions,
-          'calorieRequirement': calories,
-        });
+        };
+
+        // Include optional fields only if they have values
+        if (_phoneNumberController.text.isNotEmpty) {
+          profileData['phoneNumber'] = _phoneNumberController.text;
+        }
+        if (_budgetController.text.isNotEmpty) {
+          profileData['budget'] = _budgetController.text;
+        }
+        if (_heightController.text.isNotEmpty) {
+          profileData['height'] = _heightController.text;
+        }
+        if (_weightController.text.isNotEmpty) {
+          profileData['weight'] = _weightController.text;
+        }
+        if (_expectedWeightController.text.isNotEmpty) {
+          profileData['expectedWeight'] = _expectedWeightController.text;
+        }
+        if (_homeDistrictController.text.isNotEmpty) {
+          profileData['homeDistrict'] = _homeDistrictController.text;
+        }
+        if (dietaryPreference != null && dietaryPreference!.isNotEmpty) {
+          profileData['dietaryPreference'] = dietaryPreference;
+        }
+        if (dietaryRestrictions.isNotEmpty) {
+          profileData['dietaryRestrictions'] = dietaryRestrictions;
+        }
+        if (calories > 0) {
+          profileData['calorieRequirement'] = calories;
+        }
+
+        await databaseRef.child('users/${user!.uid}').set(profileData);
 
         // Load recipes from the JSON file
         final String response = await rootBundle
@@ -175,7 +194,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             .set(possibleRecipes);
         _updateSaveStatus(true);
 
-        // Check if widget is still mounted before navigating
+        // Navigate based on the `fromSignup` condition
         if (widget.fromSignup && mounted) {
           Navigator.pushReplacement(
             context,
@@ -185,7 +204,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         }
       } catch (e) {
-        print(e);
+        print("Error saving profile: $e");
       }
     } else {
       // Show the dialog only if the name is not valid (empty)
