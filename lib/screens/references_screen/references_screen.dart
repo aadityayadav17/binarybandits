@@ -151,7 +151,7 @@ class ReferencesPage extends StatelessWidget {
               ),
             ),
             Text(
-              "Images used on the Home Screen -",
+              "Images used on the Home Screen:",
               style: GoogleFonts.robotoFlex(
                 fontSize: proportionalFontSize(context, 18),
                 color: Colors.black,
@@ -223,35 +223,65 @@ class ReferencesPage extends StatelessWidget {
                 'assets/images/home_screen/weekly-menu.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/flat-lay-batch-cooking-assortment-with-copy-space_11273706.htm#fromView=search&page=3&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
-            SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(context, "Uicons by ", "Flaticon",
+            SizedBox(height: proportionalHeight(context, 24)),
+            Text(
+              "Icons Used in the Application:",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 18),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            _buildTextLink(context, "  • Uicons by ", "Flaticon",
                 "https://www.flaticon.com/uicons"),
-            SizedBox(height: proportionalHeight(context, 16)),
+            SizedBox(height: proportionalHeight(context, 24)),
             Text(
-              "Recipes generated using -\nThis recipes were created with the assistance of GPT4o\n",
+              "Recipes Generated Using:",
               style: GoogleFonts.robotoFlex(
-                fontSize: proportionalFontSize(context, 14),
-                color: Colors.black, // You can adjust this color as needed
+                fontSize: proportionalFontSize(context, 18),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
               ),
             ),
-            SizedBox(height: proportionalHeight(context, 16)),
             Text(
-              "Recipe Images generated using -\nThis image was created with the assistance of DALL·E 3\n",
+              "These recipes were created with the assistance of GPT-4.",
               style: GoogleFonts.robotoFlex(
                 fontSize: proportionalFontSize(context, 14),
-                color: Colors.black, // You can adjust this color as needed
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(context, "Products from Aldi:", "Aldi Data",
+            SizedBox(height: proportionalHeight(context, 24)),
+            Text(
+              "Recipe Images Generated Using:",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 18),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              "These images were created with the assistance of DALL·E 3.",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: proportionalHeight(context, 24)),
+            Text(
+              "Products for Grocery List:",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 18),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            _buildTextLink(context, "  • Products from Aldi: ", "Aldi Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Aldi.csv"),
-            SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(context, "Products from Coles:", "Coles Data",
+            _buildTextLink(context, "  • Products from Coles: ", "Coles Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Coles.csv"),
-            SizedBox(height: proportionalHeight(context, 16)),
             _buildTextLink(
                 context,
-                "Products from Woolworths:",
+                "  • Products from Woolworths: ",
                 "Woolworths Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Woolworths.csv"),
           ],
