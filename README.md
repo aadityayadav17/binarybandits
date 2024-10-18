@@ -73,4 +73,30 @@ Firebase Core (firebase_core) – Initializes Firebase within the Flutter app.
 
 ##### NOTE: You do not have to setup/manage any external dependecies manually, step 4 would set them up for you.
 
+#### References
+
+    Images Used on Home Screen:
+    - `assets/images/home_screen/discover-recipe.png` - Designed by [Freepik](https://www.freepik.com/free-photo/top-view-pasta-waffles-with-copy-space_7087845.htm#fromView=search&page=1&position=27&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895)
+    - `assets/images/home_screen/grocery-list.png` - Designed by [Freepik](https://www.freepik.com/free-photo/lime-near-roasted-meat-salad_1488613.htm#fromView=search&page=1&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895)
+    - `assets/images/home_screen/recipe-collection.png` - Designed by [Freepik](https://www.freepik.com/free-photo/buddha-bowl-dish-with-chicken-fillet-rice-red-cabbage-carrot-fresh-lettuce-salad-sesame_7537371.htm#fromView=search&page=4&position=44&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895)
+    - `assets/images/home_screen/recipe-history.png` - Designed by [Freepik](https://www.freepik.com/free-photo/copy-space-bowl-with-salad_7763035.htm#fromView=search&page=2&position=5&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895)
+    - `assets/images/home_screen/weekly-menu.png` - Designed by [Freepik](https://www.freepik.com/free-photo/flat-lay-batch-cooking-assortment-with-copy-space_11273706.htm#fromView=search&page=3&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895)
+
+    Icons Used in the Application:
+    - Uicons by [Flaticon](https://www.flaticon.com/uicons)
+
+    Recipes Generated Using:
+    - These recipes were created with the assistance of GPT-4.
+
+    Recipe Images Generated Using:
+    - These images were created with the assistance of DALL·E 3.
+
+    Ingredient Matching:
+    - Ingredients were matched with products using OpenAI's GPT-4 model (version gpt-4-2024-08-06).
+
+    Products for Grocery List:
+    - Products from Aldi: [Aldi Data](https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Aldi.csv)
+    - Products from Coles: [Coles Data](https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Coles.csv)
+    - Products from Woolworths: [Woolworths Data](https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Woolworths.csv)
+
 ##### NOTE: The app experience is better suited for mobile devices, specifically iOS and Android.
