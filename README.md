@@ -45,3 +45,21 @@ Connect a physical device or start an Android/iOS emulator.
 Run the following command in the terminal:
 
         flutter run
+
+### External dependencies
+The code relies on the following dependencies:
+    Firebase Core (firebase_core) – Initializes Firebase within the Flutter app.
+
+    Firebase Authentication (firebase_auth) – Provides authentication methods like email/password and third-party sign-in with Firebase.
+
+    Firebase Realtime Database (firebase_database) – Enables interaction with Firebase Realtime Database for data storage and retrieval.
+
+    Google Fonts (google_fonts) – Allows the use of Google Fonts in the app.
+
+    Country Code Picker (country_code_picker) – Provides a country code selection widget for phone numbers.
+
+    Dropdown Button 2 (dropdown_button2) – Enhanced version of the dropdown button widget with more customization options.
+
+    Shared Preferences (shared_preferences) – Allows persistent local storage of simple key-value pairs across app sessions.
+
+##### NOTE: You do not have to setup/manage any external dependecies manually, step 4 would set them up for you.    

@@ -48,6 +48,7 @@ import 'widgets/save_button.dart';
 import '../home_screen/home_screen.dart';
 import '../login_screen/login_screen.dart';
 import 'package:binarybandits/models/recipe.dart';
+import 'package:binarybandits/screens/references_screen/references_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool fromSignup;
@@ -360,6 +361,41 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: Text(
                         'Log Out',
+                        style: GoogleFonts.robotoFlex(
+                          fontSize: proportionalFontSize(18), // Same font size
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromRGBO(
+                              73, 160, 120, 1), // Same font color
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: proportionalHeight(24)),
+
+                    // Logout and Reset buttons
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReferencesPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                            255, 255, 255, 255), // Same green as Save button
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              proportionalWidth(10)), // Same border radius
+                        ),
+                        fixedSize: Size(
+                          proportionalWidth(315), // Same width
+                          proportionalHeight(48), // Same height
+                        ),
+                      ),
+                      child: Text(
+                        'References',
                         style: GoogleFonts.robotoFlex(
                           fontSize: proportionalFontSize(18), // Same font size
                           fontWeight: FontWeight.bold,
