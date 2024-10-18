@@ -32,33 +32,35 @@ void _launchURL(String url) async {
 class ReferencesPage extends StatelessWidget {
   const ReferencesPage({Key? key}) : super(key: key);
 
-  Widget _buildImageWithText(BuildContext context, String imagePath, String description, String url) {
+  Widget _buildImageWithText(
+      BuildContext context, String imagePath, String description, String url) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: proportionalHeight(context, 10)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.asset(
               imagePath,
-              width: proportionalWidth(context, 60),
-              height: proportionalHeight(context, 60),
+              width:
+                  proportionalWidth(context, 250), // Adjusted for larger size
+              height:
+                  proportionalHeight(context, 250), // Adjusted for larger size
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(width: proportionalWidth(context, 16)),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _launchURL(url),
-              child: Text(
-                description,
-                style: GoogleFonts.robotoFlex(
-                  fontSize: proportionalFontSize(context, 14),
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
+          SizedBox(height: proportionalHeight(context, 8)),
+          GestureDetector(
+            onTap: () => _launchURL(url),
+            child: Text(
+              description,
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -66,13 +68,14 @@ class ReferencesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextLink(String text, String url) {
+  Widget _buildTextLink(BuildContext context, String text, String url) {
     return InkWell(
       onTap: () => _launchURL(url),
       child: Text(
         text,
         style: TextStyle(
           color: Colors.blue,
+          fontSize: proportionalFontSize(context, 14),
           decoration: TextDecoration.underline,
         ),
       ),
@@ -124,49 +127,66 @@ class ReferencesPage extends StatelessWidget {
               ),
             ),
             _buildImageWithText(
-              context,
-              'assets/images/home_screen/discover-recipe.png',
-              "Designed by Freepik",
-              "https://www.freepik.com/free-photo/top-view-pasta-waffles-with-copy-space_7087845.htm#fromView=search&page=1&position=27&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"
-            ),
+                context,
+                'assets/images/home_screen/discover-recipe.png',
+                "Designed by Freepik",
+                "https://www.freepik.com/free-photo/top-view-pasta-waffles-with-copy-space_7087845.htm#fromView=search&page=1&position=27&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             _buildImageWithText(
-              context,
-              'assets/images/home_screen/grocery-list.png',
-              "Designed by Freepik",
-              "https://www.freepik.com/free-photo/lime-near-roasted-meat-salad_1488613.htm#fromView=search&page=1&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"
-            ),
+                context,
+                'assets/images/home_screen/grocery-list.png',
+                "Designed by Freepik",
+                "https://www.freepik.com/free-photo/lime-near-roasted-meat-salad_1488613.htm#fromView=search&page=1&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             _buildImageWithText(
-              context,
-              'assets/images/home_screen/recipe-collection.png',
-              "Designed by Freepik",
-              "https://www.freepik.com/free-photo/buddha-bowl-dish-with-chicken-fillet-rice-red-cabbage-carrot-fresh-lettuce-salad-sesame_7537371.htm#fromView=search&page=4&position=44&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"
-            ),
+                context,
+                'assets/images/home_screen/recipe-collection.png',
+                "Designed by Freepik",
+                "https://www.freepik.com/free-photo/buddha-bowl-dish-with-chicken-fillet-rice-red-cabbage-carrot-fresh-lettuce-salad-sesame_7537371.htm#fromView=search&page=4&position=44&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             _buildImageWithText(
-              context,
-              'assets/images/home_screen/recipe-history.png',
-              "Designed by Freepik",
-              "https://www.freepik.com/free-photo/copy-space-bowl-with-salad_7763035.htm#fromView=search&page=2&position=5&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"
-            ),
+                context,
+                'assets/images/home_screen/recipe-history.png',
+                "Designed by Freepik",
+                "https://www.freepik.com/free-photo/copy-space-bowl-with-salad_7763035.htm#fromView=search&page=2&position=5&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             _buildImageWithText(
-              context,
-              'assets/images/home_screen/weekly-menu.png',
-              "Designed by Freepik",
-              "https://www.freepik.com/free-photo/flat-lay-batch-cooking-assortment-with-copy-space_11273706.htm#fromView=search&page=3&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"
-            ),
+                context,
+                'assets/images/home_screen/weekly-menu.png',
+                "Designed by Freepik",
+                "https://www.freepik.com/free-photo/flat-lay-batch-cooking-assortment-with-copy-space_11273706.htm#fromView=search&page=3&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink("Icons used in the Application - Uicons by Flaticon", "https://www.flaticon.com/uicons"),
+            _buildTextLink(
+                context,
+                "Icons used in the Application - Uicons by Flaticon",
+                "https://www.flaticon.com/uicons"),
             SizedBox(height: proportionalHeight(context, 16)),
             Text(
               "Recipes generated using -\nThis recipes were created with the assistance of GPT4o\n",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black, // You can adjust this color as needed
+              ),
             ),
             SizedBox(height: proportionalHeight(context, 16)),
             Text(
               "Recipe Images generated using -\nThis image was created with the assistance of DALL·E 3\n",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black, // You can adjust this color as needed
+              ),
             ),
             SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink("Products from Aldi for Grocery List fetched from -", "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Aldi.csv"),
-            _buildTextLink("Products from Coles for Grocery List fetched from -", "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Coles.csv"),
-            _buildTextLink("Products from Woolworths for Grocery List fetched from -", "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Woolworths.csv"),
+            _buildTextLink(
+                context,
+                "Products from Aldi for Grocery List fetched from -",
+                "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Aldi.csv"),
+            SizedBox(height: proportionalHeight(context, 16)),
+            _buildTextLink(
+                context,
+                "Products from Coles for Grocery List fetched from -",
+                "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Coles.csv"),
+            SizedBox(height: proportionalHeight(context, 16)),
+            _buildTextLink(
+                context,
+                "Products from Woolworths for Grocery List fetched from -",
+                "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Woolworths.csv"),
           ],
         ),
       ),
