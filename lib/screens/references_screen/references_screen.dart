@@ -51,34 +51,58 @@ class ReferencesPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: proportionalHeight(context, 8)),
-          GestureDetector(
-            onTap: () => _launchURL(url),
-            child: Text(
-              description,
-              style: GoogleFonts.robotoFlex(
-                fontSize: proportionalFontSize(context, 14),
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Designed by ",
+                style: GoogleFonts.robotoFlex(
+                  fontSize: proportionalFontSize(context, 14),
+                  color: Colors.black,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
+              GestureDetector(
+                onTap: () => _launchURL(url),
+                child: Text(
+                  "Freepik",
+                  style: GoogleFonts.robotoFlex(
+                    fontSize: proportionalFontSize(context, 14),
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTextLink(BuildContext context, String text, String url) {
-    return InkWell(
-      onTap: () => _launchURL(url),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.blue,
-          fontSize: proportionalFontSize(context, 14),
-          decoration: TextDecoration.underline,
+  Widget _buildTextLink(
+      BuildContext context, String prefixText, String linkText, String url) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          prefixText,
+          style: GoogleFonts.robotoFlex(
+            fontSize: proportionalFontSize(context, 14),
+            color: Colors.black,
+          ),
         ),
-      ),
+        GestureDetector(
+          onTap: () => _launchURL(url),
+          child: Text(
+            linkText,
+            style: GoogleFonts.robotoFlex(
+              fontSize: proportionalFontSize(context, 14),
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -126,35 +150,81 @@ class ReferencesPage extends StatelessWidget {
                 ),
               ),
             ),
+            Text(
+              "Images used on the Home Screen -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 18),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              "  • Create Meal Plan -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             _buildImageWithText(
                 context,
                 'assets/images/home_screen/discover-recipe.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/top-view-pasta-waffles-with-copy-space_7087845.htm#fromView=search&page=1&position=27&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
+            Text(
+              "  • Grocery List -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             _buildImageWithText(
                 context,
                 'assets/images/home_screen/grocery-list.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/lime-near-roasted-meat-salad_1488613.htm#fromView=search&page=1&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
+            Text(
+              "  • Saved Recipes -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             _buildImageWithText(
                 context,
                 'assets/images/home_screen/recipe-collection.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/buddha-bowl-dish-with-chicken-fillet-rice-red-cabbage-carrot-fresh-lettuce-salad-sesame_7537371.htm#fromView=search&page=4&position=44&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
+            Text(
+              "  • Recipe History -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             _buildImageWithText(
                 context,
                 'assets/images/home_screen/recipe-history.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/copy-space-bowl-with-salad_7763035.htm#fromView=search&page=2&position=5&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
+            Text(
+              "  • My Meal Plan -",
+              style: GoogleFonts.robotoFlex(
+                fontSize: proportionalFontSize(context, 14),
+                color: Colors.black,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
             _buildImageWithText(
                 context,
                 'assets/images/home_screen/weekly-menu.png',
                 "Designed by Freepik",
                 "https://www.freepik.com/free-photo/flat-lay-batch-cooking-assortment-with-copy-space_11273706.htm#fromView=search&page=3&position=28&uuid=7c2ca182-9b25-4bfc-9ecd-2dfadbbbf895"),
             SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(
-                context,
-                "Icons used in the Application - Uicons by Flaticon",
+            _buildTextLink(context, "Uicons by ", "Flaticon",
                 "https://www.flaticon.com/uicons"),
             SizedBox(height: proportionalHeight(context, 16)),
             Text(
@@ -173,19 +243,16 @@ class ReferencesPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(
-                context,
-                "Products from Aldi for Grocery List fetched from -",
+            _buildTextLink(context, "Products from Aldi:", "Aldi Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Aldi.csv"),
             SizedBox(height: proportionalHeight(context, 16)),
-            _buildTextLink(
-                context,
-                "Products from Coles for Grocery List fetched from -",
+            _buildTextLink(context, "Products from Coles:", "Coles Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Coles.csv"),
             SizedBox(height: proportionalHeight(context, 16)),
             _buildTextLink(
                 context,
-                "Products from Woolworths for Grocery List fetched from -",
+                "Products from Woolworths:",
+                "Woolworths Data",
                 "https://github.com/donde-esta-la-biblioteca/Woolworths-Coles-IGA/blob/ae34ea19d32bb9568f87bf29b13aeeec55d2e0a7/1.%20Cleaned%20Data/Woolworths.csv"),
           ],
         ),
