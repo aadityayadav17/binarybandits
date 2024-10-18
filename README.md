@@ -72,3 +72,5 @@ Firebase Core (firebase_core) – Initializes Firebase within the Flutter app.
     Url Launcher (url_launcher) - Enables the app to open URLs in the device's web browser or trigger other app functionalities like making phone calls or sending emails.
 
 ##### NOTE: You do not have to setup/manage any external dependecies manually, step 4 would set them up for you.
+
+##### NOTE: The app experience is better suited for mobile devices, specifically iOS and Android.
