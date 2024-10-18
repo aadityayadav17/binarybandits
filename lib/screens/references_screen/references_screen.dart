@@ -1,3 +1,26 @@
+/// This file defines the `ReferencesPage` widget, which displays references
+/// for images, icons, and other resources used in the application. It includes
+/// proportional helper functions for responsive design, a URL launcher helper,
+/// and various widgets to display images with text and links.
+///
+/// Proportional helper functions:
+/// - `proportionalWidth`: Calculates width based on screen size.
+/// - `proportionalHeight`: Calculates height based on screen size.
+/// - `proportionalFontSize`: Calculates font size based on screen size.
+///
+/// URL launcher helper:
+/// - `_launchURL`: Opens a URL in an external application.
+///
+/// `ReferencesPage` widget:
+/// - Displays a list of references for images used on the home screen.
+/// - Displays a list of references for icons used in the application.
+/// - Displays information about the sources of recipes and recipe images.
+/// - Displays references for products used in the grocery list.
+///
+/// The page includes a custom app bar with a back button and a bottom navigation
+/// bar for navigating between different screens in the application.
+library references_screen;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,8 +53,9 @@ void _launchURL(String url) async {
 }
 
 class ReferencesPage extends StatelessWidget {
-  const ReferencesPage({Key? key}) : super(key: key);
+  const ReferencesPage({super.key});
 
+  //  Widget to display image with text and link
   Widget _buildImageWithText(
       BuildContext context, String imagePath, String description, String url) {
     return Padding(
@@ -79,6 +103,7 @@ class ReferencesPage extends StatelessWidget {
     );
   }
 
+  // Widget to display text with link
   Widget _buildTextLink(
       BuildContext context, String prefixText, String linkText, String url) {
     return Row(
