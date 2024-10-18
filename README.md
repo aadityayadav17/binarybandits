@@ -1,7 +1,9 @@
 # binarybandits
+
 # EatEasy
 
 ## 1. Install Flutter SDK
+
 First, ensure that Flutter is installed on your system:
 Download Flutter SDK from the official Flutter website: flutter.dev
 
@@ -14,31 +16,35 @@ Add the flutter/bin directory to your system's environment PATH.
             export PATH="$PATH:[PATH_TO_FLUTTER_DIRECTORY]/flutter/bin"
 
 ## 2. Install an Editor
+
 Install an editor such as Visual Studio Code (VSCode) or Android Studio for coding in Flutter. Ensure that you install the required Flutter and Dart plugins:
 
 For VSCode:
-    Go to the Extensions tab and install the Flutter and Dart plugins.
+Go to the Extensions tab and install the Flutter and Dart plugins.
 
 For Android Studio:
-    Go to File > Settings > Plugins and install both the Flutter and Dart plugins.
+Go to File > Settings > Plugins and install both the Flutter and Dart plugins.
 
-## 3. Install Android SDK 
+## 3. Install Android SDK
+
 Install Android SDK and set it up in Android Studio:
 Open Android Studio, go to File > Settings > Appearance & Behavior > System Settings > Android SDK.
 Install the required SDK platforms and system images.
 Add the path to your SDK directory in Flutter settings (if not detected automatically).
 
 ## 4. Open the Project in the IDE
+
 Extract the attached project zip file into desired location.
 Open the extracted project in VSCode, Android Studio, or another code editor by choosing the File > Open option and navigating to the project folder.
 
-Check the pubspec.yaml file: It contains dependencies that the project needs. Once opened, the IDE may prompt you to run flutter pub get to install the dependencies. 
+Check the pubspec.yaml file: It contains dependencies that the project needs. Once opened, the IDE may prompt you to run flutter pub get to install the dependencies.
 
 Alternatively, run this manually via the terminal inside the project directory:
-        
+
         flutter pub get
 
 ## 5. Run the Project
+
 Now you are ready to run the Flutter project on your device.
 
 Connect a physical device or start an Android/iOS emulator.
@@ -47,8 +53,9 @@ Run the following command in the terminal:
         flutter run
 
 ### External dependencies
+
 The code relies on the following dependencies:
-    Firebase Core (firebase_core) – Initializes Firebase within the Flutter app.
+Firebase Core (firebase_core) – Initializes Firebase within the Flutter app.
 
     Firebase Authentication (firebase_auth) – Provides authentication methods like email/password and third-party sign-in with Firebase.
 
@@ -62,4 +69,6 @@ The code relies on the following dependencies:
 
     Shared Preferences (shared_preferences) – Allows persistent local storage of simple key-value pairs across app sessions.
 
-##### NOTE: You do not have to setup/manage any external dependecies manually, step 4 would set them up for you.    
+    Url Launcher (url_launcher) - Enables the app to open URLs in the device's web browser or trigger other app functionalities like making phone calls or sending emails.
+
+##### NOTE: You do not have to setup/manage any external dependecies manually, step 4 would set them up for you.
