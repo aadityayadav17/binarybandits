@@ -52,13 +52,6 @@ Run the following command in the terminal:
 
         flutter run
 
-### Mock Account
-
-If you don't want to sign up, you can use the following mock account to log in:
-
-- Email ID: binarybandits6@gmail.com
-- Password: abc123
-
 ### External dependencies
 
 The code relies on the following dependencies:
